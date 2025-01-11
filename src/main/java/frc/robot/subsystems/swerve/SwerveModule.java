@@ -1,5 +1,19 @@
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Constants;
+
 /**
  * A swerve module involves...
  * - 1 Kraken for driving
@@ -7,5 +21,150 @@ package frc.robot.subsystems.swerve;
  * - 1 CANcoder for reading which direction the wheel is pointed in.
  */
 public class SwerveModule {
+
+    // This determines if the motor should be trying to get to the desired state.
+    // The logic for this is handled in SwerveSubsystem.
+    public boolean enabled = true;
+
+    // The turn motor is a NEO. The drive motor is a Kraken.
+    // They changed CANSparkMax to SparkMAX... :(  -https://docs.revrobotics.com/brushless/spark-max/overview
+    private SparkMax turnMotor;
+    private TalonFX driveMotor;
+
+    /** We have a separate encoder attached directly to the wheel to more accurately determine rotation. */
+    private CANcoder turnEncoder;
+    // No drive encoder needed because you can do driveMotor.getPosition()
+
+    // Need an offset for the turn encoder
+    // To find this value, set the offset to 0, manually rotate the wheel to face forwards, and then record the outputted rotation of the wheel from shuffleboard.
+    private Rotation2d turnOffset;
+
     
+    // This determines the speed of the drive motor based on...
+    // kP = proportional: This changes the speed based on how far away the motor is from its desired position.
+    // kI = integral: This changes the speed based on how long the program has been running for (highly recommended to keep this at 0)
+    // kD = derivative: This changes the speed based on the current speed (no need to get faster if you're already going fast).
+    private final PIDController drivePIDController = new PIDController(1, 0, 0);
+
+    // A ProfiledPIDController is the same as above but also includes a max speed and max acceleration.
+    private final ProfiledPIDController turningPIDController = new ProfiledPIDController(
+        1,
+        0,
+        0,
+        new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_ANGULAR_VELOCITY, Constants.SWERVE_MAX_ANGULAR_ACCELERATION)
+    );
+
+    // Feed forward literally predicts the future and determines a MINIMUM speed to maintain the current position.
+    // Typically this isn't needed, so the values (ks and kv) are set to 0 for now (Jan 11, 2025).
+    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0);
+    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0, 0);
+
+    
+    /**
+     * Represents an entire Swerve Module including it's drive motor, turn motor, and turn encoder.
+     * @param driveMotorID CAN bus: Kraken motor ID. Find using Phoenix Tuner X.
+     * @param turnMotorID CAN bus: SparkMAX motor controller ID for a NEO. Find using Rev Hardware Client.
+     * @param turnEncoderID CAN bus: CANcoder id. Find using Phoenix Tuner X.
+     * @param turnOffset Find by setting this to 0.0, rotating the wheel to face forwards, and use the value recorded on Shuffleboard.
+     */
+    public SwerveModule(int driveMotorID, int turnMotorID, int turnEncoderID, Rotation2d turnOffset) {
+        this.driveMotor = new TalonFX(driveMotorID);
+        this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
+        this.turnEncoder = new CANcoder(turnEncoderID);
+    }
+
+
+    /**
+     * Actually runs the motors to get the speed and rotation dictated by the SwerveSubsystem.
+     * @param desiredState This is figured out by the SwerveSubsystem depending on the desired speeds.
+     */
+    public void getToDesiredState(SwerveModuleState desiredState) {
+        Rotation2d wheelRotation = getWheelRotation();
+
+        // Optimize the desired state to avoid spinning further than 90 degrees
+        desiredState.optimize(wheelRotation);
+
+        // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
+        // direction of travel that can occur when modules change directions.
+        // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
+        desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
+
+        // Calculate the voltage sent to the driving motor using the drive PID controller.
+        final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
+        final double driveFF = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+
+        // Calculate the turning motor output using the turning PID controller.
+        final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
+        final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
+
+        // Max voltage is 12V I believe
+        driveMotor.setVoltage(driveOutput + driveFF);
+        turnMotor.setVoltage(turnOutput + turnFF);
+    }
+
+
+    /**
+     * Gets the current state of the entire module in a form that WPILib can understand.
+     * This includes the speed of the wheel and the current rotation.
+     * @return The current SwerveModuleState of the module.
+     */
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(
+            getDriveVelocity(), 
+            getWheelRotation()
+        );
+    }
+
+    /**
+     * Returns the current position of the module in a form that WPILib can understand.
+     * This includes the current distance travelled by the motor and its rotation.
+     * @return The current SwerveModulePosition of the module.
+     */
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+            getDrivePosition(), 
+            getWheelRotation()
+        );
+    }
+    
+
+    /**
+     * Get the expected distance traveled by the wheel in meters after applying nthe conversion factor.
+     * @return The distance traveled by the wheel in meters.
+     */
+    public double getDrivePosition() {
+        // getPosition() gives you the "mechanism rotations", so 1 should equal a 360 degree rotation.
+        // Therefore, (rotations) * (wheel_circumference) / (gear_ratio) = (distance_traveled)
+        return (driveMotor.getPosition().getValueAsDouble()) * (Math.PI * 2 * Constants.WHEEL_RADIUS) / (Constants.SWERVE_DRIVE_MOTOR_GEAR_RATIO);
+    }
+
+    /**
+     * Get the expected velocity of the wheel in meters per second after applying nthe conversion factor.
+     * @return The velocity of the wheel in meters per second.
+     */
+    public double getDriveVelocity() {
+        // Uses the same math at getDrivePosition()
+        return (driveMotor.getVelocity().getValueAsDouble()) * (Math.PI * 2 * Constants.WHEEL_RADIUS) / (Constants.SWERVE_DRIVE_MOTOR_GEAR_RATIO);
+    }
+
+
+    /**
+     * Gets the rotation of the wheel.
+     * @return The rotation of the wheel.
+     */
+    public Rotation2d getWheelRotation() {
+        // getAbsolutePosition() counts up by full rotations as well (I think). So 1 equals a 360 degree rotation.
+        // Therefore, (rotations) * (radians_per_rotation) = (radians)
+        // Also apply the offset here.
+        return new Rotation2d((turnEncoder.getAbsolutePosition().getValueAsDouble()) * (Math.PI * 2)).minus(turnOffset);
+    }
+
+    /**
+     * Gets the angular velocity of the wheel in radians per second.
+     * @return The angular velocity of the wheel in radians per second.
+     */
+    public Rotation2d getAngularVelocity() {
+        // Uses the same math as getWheelRotation() without the offset
+        return new Rotation2d((turnEncoder.getVelocity().getValueAsDouble()) * (Math.PI * 2));
+    }
 }

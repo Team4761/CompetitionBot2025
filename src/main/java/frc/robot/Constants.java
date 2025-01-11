@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+
 /**
  * A port of -1 means that it is currently unknown/undecided.
  */
@@ -32,22 +35,31 @@ public class Constants {
      /*
       * SWERVE
       */
+    // FL = "front left", FR = "front right", BL = "back left", BR = "back right"
     public static final int SWERVE_FL_DRIVE_MOTOR_PORT = -1;    // CAN Port.
-    public static final int SWERVE_FL_ROTATE_MOTOR_PORT = -1;   // CAN Port.
+    public static final int SWERVE_FL_TURN_MOTOR_PORT = -1;   // CAN Port.
     public static final int SWERVE_FL_ENCODER_PORT = -1;        // CAN Port.
 
     public static final int SWERVE_FR_DRIVE_MOTOR_PORT = -1;    // CAN Port.
-    public static final int SWERVE_FR_ROTATE_MOTOR_PORT = -1;   // CAN Port.
+    public static final int SWERVE_FR_TURN_MOTOR_PORT = -1;   // CAN Port.
     public static final int SWERVE_FR_ENCODER_PORT = -1;        // CAN Port.
 
     public static final int SWERVE_BL_DRIVE_MOTOR_PORT = -1;    // CAN Port.
-    public static final int SWERVE_BL_ROTATE_MOTOR_PORT = -1;   // CAN Port.
+    public static final int SWERVE_BL_TURN_MOTOR_PORT = -1;   // CAN Port.
     public static final int SWERVE_BL_ENCODER_PORT = -1;        // CAN Port.
 
     public static final int SWERVE_BR_DRIVE_MOTOR_PORT = -1;    // CAN Port.
-    public static final int SWERVE_BR_ROTATE_MOTOR_PORT = -1;   // CAN Port.
+    public static final int SWERVE_BR_TURN_MOTOR_PORT = -1;   // CAN Port.
     public static final int SWERVE_BR_ENCODER_PORT = -1;        // CAN Port.
 
+    public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(180);           // Radians per second.
+    public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360);       // Radians per second squared.
+    public static final double SWERVE_MAX_DRIVE_SPEED = 3.0;                                                // Meters per second?
+
+    public static final Rotation2d SWERVE_GYRO_OFFSET = new Rotation2d(Units.degreesToRadians(0));  // To find this, set it to 0 and record the value you get on startup.
+
+    public static final double WHEEL_RADIUS = 0.04955;                  // Meters. Double check this; it's based on the 2024 Competition code.
+    public static final double SWERVE_DRIVE_MOTOR_GEAR_RATIO = 6.12;    // Double check this; it's based on the 2024 Competition code!
 
       /*
        * VISION
