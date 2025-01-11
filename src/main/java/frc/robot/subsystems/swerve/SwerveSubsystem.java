@@ -19,6 +19,12 @@ import frc.robot.Robot;
  */
 public class SwerveSubsystem extends SubsystemBase {
 
+    // These get updated via shuffleboard
+    // Drive for forward/backward/strafing speed
+    // Turn for, well, turning speeds...
+    public double speedDriveModifier = 0.5;
+    public double speedTurnModifier = 0.5;
+
     // The module offsets from the CENTER of the robot to the CENTER of the wheel on each module.
     // All in meters. +x = forwards. +y = left.
     private final Translation2d frontLeftLocation = new Translation2d(+0.32, +0.32);
@@ -89,8 +95,7 @@ public class SwerveSubsystem extends SubsystemBase {
         backLeft.getToDesiredState(swerveModuleStates[2]);
         backRight.getToDesiredState(swerveModuleStates[3]);
 
-        if (Robot.shuffleboard != null)
-            Robot.shuffleboard.updateSwerve();
+        Robot.shuffleboard.updateSwerve();
     }
 
 
@@ -101,11 +106,10 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param speedRotation A value between -1 to 1 where =1 represents 100% in the counterclockwise direction (the front of the robot turns left).
      * @param isFieldOriented Determines if the math should be calculated with a coordinate system relative to the field or to the robot. If true, forwards is the same direction regardless of robot rotation. If false, forwards is dependent on the robot's rotation.
      */
-    public void setDesiredSpeeds(double speedX, double speedY, double speedRotation, boolean isFieldOriented) {
-        this.desiredSpeedX = speedX;
-        this.desiredSpeedY = speedY;
-        this.desiredSpeedRotation = speedRotation;
-        this.isFieldOriented = isFieldOriented;
+    public void setDesiredSpeeds(double speedX, double speedY, double speedRotation) {
+        this.desiredSpeedX = speedX * speedDriveModifier;
+        this.desiredSpeedY = speedY * speedDriveModifier;
+        this.desiredSpeedRotation = speedRotation * speedTurnModifier;
     }
 
 

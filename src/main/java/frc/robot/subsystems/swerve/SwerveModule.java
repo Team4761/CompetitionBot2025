@@ -99,7 +99,7 @@ public class SwerveModule {
             final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
             final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
-            // Max voltage is 12V I believe
+            // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
             driveMotor.setVoltage(driveOutput + driveFF);
             turnMotor.setVoltage(turnOutput + turnFF);
         }

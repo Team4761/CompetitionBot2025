@@ -55,6 +55,7 @@ public class Constants {
     public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(180);           // Radians per second.
     public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360);       // Radians per second squared.
     public static final double SWERVE_MAX_DRIVE_SPEED = 3.0;                                                // Meters per second?
+    public static final double SWERVE_MAX_DRIVE_VOLTAGE = 4.0;
 
     public static final Rotation2d SWERVE_GYRO_OFFSET = new Rotation2d(Units.degreesToRadians(0));  // To find this, set it to 0 and record the value you get on startup.
 

@@ -101,8 +101,7 @@ public class Robot extends TimedRobot {
       map.swerve.setDesiredSpeeds(
         -driveController.getLeftY(),   // Negative to make up the positive direction
         driveController.getLeftX(),
-        -driveController.getRightX(),  // Negative to make left (counterclockwise) the positive direction.
-        true
+        -driveController.getRightX()   // Negative to make left (counterclockwise) the positive direction.
       );
     }
   }
