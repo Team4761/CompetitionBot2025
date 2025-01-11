@@ -21,14 +21,16 @@ public class RobotMap {
     public SwerveSubsystem swerve = null;
     public VisionSubsystem vision = null;
 
+    public RobocketsShuffleboard shuffleboard = null;
+
     
     public RobotMap() {
         // COMMENT OUT SUBSYSTEMS BELOW TO DISABLE THEM
-        arm = new ArmSubsystem();
-        leds = new LEDSubsystem();
-        muncher = new MuncherSubsystem();
+        // arm = new ArmSubsystem();
+        // leds = new LEDSubsystem();
+        // muncher = new MuncherSubsystem();
         swerve = new SwerveSubsystem();
-        vision = new VisionSubsystem();
+        // vision = new VisionSubsystem();
     }
 
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -69,6 +70,8 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
+        updateOdometry();
+
         // Represents the desired speeds of the entire robot essentially
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(this.desiredSpeedX, this.desiredSpeedY, this.desiredSpeedRotation);
         // Makes the speeds relative to the field if true
@@ -85,6 +88,8 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.getToDesiredState(swerveModuleStates[1]);
         backLeft.getToDesiredState(swerveModuleStates[2]);
         backRight.getToDesiredState(swerveModuleStates[3]);
+
+        Robot.map.shuffleboard.updateSwerve();
     }
 
 
@@ -125,5 +130,14 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Rotation2d getGyroRotation() {
         return new Rotation2d(Units.degreesToRadians(gyro.getAngle())).minus(Constants.SWERVE_GYRO_OFFSET);
+    }
+
+
+    /**
+     * Gets the current position based on the odometry.
+     * @return The current position where +x is forwards and +y is left in meters.
+     */
+    public Pose2d getPosition() {
+        return odometry.getPoseMeters();
     }
 }

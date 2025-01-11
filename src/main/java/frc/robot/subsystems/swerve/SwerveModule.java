@@ -23,7 +23,6 @@ import frc.robot.Constants;
 public class SwerveModule {
 
     // This determines if the motor should be trying to get to the desired state.
-    // The logic for this is handled in SwerveSubsystem.
     public boolean enabled = true;
 
     // The turn motor is a NEO. The drive motor is a Kraken.
@@ -37,7 +36,7 @@ public class SwerveModule {
 
     // Need an offset for the turn encoder
     // To find this value, set the offset to 0, manually rotate the wheel to face forwards, and then record the outputted rotation of the wheel from shuffleboard.
-    private Rotation2d turnOffset;
+    private Rotation2d turnOffset = new Rotation2d(0);  // PLACEHOLDER! DO NOT CHANGE HERE, CHANGE IN SwerveSubsystem
 
     
     // This determines the speed of the drive motor based on...
@@ -79,27 +78,34 @@ public class SwerveModule {
      * @param desiredState This is figured out by the SwerveSubsystem depending on the desired speeds.
      */
     public void getToDesiredState(SwerveModuleState desiredState) {
-        Rotation2d wheelRotation = getWheelRotation();
+        if (this.enabled) {
+            Rotation2d wheelRotation = getWheelRotation();
 
-        // Optimize the desired state to avoid spinning further than 90 degrees
-        desiredState.optimize(wheelRotation);
+            // Optimize the desired state to avoid spinning further than 90 degrees
+            desiredState.optimize(wheelRotation);
 
-        // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
-        // direction of travel that can occur when modules change directions.
-        // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
-        desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
+            // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
+            // direction of travel that can occur when modules change directions.
+            // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
+            desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
 
-        // Calculate the voltage sent to the driving motor using the drive PID controller.
-        final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
-        final double driveFF = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+            // Calculate the voltage sent to the driving motor using the drive PID controller.
+            final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
+            final double driveFF = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
-        // Calculate the turning motor output using the turning PID controller.
-        final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
-        final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
+            // Calculate the turning motor output using the turning PID controller.
+            final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
+            final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
-        // Max voltage is 12V I believe
-        driveMotor.setVoltage(driveOutput + driveFF);
-        turnMotor.setVoltage(turnOutput + turnFF);
+            // Max voltage is 12V I believe
+            driveMotor.setVoltage(driveOutput + driveFF);
+            turnMotor.setVoltage(turnOutput + turnFF);
+        }
+        // If not enabled
+        else {
+            driveMotor.setVoltage(0);
+            turnMotor.setVoltage(0);
+        }
     }
 
 

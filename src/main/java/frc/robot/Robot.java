@@ -20,6 +20,10 @@ public class Robot extends TimedRobot {
   boolean win = true;
 
   public static final RobotMap map = new RobotMap();
+  public static final RobocketsShuffleboard shuffleboard = new RobocketsShuffleboard();
+
+  public static final DriveController driveController = new DriveController(0);
+  public static final ArmController armController = new ArmController(1);
 
   // The time between periodic() calls.
   // This gets updated in the robotPeriodic() function.
@@ -89,7 +93,16 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (map.swerve != null) {
+      map.swerve.setDesiredSpeeds(
+        -driveController.getLeftY(),   // Negative to make up the positive direction
+        driveController.getLeftX(),
+        -driveController.getRightX(),  // Negative to make left (counterclockwise) the positive direction.
+        true
+      );
+    }
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
