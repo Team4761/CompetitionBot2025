@@ -22,7 +22,7 @@ public class RobotMap {
     public VisionSubsystem vision = null;
 
     
-    public void RobotMap() {
+    public RobotMap() {
         // COMMENT OUT SUBSYSTEMS BELOW
         arm = new ArmSubsystem();
         leds = new LEDSubsystem();
