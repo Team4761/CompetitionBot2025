@@ -36,14 +36,14 @@ public class SwerveModule {
 
     // Need an offset for the turn encoder
     // To find this value, set the offset to 0, manually rotate the wheel to face forwards, and then record the outputted rotation of the wheel from shuffleboard.
-    private Rotation2d turnOffset = new Rotation2d(0);  // PLACEHOLDER! DO NOT CHANGE HERE, CHANGE IN SwerveSubsystem
+    private Rotation2d turnOffset;  // PLACEHOLDER! DO NOT CHANGE HERE, CHANGE IN SwerveSubsystem
 
     
     // This determines the speed of the drive motor based on...
     // kP = proportional: This changes the speed based on how far away the motor is from its desired position.
     // kI = integral: This changes the speed based on how long the program has been running for (highly recommended to keep this at 0)
     // kD = derivative: This changes the speed based on the current speed (no need to get faster if you're already going fast).
-    private final PIDController drivePIDController = new PIDController(1, 0, 0);
+    private final PIDController drivePIDController = new PIDController(2, 0, 0);
 
     // A ProfiledPIDController is the same as above but also includes a max speed and max acceleration.
     private final ProfiledPIDController turningPIDController = new ProfiledPIDController(
@@ -56,7 +56,7 @@ public class SwerveModule {
     // Feed forward literally predicts the future and determines a MINIMUM speed to maintain the current position.
     // Typically this isn't needed, so the values (ks and kv) are set to 0 for now (Jan 11, 2025).
     private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0);
-    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0, 0);
+    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0.1, 0);
 
     
     /**
@@ -70,6 +70,8 @@ public class SwerveModule {
         this.driveMotor = new TalonFX(driveMotorID);
         this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
         this.turnEncoder = new CANcoder(turnEncoderID);
+
+        this.turnOffset = turnOffset;
     }
 
 
@@ -162,7 +164,8 @@ public class SwerveModule {
         // getAbsolutePosition() counts up by full rotations as well (I think). So 1 equals a 360 degree rotation.
         // Therefore, (rotations) * (radians_per_rotation) = (radians)
         // Also apply the offset here.
-        return new Rotation2d((turnEncoder.getAbsolutePosition().getValueAsDouble()) * (Math.PI * 2)).minus(turnOffset);
+        // Negative because the CANcoder is placed on the top so rotations need to be inverted.
+        return new Rotation2d(-(turnEncoder.getAbsolutePosition().getValueAsDouble()) * (Math.PI * 2)).minus(turnOffset);
     }
 
     /**

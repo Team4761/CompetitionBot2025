@@ -21,8 +21,6 @@ public class RobotMap {
     public SwerveSubsystem swerve = null;
     public VisionSubsystem vision = null;
 
-    public RobocketsShuffleboard shuffleboard = null;
-
     
     public RobotMap() {
         // COMMENT OUT SUBSYSTEMS BELOW TO DISABLE THEM
