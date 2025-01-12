@@ -32,10 +32,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Translation2d backLeftLocation = new Translation2d(-0.32, +0.32);
     private final Translation2d backRightLocation = new Translation2d(-0.32, -0.32);
 
-    public final SwerveModule frontLeft = new SwerveModule(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-30.41)));
-    public final SwerveModule frontRight = new SwerveModule(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(23.20)));
-    public final SwerveModule backLeft = new SwerveModule(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(211.55)));
-    public final SwerveModule backRight = new SwerveModule(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(240.82)));
+    public final SwerveModule frontLeft = new SwerveModule(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(30.33)));
+    public final SwerveModule frontRight = new SwerveModule(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(336.35)));
+    public final SwerveModule backLeft = new SwerveModule(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(148.00)));
+    public final SwerveModule backRight = new SwerveModule(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(119.47)));
 
     // This is just the type of gyro we have.
     private final ADIS16470_IMU gyro = new ADIS16470_IMU();
@@ -60,7 +60,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private double desiredSpeedY = 0.0;
     private double desiredSpeedRotation = 0.0;
     // Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation.
-    private boolean isFieldOriented;
+    private boolean isFieldOriented = true;
 
 
     /**
@@ -134,7 +134,8 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return The gyro's rotation after accounting for the offset.
      */
     public Rotation2d getGyroRotation() {
-        return new Rotation2d(Units.degreesToRadians(gyro.getAngle())).minus(Constants.SWERVE_GYRO_OFFSET);
+        // Negative because gyro's are dumb.
+        return new Rotation2d(-(new Rotation2d(Units.degreesToRadians(gyro.getAngle())).minus(Constants.SWERVE_GYRO_OFFSET)).getRadians());
     }
 
 
@@ -144,5 +145,14 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Pose2d getPosition() {
         return odometry.getPoseMeters();
+    }
+
+
+    /**
+     * This makes it so that the forwards direction for controlling purposes is whatever direction the robot is facing.
+     * This ONLY affects the inputs given to the subsystem.
+     */
+    public void orientForwardsDirection() {
+        
     }
 }

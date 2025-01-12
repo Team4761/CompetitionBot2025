@@ -47,24 +47,24 @@ public class VisionSubsystem extends SubsystemBase {
     // PLACEHOLDER FOR TESTING PURPOSES
     AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(
         List.of(
-            new AprilTag(1, new Pose3d(10, 10, 0, new Rotation3d(0, 0, Math.PI)))   // Should be facing towards the blue alliance... I think...
+            new AprilTag(2, new Pose3d(10, 10, 0, new Rotation3d(0, 0, Math.PI)))   // Should be facing towards the blue alliance... I think...
         ),
         100,
         100
     );
 
     // Actual field layout for when testing is done.
-    AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    // AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
     /**
      * This will be in charge of setting up the cameras and pose estimator.
      */
     public VisionSubsystem() {
-        camera = new PhotonCamera("CAMERA_NAME");
+        camera = new PhotonCamera("Psebastian");
 
         // MULTI_TAG_PNP_ON_COPROCESSOR is best, but we're using CLOSEST_TO_LAST_POSE for now.
-        photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_LAST_POSE, CAMERA_ON_ROBOT_POSE);
+        photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CAMERA_ON_ROBOT_POSE);
     }
 
 
@@ -124,7 +124,11 @@ public class VisionSubsystem extends SubsystemBase {
 
                 SmartDashboard.putNumber("Camera Latency", result.getTimestampSeconds() - lastTimestamp);
                 lastTimestamp = result.getTimestampSeconds();
+                SmartDashboard.putBoolean("Found April Tag", true);
             }
+        }
+        else {
+            SmartDashboard.putBoolean("Found April Tag", false);
         }
     }
 }

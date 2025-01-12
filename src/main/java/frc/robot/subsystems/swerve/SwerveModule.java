@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /**
@@ -47,7 +48,7 @@ public class SwerveModule {
 
     // A ProfiledPIDController is the same as above but also includes a max speed and max acceleration.
     private final ProfiledPIDController turningPIDController = new ProfiledPIDController(
-        1,
+        4,
         0,
         0,
         new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_ANGULAR_VELOCITY, Constants.SWERVE_MAX_ANGULAR_ACCELERATION)
@@ -56,7 +57,7 @@ public class SwerveModule {
     // Feed forward literally predicts the future and determines a MINIMUM speed to maintain the current position.
     // Typically this isn't needed, so the values (ks and kv) are set to 0 for now (Jan 11, 2025).
     private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0);
-    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0.1, 0);
+    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
     
     /**
@@ -89,7 +90,7 @@ public class SwerveModule {
             // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
             // direction of travel that can occur when modules change directions.
             // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
-            desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
+            // desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
 
             // Calculate the voltage sent to the driving motor using the drive PID controller.
             final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
@@ -100,8 +101,10 @@ public class SwerveModule {
             final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
             // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
-            driveMotor.setVoltage(driveOutput + driveFF);
-            turnMotor.setVoltage(turnOutput + turnFF);
+            SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
+            driveMotor.setVoltage((driveOutput + driveFF));
+            // Turn motor reversed because of gears *dies inside more than is physically possible*
+            turnMotor.setVoltage(-(turnOutput + turnFF));
         }
         // If not enabled
         else {
@@ -164,8 +167,8 @@ public class SwerveModule {
         // getAbsolutePosition() counts up by full rotations as well (I think). So 1 equals a 360 degree rotation.
         // Therefore, (rotations) * (radians_per_rotation) = (radians)
         // Also apply the offset here.
-        // Negative because the CANcoder is placed on the top so rotations need to be inverted.
-        return new Rotation2d(-(turnEncoder.getAbsolutePosition().getValueAsDouble()) * (Math.PI * 2)).minus(turnOffset);
+        // Negative because the CANcoder is placed on the top so rotations need to be inverted. Actually no, what am I even doing...
+        return new Rotation2d((turnEncoder.getAbsolutePosition().getValueAsDouble()) * (Math.PI * 2)).minus(turnOffset);
     }
 
     /**
