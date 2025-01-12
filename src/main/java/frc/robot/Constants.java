@@ -15,7 +15,8 @@ public class Constants {
     public static final int ARM_PIVOT_ENCODER_PORT = 0;    // DIO Port.
     public static final int ARM_EXTEND_MOTOR_PORT = 0;     // CAN Port.
     public static final int ARM_EXTEND_ENCODER_PORT = 0;   // DIO Port.
-
+    public static final double ARM_PIVOT_LENGTH = 10; // Current temporary value, will be measured in meters
+    public static final double ARM_EXTEND_LENGTH = 10; // Current temporary value, will be measured in meters
 
     /*
      * LEDS
