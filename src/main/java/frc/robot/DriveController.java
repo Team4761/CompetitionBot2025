@@ -17,9 +17,39 @@ public class DriveController extends XboxController {
     private final SlewRateLimiter rightYLimiter = new SlewRateLimiter(3);
 
 
+    // Just a reference to the RobotMap stored in Robot.java so I don't have to keep typing Robot.map
+    private RobotMap map;
+
     public DriveController (int port) {
         super(port);
+        map = Robot.map;
     }
+    
+
+    /**
+     * Call this function during teleop to actually run!
+     * This involves both joysticks and buttons.
+     */
+    public void teleopPeriodic() {
+        // Swerve
+        if (map.swerve != null) {
+
+            if (getXButtonPressed()) {
+                map.swerve.orientForwardsControllingDirection();
+            }
+            if (getYButtonPressed()) {
+                map.swerve.resetPosition();
+            }
+
+            // Joystick control
+            map.swerve.setDesiredSpeeds(
+                -getLeftY() * Math.sin(map.swerve.forwardsControllingRotation.getRadians()),   // Negative to make up the positive direction
+                -getLeftX() * Math.cos(map.swerve.forwardsControllingRotation.getRadians()),   // Negative to make left the positive direction
+                -getRightX()   // Negative to make left (counterclockwise) the positive direction.
+            );
+        }
+    }
+
     
     // Applying slew limiters and deadzone (deadband) to every single axis.
     @Override

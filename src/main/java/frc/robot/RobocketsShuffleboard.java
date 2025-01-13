@@ -28,24 +28,28 @@ public class RobocketsShuffleboard {
     GenericEntry swerveFLDesiredDriveSpeed;
     GenericEntry swerveFLDesiredTurnSpeed;
     public GenericEntry swerveFLEnabled;
+    public GenericEntry swerveFLManualControl;
 
     GenericEntry swerveFRDistanceTraveled;
     GenericEntry swerveFRCurrentRotation;
     GenericEntry swerveFRDesiredDriveSpeed;
     GenericEntry swerveFRDesiredTurnSpeed;
     public GenericEntry swerveFREnabled;
+    public GenericEntry swerveFRManualControl;
 
     GenericEntry swerveBLDistanceTraveled;
     GenericEntry swerveBLCurrentRotation;
     GenericEntry swerveBLDesiredDriveSpeed;
     GenericEntry swerveBLDesiredTurnSpeed;
     public GenericEntry swerveBLEnabled;
+    public GenericEntry swerveBLManualControl;
 
     GenericEntry swerveBRDistanceTraveled;
     GenericEntry swerveBRCurrentRotation;
     GenericEntry swerveBRDesiredDriveSpeed;
     GenericEntry swerveBRDesiredTurnSpeed;
     public GenericEntry swerveBREnabled;
+    public GenericEntry swerveBRManualControl;
 
     GenericEntry swerveXPosition;
     GenericEntry swerveYPosition;
@@ -86,33 +90,37 @@ public class RobocketsShuffleboard {
     }
 
     public void fillSwerveTab() {
-        ShuffleboardLayout frontLeft = swerve.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0);
+        ShuffleboardLayout frontLeft = swerve.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 5).withPosition(2, 0);
         swerveFLDistanceTraveled = frontLeft.add("FL: Distance Traveled", 0).withPosition(0, 0).getEntry();
         swerveFLCurrentRotation = frontLeft.add("FL: Current Rotation", 0).withPosition(1, 0).getEntry();
         swerveFLDesiredDriveSpeed = frontLeft.add("FL: Desired Drive Speed", 0).withPosition(2, 0).getEntry();
         swerveFLDesiredTurnSpeed = frontLeft.add("FL: Desired Turn Speed", 0).withPosition(3, 0).getEntry();
         swerveFLEnabled = frontLeft.add("FL: Enabled?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(4, 0).getEntry();
+        swerveFLEnabled = frontLeft.add("FL: Manual Control?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(5, 0).getEntry();
 
-        ShuffleboardLayout frontRight = swerve.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0);
+        ShuffleboardLayout frontRight = swerve.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 5).withPosition(4, 0);
         swerveFRDistanceTraveled = frontRight.add("FR: Distance Traveled", 0).withPosition(0, 0).getEntry();
         swerveFRCurrentRotation = frontRight.add("FR: Current Rotation", 0).withPosition(1, 0).getEntry();
         swerveFRDesiredDriveSpeed = frontRight.add("FR: Desired Drive Speed", 0).withPosition(2, 0).getEntry();
         swerveFRDesiredTurnSpeed = frontRight.add("FR: Desired Turn Speed", 0).withPosition(3, 0).getEntry();
         swerveFREnabled = frontRight.add("FR: Enabled?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(4, 0).getEntry();
+        swerveFREnabled = frontRight.add("FR: Manual Control?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(5, 0).getEntry();
 
-        ShuffleboardLayout backLeft = swerve.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0);
+        ShuffleboardLayout backLeft = swerve.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 5).withPosition(6, 0);
         swerveBLDistanceTraveled = backLeft.add("BL: Distance Traveled", 0).withPosition(0, 0).getEntry();
         swerveBLCurrentRotation = backLeft.add("BL: Current Rotation", 0).withPosition(1, 0).getEntry();
         swerveBLDesiredDriveSpeed = backLeft.add("BL: Desired Drive Speed", 0).withPosition(2, 0).getEntry();
         swerveBLDesiredTurnSpeed = backLeft.add("BL: Desired Turn Speed", 0).withPosition(3, 0).getEntry();
         swerveBLEnabled = backLeft.add("BL: Enabled?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(4, 0).getEntry();
+        swerveBLEnabled = backLeft.add("BL: Manual Control?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(5, 0).getEntry();
 
-        ShuffleboardLayout backRight = swerve.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(8, 0);
+        ShuffleboardLayout backRight = swerve.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 5).withPosition(8, 0);
         swerveBRDistanceTraveled = backRight.add("BR: Distance Traveled", 0).withPosition(0, 0).getEntry();
         swerveBRCurrentRotation = backRight.add("BR: Current Rotation", 0).withPosition(1, 0).getEntry();
         swerveBRDesiredDriveSpeed = backRight.add("BR: Desired Drive Speed", 0).withPosition(2, 0).getEntry();
         swerveBRDesiredTurnSpeed = backRight.add("BR: Desired Turn Speed", 0).withPosition(3, 0).getEntry();
         swerveBREnabled = backRight.add("BR: Enabled?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(4, 0).getEntry();
+        swerveBREnabled = backRight.add("BR: Manual Control?", true).withWidget(BuiltInWidgets.kToggleSwitch).withPosition(5, 0).getEntry();
 
         ShuffleboardLayout general = swerve.getLayout("General", BuiltInLayouts.kList).withSize(2, 3).withPosition(0, 0);
         swerveRotation = general.add("Rotation", 0).withPosition(0, 0).getEntry();

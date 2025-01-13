@@ -90,20 +90,15 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    map.swerve.setFieldOriented(true);
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-    
-    if (map.swerve != null) {
-      map.swerve.setDesiredSpeeds(
-        -driveController.getLeftY()*5,   // Negative to make up the positive direction
-        -driveController.getLeftX()*5,   // Negative to make left the positive direction
-        -driveController.getRightX()*5   // Negative to make left (counterclockwise) the positive direction.
-      );
-    }
+    driveController.teleopPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */

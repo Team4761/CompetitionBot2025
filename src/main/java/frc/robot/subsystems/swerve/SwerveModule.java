@@ -23,8 +23,15 @@ import frc.robot.Constants;
  */
 public class SwerveModule {
 
+    // This would be 2pi in an ideal world, or 6.283185, but it's not because of physics :(
+    // Instead, I manually spun the front right wheel 20 times and recorded the rotation of that, and then divided by 20. The more rotations, the more accurate.
+    private static final double TURN_UNITS_PER_ROTATION = (Math.PI * 2);
+
     // This determines if the motor should be trying to get to the desired state.
     public boolean enabled = true;
+
+    // This determines if the wheels can be manually controlled rather than PID controlled.
+    public boolean isManualControl = false;
 
     // The turn motor is a NEO. The drive motor is a Kraken.
     // They changed CANSparkMax to SparkMAX... :(  -https://docs.revrobotics.com/brushless/spark-max/overview
@@ -79,32 +86,41 @@ public class SwerveModule {
     /**
      * Actually runs the motors to get the speed and rotation dictated by the SwerveSubsystem.
      * @param desiredState This is figured out by the SwerveSubsystem depending on the desired speeds.
+     * @param manualSpeeds If the module is in manual control, this will be used instead of the desiredState. [0] = drive, [1] = turn.
      */
-    public void getToDesiredState(SwerveModuleState desiredState) {
+    public void getToDesiredState(SwerveModuleState desiredState, double... manualSpeeds) {
         if (this.enabled) {
-            Rotation2d wheelRotation = getWheelRotation();
+            // Just turn motors at desired speeds.
+            if (this.isManualControl && manualSpeeds != null) {
+                driveMotor.setVoltage(manualSpeeds[0]);
+                turnMotor.setVoltage(manualSpeeds[1]);
+            }
+            // Use PID control
+            else {
+                Rotation2d wheelRotation = getWheelRotation();
 
-            // Optimize the desired state to avoid spinning further than 90 degrees
-            desiredState.optimize(wheelRotation);
+                // Optimize the desired state to avoid spinning further than 90 degrees
+                desiredState.optimize(wheelRotation);
 
-            // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
-            // direction of travel that can occur when modules change directions.
-            // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
-            // desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
+                // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
+                // direction of travel that can occur when modules change directions.
+                // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
+                // desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
 
-            // Calculate the voltage sent to the driving motor using the drive PID controller.
-            final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
-            final double driveFF = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+                // Calculate the voltage sent to the driving motor using the drive PID controller.
+                final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
+                final double driveFF = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
-            // Calculate the turning motor output using the turning PID controller.
-            final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
-            final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
+                // Calculate the turning motor output using the turning PID controller.
+                final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
+                final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
-            // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
-            SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
-            driveMotor.setVoltage((driveOutput + driveFF));
-            // Turn motor reversed because of gears *dies inside more than is physically possible*
-            turnMotor.setVoltage(-(turnOutput + turnFF));
+                // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
+                SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
+                driveMotor.setVoltage((driveOutput + driveFF));
+                // Turn motor reversed because of gears *dies inside more than is physically possible*
+                turnMotor.setVoltage(-(turnOutput + turnFF));
+            }
         }
         // If not enabled
         else {
@@ -167,8 +183,9 @@ public class SwerveModule {
         // getAbsolutePosition() counts up by full rotations as well (I think). So 1 equals a 360 degree rotation.
         // Therefore, (rotations) * (radians_per_rotation) = (radians)
         // Also apply the offset here.
-        // Negative because the CANcoder is placed on the top so rotations need to be inverted. Actually no, what am I even doing...
-        return new Rotation2d((turnEncoder.getAbsolutePosition().getValueAsDouble()) * (Math.PI * 2)).minus(turnOffset);
+        // However, because physics is a pain, (radians_per_rotation) is not actually 2pi, it's a different value.
+        // The explanation for that can be found above the TURN_UNITS_PER_ROTATION constant at the top of this file.
+        return new Rotation2d((turnEncoder.getAbsolutePosition().getValueAsDouble()) * TURN_UNITS_PER_ROTATION).minus(turnOffset);
     }
 
     /**
@@ -177,6 +194,14 @@ public class SwerveModule {
      */
     public Rotation2d getAngularVelocity() {
         // Uses the same math as getWheelRotation() without the offset
-        return new Rotation2d((turnEncoder.getVelocity().getValueAsDouble()) * (Math.PI * 2));
+        return new Rotation2d((turnEncoder.getVelocity().getValueAsDouble()) * TURN_UNITS_PER_ROTATION);
+    }
+
+
+    /**
+     * This literally just sets the distance traveled to 0.
+     */
+    public void resetPosition() {
+        driveMotor.setPosition(0);
     }
 }

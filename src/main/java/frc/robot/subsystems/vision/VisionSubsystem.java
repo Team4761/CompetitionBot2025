@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * If using our Microsoft cams, we should have them set to 640x480 @ 30fps (can be set easily through shuffleboard)
  * 
  * Most of the stuff here was found using the PhotonVision dashboard. You can get there by plugging the Orange Pi into power and ethernet TO A RADIO (not a computer), 
- * and then going to photonvision.local:5800 on google on the driverstation.
+ * and then going to psebastian.local:5800 on google on the driverstation.
  */
 public class VisionSubsystem extends SubsystemBase {
 
@@ -54,7 +54,7 @@ public class VisionSubsystem extends SubsystemBase {
     );
 
     // Actual field layout for when testing is done.
-    // AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
     /**

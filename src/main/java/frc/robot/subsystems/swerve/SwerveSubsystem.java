@@ -25,6 +25,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public double speedDriveModifier = 0.5;
     public double speedTurnModifier = 0.5;
 
+    // This controls which direction is the forwards direction for joystick control.
+    public Rotation2d forwardsControllingRotation;
+
     // The module offsets from the CENTER of the robot to the CENTER of the wheel on each module.
     // All in meters. +x = forwards. +y = left.
     private final Translation2d frontLeftLocation = new Translation2d(+0.32, +0.32);
@@ -67,6 +70,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * I honestly don't know if this constructor is needed yet.
      */
     public SwerveSubsystem() {
+        orientForwardsControllingDirection();
         gyro.reset();
     }
 
@@ -90,10 +94,15 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates = kinematics.toWheelSpeeds(chassisSpeeds);
         // Max the speeds
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SWERVE_MAX_DRIVE_SPEED);
-        frontLeft.getToDesiredState(swerveModuleStates[0]);
-        frontRight.getToDesiredState(swerveModuleStates[1]);
-        backLeft.getToDesiredState(swerveModuleStates[2]);
-        backRight.getToDesiredState(swerveModuleStates[3]);
+        // Is the below code ugly? Yes. However, it works. It's used mainly for testing.
+        if (frontLeft.isManualControl) { frontLeft.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
+        else { frontLeft.getToDesiredState(swerveModuleStates[0]); }
+        if (frontRight.isManualControl) { frontRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
+        else { frontRight.getToDesiredState(swerveModuleStates[1]); }
+        if (backLeft.isManualControl) { backLeft.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
+        else { backLeft.getToDesiredState(swerveModuleStates[2]); }
+        if (backRight.isManualControl) { backRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
+        else { backRight.getToDesiredState(swerveModuleStates[3]); }
 
         Robot.shuffleboard.updateSwerve();
     }
@@ -107,9 +116,10 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param isFieldOriented Determines if the math should be calculated with a coordinate system relative to the field or to the robot. If true, forwards is the same direction regardless of robot rotation. If false, forwards is dependent on the robot's rotation.
      */
     public void setDesiredSpeeds(double speedX, double speedY, double speedRotation) {
-        this.desiredSpeedX = speedX * speedDriveModifier;
-        this.desiredSpeedY = speedY * speedDriveModifier;
-        this.desiredSpeedRotation = speedRotation * speedTurnModifier;
+        // I found the *5 through testing. We need this because the speeds are too slow and should be in voltages, not percentages.
+        this.desiredSpeedX = speedX * speedDriveModifier * 5;
+        this.desiredSpeedY = speedY * speedDriveModifier * 5;
+        this.desiredSpeedRotation = speedRotation * speedTurnModifier * 5;
     }
 
 
@@ -149,10 +159,41 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     /**
-     * This makes it so that the forwards direction for controlling purposes is whatever direction the robot is facing.
-     * This ONLY affects the inputs given to the subsystem.
+     * This changes how the forward direction position of the robot is decided.
+     * @param isFieldOriented True if forward should be the same regardless of robot rotation. False if forward should be dependent on which direction the robot is facing.
      */
-    public void orientForwardsDirection() {
-        
+    public void setFieldOriented(boolean isFieldOriented) {
+        this.isFieldOriented = isFieldOriented;
+    }
+
+
+    /**
+     * This makes it so that the forwards direction for controlling purposes is whatever direction the robot is facing.
+     * This ONLY modifies the inputs given to the subsystem, the odometry stays the same.
+     */
+    public void orientForwardsControllingDirection() {
+        this.forwardsControllingRotation = getGyroRotation();
+    }
+
+
+    /**
+     * This resets the position of the robot and reorients the forward's direction to be the same as the robot's rotation.
+     */
+    public void resetPosition() {
+        frontLeft.resetPosition();
+        frontRight.resetPosition();
+        backLeft.resetPosition();
+        backRight.resetPosition();
+
+        odometry.resetPosition(
+            getGyroRotation(), 
+            new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition()
+            }, 
+            new Pose2d()
+        );
     }
 }
