@@ -233,6 +233,26 @@ public class SwerveModule {
     }
 
 
+    public PIDController getDrivePIDController() {
+        return drivePIDController;
+    }
+
+
+    public ProfiledPIDController getTurningPIDController() {
+        return turningPIDController;
+    }
+
+
+    public SimpleMotorFeedforward getDriveFeedforward() {
+        return driveFeedforward;
+    }
+
+
+    public SimpleMotorFeedforward getTurnFeedforward() {
+        return turnFeedforward;
+    }
+
+
     /**
      * The following 10 methods are for tuning PID and feedforward exclusively.
      */

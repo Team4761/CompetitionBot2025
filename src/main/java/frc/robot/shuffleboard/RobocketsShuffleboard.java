@@ -149,16 +149,16 @@ public class RobocketsShuffleboard {
         swerveYPosition = general.add("Y Position", 0).withPosition(3, 0).getEntry();
 
         ShuffleboardLayout tuning = swerve.getLayout("Tuning", BuiltInLayouts.kList).withSize(2, 10).withPosition(10, 0);
-        swerveDriveP = new ReactiveNumberEntry(Robot.map.swerve::updateDriveP, tuning.add("Drive P", 0).withPosition(0, 0).getEntry());
-        swerveDriveI = new ReactiveNumberEntry(Robot.map.swerve::updateDriveI, tuning.add("Drive I", 0).withPosition(0, 1).getEntry());
-        swerveDriveD = new ReactiveNumberEntry(Robot.map.swerve::updateDriveD, tuning.add("Drive D", 0).withPosition(0, 2).getEntry());
-        swerveDriveFFs = new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFs, tuning.add("Drive FFs", 0).withPosition(0, 3).getEntry());
-        swerveDriveFFv = new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFv, tuning.add("Drive FFv", 0).withPosition(0, 4).getEntry());
-        swerveTurnP = new ReactiveNumberEntry(Robot.map.swerve::updateTurnP, tuning.add("Turn P", 0).withPosition(0, 5).getEntry());
-        swerveTurnI = new ReactiveNumberEntry(Robot.map.swerve::updateTurnI, tuning.add("Turn I", 0).withPosition(0, 6).getEntry());
-        swerveTurnD = new ReactiveNumberEntry(Robot.map.swerve::updateTurnD, tuning.add("Turn D", 0).withPosition(0, 7).getEntry());
-        swerveTurnFFs = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFs, tuning.add("Turn FFs", 0).withPosition(0, 8).getEntry());
-        swerveTurnFFv = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFv, tuning.add("Turn FFv", 0).withPosition(0, 9).getEntry());
+        swerveDriveP = new ReactiveNumberEntry(Robot.map.swerve::updateDriveP, tuning.add("Drive P", Robot.map.swerve.frontRight.getDrivePIDController().getP()).withPosition(0, 0).getEntry());
+        swerveDriveI = new ReactiveNumberEntry(Robot.map.swerve::updateDriveI, tuning.add("Drive I", Robot.map.swerve.frontRight.getDrivePIDController().getI()).withPosition(0, 1).getEntry());
+        swerveDriveD = new ReactiveNumberEntry(Robot.map.swerve::updateDriveD, tuning.add("Drive D", Robot.map.swerve.frontRight.getDrivePIDController().getD()).withPosition(0, 2).getEntry());
+        swerveDriveFFs = new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFs, tuning.add("Drive FFs", Robot.map.swerve.frontRight.getDriveFeedforward().getKs()).withPosition(0, 3).getEntry());
+        swerveDriveFFv = new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFv, tuning.add("Drive FFv", Robot.map.swerve.frontRight.getDriveFeedforward().getKv()).withPosition(0, 4).getEntry());
+        swerveTurnP = new ReactiveNumberEntry(Robot.map.swerve::updateTurnP, tuning.add("Turn P", Robot.map.swerve.frontRight.getTurningPIDController().getP()).withPosition(0, 5).getEntry());
+        swerveTurnI = new ReactiveNumberEntry(Robot.map.swerve::updateTurnI, tuning.add("Turn I", Robot.map.swerve.frontRight.getTurningPIDController().getI()).withPosition(0, 6).getEntry());
+        swerveTurnD = new ReactiveNumberEntry(Robot.map.swerve::updateTurnD, tuning.add("Turn D", Robot.map.swerve.frontRight.getTurningPIDController().getD()).withPosition(0, 7).getEntry());
+        swerveTurnFFs = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFs, tuning.add("Turn FFs", Robot.map.swerve.frontRight.getTurnFeedforward().getKs()).withPosition(0, 8).getEntry());
+        swerveTurnFFv = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFv, tuning.add("Turn FFv", Robot.map.swerve.frontRight.getTurnFeedforward().getKv()).withPosition(0, 9).getEntry());
     }
 
     
