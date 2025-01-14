@@ -63,8 +63,8 @@ public class SwerveModule {
 
     // Feed forward literally predicts the future and determines a MINIMUM speed to maintain the current position.
     // Typically this isn't needed, so the values (ks and kv) are set to 0 for now (Jan 11, 2025).
-    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0);
-    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0, 0);
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0);
+    private SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
     
     /**
@@ -199,9 +199,71 @@ public class SwerveModule {
 
 
     /**
+     * Mainly for debugging purposes. This gets the exact reading of the turn encoder in its native units of "rotations".
+     * @return The encoder units that describe the rotation of the wheel. It should be "rotations", but it's slightly off, so pain.
+     */
+    public double getTurnEncoderReading() {
+        return turnEncoder.getAbsolutePosition().getValueAsDouble();
+    }
+
+
+    /**
      * This literally just sets the distance traveled to 0.
      */
     public void resetPosition() {
         driveMotor.setPosition(0);
+    }
+
+
+    /**
+     * Determines if the motor should run at all.
+     * @param enabled If true, the motor should run. If false, no.
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+
+    /**
+     * Determines if the motor should be completely manually controlled. As in forward runs the drive motor and rotate just rotates the wheel.
+     * @param isManualControl True if it should be fully manual.
+     */
+    public void setManualControl(boolean isManualControl) {
+        this.isManualControl = isManualControl;
+    }
+
+
+    /**
+     * The following 10 methods are for tuning PID and feedforward exclusively.
+     */
+    public void updateDriveP(double p) {
+        drivePIDController.setP(p);
+    }
+    public void updateDriveI(double i) {
+        drivePIDController.setI(i);
+    }
+    public void updateDriveD(double d) {
+        drivePIDController.setD(d);
+    }
+    public void updateTurnP(double p) {
+        turningPIDController.setP(p);
+    }
+    public void updateTurnI(double i) {
+        turningPIDController.setI(i);
+    }
+    public void updateTurnD(double d) {
+        turningPIDController.setD(d);
+    }
+    public void updateDriveFFs(double ks) {
+        driveFeedforward = new SimpleMotorFeedforward(ks, driveFeedforward.getKv());
+    }
+    public void updateDriveFFv(double kv) {
+        driveFeedforward = new SimpleMotorFeedforward(driveFeedforward.getKs(), kv);
+    }
+    public void updateTurnFFs(double ks) {
+        turnFeedforward = new SimpleMotorFeedforward(ks, turnFeedforward.getKv());
+    }
+    public void updateTurnFFv(double kv) {
+        turnFeedforward = new SimpleMotorFeedforward(turnFeedforward.getKs(), kv);
     }
 }

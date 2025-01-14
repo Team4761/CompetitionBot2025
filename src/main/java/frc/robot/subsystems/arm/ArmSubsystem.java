@@ -18,26 +18,35 @@ public class ArmSubsystem {
     private TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_ENCODER_PORT);
     private TalonFX extendMotor = new TalonFX(Constants.ARM_EXTEND_MOTOR_PORT);
     // TODO: Add encoders
+
+    
     /**
-     * 
-     * @param x The X value of the point to be reached.
-     * @param y The Y value of the point to be reached.
-     * @return Returns the direction of the pivot (in radians) and the percent to extend the arm to reach the point.
-     * 
      * <p> Takes in a point in 2D space and returns the arm configuration to reach it. Outputs {-1, -1} if it is unreachable.
+     * <p> (0,0) represents the base of the arm.
+     * @param x The X value of the point to be reached where +x is the forwards direction (of the robot). Meters.
+     * @param y The Y value of the point to be reached where +y is the up direction. Meters.
+     * @return double[pivotDirection, extensionPercent] OR {-1,-1} if the point is unreachable:
+     *          <p> pivotDirection: The direction of the pivot in radians where 0 radians represents parallel to the ground (pointing forwards) and the positive direction is upwards
+     *          <p> extensionPercent: The percent to extend the arm to reach the point (0 = no extension, 1 = full extension).
      */
     public static double[] gotoPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
         double distanceToPoint = Math.sqrt(x*x+y*y);
         double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
         double percentOfExtension = lengthOfExtension/Constants.ARM_EXTEND_LENGTH;
-        // Angle Boundaries: 0 radians to PI radians
+        // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees)
         // Extension Boundaries: 0% to 100%
         if ((0 < percentOfExtension && percentOfExtension < 1) && (0 < directionTowardsPoint && directionTowardsPoint < Math.PI)) {
             return new double[]{directionTowardsPoint, percentOfExtension};
         }
         return new double[]{-1,-1};
     } 
+
+    /**
+     * Just some testing for the arm math.
+     * Check out the desmos graph linked below for the math in more detail:
+     * https://www.desmos.com/calculator/acillm6yyc
+     */
     public static void main(String[] args) {
         double[] output = gotoPoint(20,20);
         System.out.println(output[0]);

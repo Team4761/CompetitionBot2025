@@ -1,8 +1,10 @@
-package frc.robot;
+package frc.robot.controllers;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 /**
  * This just controls swerve.

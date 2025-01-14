@@ -196,4 +196,80 @@ public class SwerveSubsystem extends SubsystemBase {
             new Pose2d()
         );
     }
+    
+
+    /** 
+     * The following functions are mainly for the shuffleboard and tuning purposes.
+     */
+    public void setDriveMultiplier(double multiplier) {
+        this.speedDriveModifier = multiplier;
+    }
+    public void setTurnMultiplier(double multiplier) {
+        this.speedTurnModifier = multiplier;
+    }
+
+
+    /**
+     * The following 10 functions are used to tune the PID and FeedForward.
+     */
+    public void updateDriveP(double p) {
+        frontLeft.updateDriveP(p);
+        frontRight.updateDriveP(p);
+        backLeft.updateDriveP(p);
+        backRight.updateDriveP(p);
+    }
+    public void updateDriveI(double i) {
+        frontLeft.updateDriveI(i);
+        frontRight.updateDriveI(i);
+        backLeft.updateDriveI(i);
+        backRight.updateDriveI(i);
+    }
+    public void updateDriveD(double d) {
+        frontLeft.updateDriveD(d);
+        frontRight.updateDriveD(d);
+        backLeft.updateDriveD(d);
+        backRight.updateDriveD(d);
+    }
+    public void updateTurnP(double p) {
+        frontLeft.updateTurnP(p);
+        frontRight.updateTurnP(p);
+        backLeft.updateTurnP(p);
+        backRight.updateTurnP(p);
+    }
+    public void updateTurnI(double i) {
+        frontLeft.updateTurnI(i);
+        frontRight.updateTurnI(i);
+        backLeft.updateTurnI(i);
+        backRight.updateTurnI(i);
+    }
+    public void updateTurnD(double d) {
+        frontLeft.updateTurnD(d);
+        frontRight.updateTurnD(d);
+        backLeft.updateTurnD(d);
+        backRight.updateTurnD(d);
+    }
+    public void updateDriveFFs(double ks) {
+        frontLeft.updateDriveFFs(ks);
+        frontRight.updateDriveFFs(ks);
+        backLeft.updateDriveFFs(ks);
+        backRight.updateDriveFFs(ks);
+    }
+    public void updateDriveFFv(double kv) {
+        frontLeft.updateDriveFFv(kv);
+        frontRight.updateDriveFFv(kv);
+        backLeft.updateDriveFFv(kv);
+        backRight.updateDriveFFv(kv);
+    }
+    public void updateTurnFFs(double ks) {
+        frontLeft.updateTurnFFs(ks);
+        frontRight.updateTurnFFs(ks);
+        backLeft.updateTurnFFs(ks);
+        backRight.updateTurnFFs(ks);
+    }
+    public void updateTurnFFv(double kv) {
+        frontLeft.updateTurnFFv(kv);
+        frontRight.updateTurnFFv(kv);
+        backLeft.updateTurnFFv(kv);
+        backRight.updateTurnFFv(kv);
+    }
 }
