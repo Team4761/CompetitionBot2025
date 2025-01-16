@@ -45,8 +45,8 @@ public class DriveController extends XboxController {
 
             // Joystick control
             map.swerve.setDesiredSpeeds(
-                -getLeftY() * Math.sin(map.swerve.forwardsControllingRotation.getRadians()),   // Negative to make up the positive direction
-                -getLeftX() * Math.cos(map.swerve.forwardsControllingRotation.getRadians()),   // Negative to make left the positive direction
+                -getLeftY(),   // Negative to make up the positive direction
+                -getLeftX(),   // Negative to make left the positive direction
                 -getRightX()   // Negative to make left (counterclockwise) the positive direction.
             );
         }
