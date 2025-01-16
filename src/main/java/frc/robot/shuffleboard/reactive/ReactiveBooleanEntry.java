@@ -1,6 +1,6 @@
 package frc.robot.shuffleboard.reactive;
 
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.function.BooleanConsumer;
 
 /**
@@ -11,7 +11,7 @@ import edu.wpi.first.util.function.BooleanConsumer;
 public class ReactiveBooleanEntry {
 
     /** This entry should be taken directly from shuffleboard */
-    private GenericEntry entry;
+    private NetworkTableEntry entry;
 
     /** This stores the last value from the shuffleboard so that it only calls the update function when necessary. */
     private boolean lastValue;
@@ -29,7 +29,7 @@ public class ReactiveBooleanEntry {
      * @param functionToCallOnUpdate The function to call when the shuffleboard value is updated. Takes the form of OBJECT::FUNCTION (or a lambda expression if you're interested in googling)
      * @param entry The shuffleboard entry to update. You can see how to get this by looking at RobocketsShuffleboard.java
      */
-    public ReactiveBooleanEntry(BooleanConsumer functionToCallOnUpdate, GenericEntry entry) {
+    public ReactiveBooleanEntry(BooleanConsumer functionToCallOnUpdate, NetworkTableEntry entry) {
         this.functionToCallOnUpdate = functionToCallOnUpdate;
         this.entry = entry;
         this.lastValue = entry.getBoolean(false);

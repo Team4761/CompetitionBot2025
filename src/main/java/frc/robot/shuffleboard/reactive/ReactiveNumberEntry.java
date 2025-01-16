@@ -2,7 +2,7 @@ package frc.robot.shuffleboard.reactive;
 
 import java.util.function.DoubleConsumer;
 
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 /**
  * This allows you to store a number entry on the shuffleboard and call a function automatically whenever that value is updated.
@@ -12,7 +12,7 @@ import edu.wpi.first.networktables.GenericEntry;
 public class ReactiveNumberEntry {
 
     /** This entry should be taken directly from shuffleboard */
-    private GenericEntry entry;
+    private NetworkTableEntry entry;
 
     /** This stores the last value from the shuffleboard so that it only calls the update function when necessary. */
     private double lastValue;
@@ -30,7 +30,7 @@ public class ReactiveNumberEntry {
      * @param functionToCallOnUpdate The function to call when the shuffleboard value is updated. Takes the form of OBJECT::FUNCTION (or a lambda expression if you're interested in googling)
      * @param entry The shuffleboard entry to update. You can see how to get this by looking at RobocketsShuffleboard.java
      */
-    public ReactiveNumberEntry(DoubleConsumer functionToCallOnUpdate, GenericEntry entry) {
+    public ReactiveNumberEntry(DoubleConsumer functionToCallOnUpdate, NetworkTableEntry entry) {
         this.functionToCallOnUpdate = functionToCallOnUpdate;
         this.entry = entry;
         this.lastValue = entry.getDouble(1.0);
