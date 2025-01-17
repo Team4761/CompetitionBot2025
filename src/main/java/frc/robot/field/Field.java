@@ -20,7 +20,7 @@ public class Field {
     public static final double L3_ANGLE = 35.0; //In degress
     public static final double L3_INSET = Units.inchesToMeters(1.625);
     public static final double L4_HEIGHT = Units.inchesToMeters(72.0);
-    public static final double L4_ANGLE = 90; //In degress Dont know if 90 is vertical but I think so
+    public static final double L4_ANGLE = 90.0; //In degress Dont know if 90 is vertical but I think so
     public static final double L4_INSET = Units.inchesToMeters(1.125);
 
     public static final double CORAL_STATION_TO_REEF_X_COMPONET = Units.inchesToMeters(144.0); 
@@ -46,8 +46,8 @@ public class Field {
     public static final double PROCESSOR_OPENING_HEIGHT = Units.inchesToMeters(20.0);
     public static final double PROCESSOR_OPENING_HIEHGT_FROM_GROUND = Units.inchesToMeters(7.0);
     //APRIL TAGS
-    public static final double CORAL_STATION_APRIL_TAG_HEIGHT =Units.inchesToMeters(53.25); //To the bottom of the tag
-    public static final double PROCESSOR_APRIL_TAG_HEIGHT =Units.inchesToMeters(45.875); //To the bottom of the tag
+    public static final double CORAL_STATION_APRIL_TAG_HEIGHT = Units.inchesToMeters(53.25); //To the bottom of the tag
+    public static final double PROCESSOR_APRIL_TAG_HEIGHT = Units.inchesToMeters(45.875); //To the bottom of the tag
     public static final double REEF_APRIL_TAG_HEIGHT = Units.inchesToMeters(6.875); //To the bottom of the tag
     public static final double BARGE_APRIL_TAG_HEIGHT = Units.inchesToMeters(69.0); //To the bottom of the tag
 }
