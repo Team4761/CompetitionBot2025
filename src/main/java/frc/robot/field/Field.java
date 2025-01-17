@@ -46,8 +46,14 @@ public class Field {
     public static final double PROCESSOR_OPENING_HEIGHT = Units.inchesToMeters(20.0);
     public static final double PROCESSOR_OPENING_HIEHGT_FROM_GROUND = Units.inchesToMeters(7.0);
     //APRIL TAGS
-    public static final double CORAL_STATION_APRIL_TAG_HEIGHT = Units.inchesToMeters(53.25); //To the bottom of the tag
-    public static final double PROCESSOR_APRIL_TAG_HEIGHT = Units.inchesToMeters(45.875); //To the bottom of the tag
-    public static final double REEF_APRIL_TAG_HEIGHT = Units.inchesToMeters(6.875); //To the bottom of the tag
-    public static final double BARGE_APRIL_TAG_HEIGHT = Units.inchesToMeters(69.0); //To the bottom of the tag
+    public static final double CORAL_STATION_APRIL_TAG_HEIGHT = Units.inchesToMeters(53.25); //To the bottom of the paper tag
+    public static final double PROCESSOR_APRIL_TAG_HEIGHT = Units.inchesToMeters(45.875); //To the bottom of the paper tag
+    public static final double REEF_APRIL_TAG_HEIGHT = Units.inchesToMeters(6.875); //To the bottom of the paper tag
+    public static final double BARGE_APRIL_TAG_HEIGHT = Units.inchesToMeters(69.0); //To the bottom of the paper tag
+    //CAGES
+    public static final double CAGE_HEIGHT = Units.inchesToMeters(24.0);
+    public static final double CAGE_WIDTH = Units.inchesToMeters(7.375);
+
+    public static final double SHALLOW_HANG_HEIGHT= Units.inchesToMeters(29.375); //To the very bottom of the cage
+    public static final double DEEP_HANG_HEIGHT= Units.inchesToMeters(3.5); //To the very bottom of the cage
 }
