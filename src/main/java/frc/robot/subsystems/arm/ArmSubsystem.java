@@ -1,8 +1,11 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants;
 
 /**
@@ -29,7 +32,7 @@ public class ArmSubsystem {
      *          <p> pivotDirection: The direction of the pivot in radians where 0 radians represents parallel to the ground (pointing forwards) and the positive direction is upwards
      *          <p> extensionPercent: The percent to extend the arm to reach the point (0 = no extension, 1 = full extension).
      */
-    public static double[] gotoPoint(double x, double y) {
+    public static double[] calculateConfigForPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
         double distanceToPoint = Math.sqrt(x*x+y*y);
         double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
@@ -40,16 +43,28 @@ public class ArmSubsystem {
             return new double[]{directionTowardsPoint, percentOfExtension};
         }
         return new double[]{-1,-1};
-    } 
-
+    }
     /**
      * Just some testing for the arm math.
      * Check out the desmos graph linked below for the math in more detail:
      * https://www.desmos.com/calculator/acillm6yyc
      */
+
+    public double[] getCurrentParam() {
+        // I have no clue what I'm doing. Point of this function is to get the rotation of the pivotMotor and the extension percent of the extendMotor.
+        StatusSignal<Angle> currentAngle = pivotMotor.getPosition();
+        Angle currentAngleValue = currentAngle.getValue();
+        double doubledCurrentAngleValue = currentAngleValue.magnitude();
+        StatusSignal<Angle> currentExtensionPercent = extendMotor.getPosition();
+        return new double[]{doubledCurrentAngleValue};
+    }
+
+
+
+    boolean reached = false;
     public static void main(String[] args) {
-        double[] output = gotoPoint(20,20);
+        double[] output = calculateConfigForPoint(20,20);
         System.out.println(output[0]);
-        System.out.println(output[1]);
+        System.out.println(output[1]);       
     }
 }
