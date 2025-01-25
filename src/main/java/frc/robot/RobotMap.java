@@ -16,6 +16,7 @@ import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.muncher.MuncherSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.win.WinSubsystem;
 
 /**
  * This is mainly for debugging purposes.
@@ -31,6 +32,7 @@ public class RobotMap {
     public MuncherSubsystem muncher = null;
     public SwerveSubsystem swerve = null;
     public VisionSubsystem vision = null;
+    public WinSubsystem win = null;
 
     // For Path Planner testing
     private SendableChooser<Command> autoChooser;
@@ -39,11 +41,12 @@ public class RobotMap {
     
     public RobotMap() {
         // COMMENT OUT SUBSYSTEMS BELOW TO DISABLE THEM
-        // arm = new ArmSubsystem();
+      arm = new ArmSubsystem();
         // leds = new LEDSubsystem();
         // muncher = new MuncherSubsystem();
-        // swerve = new SwerveSubsystem();
-        vision = new VisionSubsystem();
+      swerve = new SwerveSubsystem();
+      vision = new VisionSubsystem();
+      win = new WinSubsystem();
     }
 
 
