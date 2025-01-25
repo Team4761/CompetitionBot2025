@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 /**
  * For the arm, +x represents forwards and +y represents up. Why not +z? Well, Translation2d uses x,y and I'm too lazy to make my own.
@@ -41,6 +42,24 @@ public class ArmSubsystem {
         }
         return new double[]{-1,-1};
     } 
+    //
+    //
+    //
+    /**
+     * 
+     * @param time in seconds
+     * @param rotationalVelocity power of motor between -1 and 1
+     * @param extensionVelocity power of motor between -1 and 1
+     */
+    public void rotate(double rotationalVelocity)
+    {
+        pivotMotor.set(rotationalVelocity); //rotationalVelocity is beteeen -1 and 1 
+    }
+    public void extend(double extensionVelocity)
+    {
+        extendMotor.set(extensionVelocity); //extensionVelocity is beteeen -1 and 1 
+    }
+
 
     /**
      * Just some testing for the arm math.
