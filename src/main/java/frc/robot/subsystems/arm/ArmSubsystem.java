@@ -30,7 +30,7 @@ public class ArmSubsystem {
      *          <p> pivotDirection: The direction of the pivot in radians where 0 radians represents parallel to the ground (pointing forwards) and the positive direction is upwards
      *          <p> extensionPercent: The percent to extend the arm to reach the point (0 = no extension, 1 = full extension).
      */
-    public static double[] gotoPoint(double x, double y) {
+    public static double[] getRotationExtensionFromSetPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
         double distanceToPoint = Math.sqrt(x*x+y*y);
         double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
@@ -67,7 +67,7 @@ public class ArmSubsystem {
      * https://www.desmos.com/calculator/acillm6yyc
      */
     public static void main(String[] args) {
-        double[] output = gotoPoint(20,20);
+        double[] output = getRotationExtensionFromSetPoint(20,20);
         System.out.println(output[0]);
         System.out.println(output[1]);
     }

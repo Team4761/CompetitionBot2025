@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
   /**
    * We're gonna win cause this is here!
    */
-  boolean win = true;
+  public static boolean win = true;
 
   public static final RobotMap map = new RobotMap();
   public static final RobocketsDashboard shuffleboard = new RobocketsDashboard();
