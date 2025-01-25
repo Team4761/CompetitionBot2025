@@ -133,7 +133,7 @@ public class RobocketsDashboard {
         swerveFLDesiredDriveSpeed = putNumber("FL: Desired Drive Speed", 0);
         swerveFLDesiredTurnSpeed = putNumber("FL: Desired Turn Speed", 0);
         swerveFLEnabled = new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setEnabled, putBoolean("FL: Enabled?", true));
-        swerveFLManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("FL: Manual Control?", true));
+        swerveFLManualControl = new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setManualControl, putBoolean("FL: Manual Control?", false));
 
         swerveFRDistanceTraveled = putNumber("FR: Distance Traveled", 0);
         swerveFRCurrentRotation = putNumber("FR: Current Rotation", 0);
@@ -141,21 +141,21 @@ public class RobocketsDashboard {
         swerveFRDesiredDriveSpeed = putNumber("FR: Desired Drive Speed", 0);
         swerveFRDesiredTurnSpeed = putNumber("FR: Desired Turn Speed", 0);
         swerveFREnabled = new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setEnabled, putBoolean("FR: Enabled?", true));
-        swerveFRManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("FR: Manual Control?", true));
+        swerveFRManualControl = new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setManualControl, putBoolean("FR: Manual Control?", false));
 
         swerveBLDistanceTraveled = putNumber("BL: Distance Traveled", 0);
         swerveBLCurrentRotation = putNumber("BL: Current Rotation", 0);
         swerveBLDesiredDriveSpeed = putNumber("BL: Desired Drive Speed", 0);
         swerveBLDesiredTurnSpeed = putNumber("BL: Desired Turn Speed", 0);
         swerveBLEnabled = new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setEnabled, putBoolean("BL: Enabled?", true));
-        swerveBLManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("BL: Manual Control?", true));
+        swerveBLManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setManualControl, putBoolean("BL: Manual Control?", false));
 
         swerveBRDistanceTraveled = putNumber("BR: Distance Traveled", 0);
         swerveBRCurrentRotation = putNumber("BR: Current Rotation", 0);
         swerveBRDesiredDriveSpeed = putNumber("BR: Desired Drive Speed", 0);
         swerveBRDesiredTurnSpeed = putNumber("BR: Desired Turn Speed", 0);
         swerveBREnabled = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setEnabled, putBoolean("BR: Enabled?", true));
-        swerveBRManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("BR: Manual Control?", true));
+        swerveBRManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("BR: Manual Control?", false));
 
         swerveRotation = putNumber("Rotation", 0);
         swerveGyroRotation = putNumber("Gyro Rotation", 0);

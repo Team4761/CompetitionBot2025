@@ -1,7 +1,6 @@
-package frc.robot.subsystems.swerve;
+package frc.robot.subsystems.swerve.io;
 
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -21,12 +20,17 @@ import frc.robot.Constants;
  * - 1 NEO for rotating the wheel
  * - 1 CANcoder for reading which direction the wheel is pointed in.
  */
-public class SwerveModule {
+public class SwerveModuleNeo implements SwerveModuleIO {
 
     // This would be 2pi in an ideal world, or 6.283185, but it's not because of physics :(
     // Instead, I manually spun the front right wheel 20 times and recorded the rotation of that, and then divided by 20. The more rotations, the more accurate.
-    private static final double TURN_UNITS_PER_ROTATION = (Math.PI * 2);
+    // private static final double TURN_UNITS_PER_ROTATION = (Math.PI * 2);
+    private static final double TURN_UNITS_PER_ROTATION = (Math.PI * 2) * 1.04333495;
 
+    // Ideally, this should just be the circumference / ENCODER_UNITS_PER_ROTATION (for neos, it's 42)
+    // However, I manually spun the wheel fully 32 times (which should drive about 10 meters), and the code recorded 13.5 meters driven.
+    // Hence, I added a *0.755 which is approximately equal to 10/13.5
+    private static final double DRIVE_UNITS_PER_METER = (Math.PI * 2 * Constants.WHEEL_RADIUS) / (Constants.SWERVE_DRIVE_MOTOR_GEAR_RATIO) / 42.0 * 0.755;
     // This determines if the motor should be trying to get to the desired state.
     public boolean enabled = true;
 
@@ -36,7 +40,7 @@ public class SwerveModule {
     // The turn motor is a NEO. The drive motor is a Kraken.
     // They changed CANSparkMax to SparkMAX... :(  -https://docs.revrobotics.com/brushless/spark-max/overview
     private SparkMax turnMotor;
-    private TalonFX driveMotor;
+    private SparkMax driveMotor;
 
     /** We have a separate encoder attached directly to the wheel to more accurately determine rotation. */
     private CANcoder turnEncoder;
@@ -55,7 +59,7 @@ public class SwerveModule {
 
     // A ProfiledPIDController is the same as above but also includes a max speed and max acceleration.
     private final ProfiledPIDController turningPIDController = new ProfiledPIDController(
-        4,
+        2,
         0,
         0,
         new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_ANGULAR_VELOCITY, Constants.SWERVE_MAX_ANGULAR_ACCELERATION)
@@ -74,8 +78,8 @@ public class SwerveModule {
      * @param turnEncoderID CAN bus: CANcoder id. Find using Phoenix Tuner X.
      * @param turnOffset Find by setting this to 0.0, rotating the wheel to face forwards, and use the value recorded on Shuffleboard.
      */
-    public SwerveModule(int driveMotorID, int turnMotorID, int turnEncoderID, Rotation2d turnOffset) {
-        this.driveMotor = new TalonFX(driveMotorID);
+    public SwerveModuleNeo(int driveMotorID, int turnMotorID, int turnEncoderID, Rotation2d turnOffset) {
+        this.driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
         this.turnEncoder = new CANcoder(turnEncoderID);
 
@@ -85,7 +89,7 @@ public class SwerveModule {
 
     /**
      * Actually runs the motors to get the speed and rotation dictated by the SwerveSubsystem.
-     * @param desiredState This is figured out by the SwerveSubsystem depending on the desired speeds.
+     * @param desiredState This is figured out by the SwerveSubsystem depending on the desired speeds. Values should be in meters per second.
      * @param manualSpeeds If the module is in manual control, this will be used instead of the desiredState. [0] = drive, [1] = turn.
      */
     public void getToDesiredState(SwerveModuleState desiredState, double... manualSpeeds) {
@@ -115,11 +119,13 @@ public class SwerveModule {
                 final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
                 final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
+                SmartDashboard.putNumber("Turn Desired Angle", desiredState.angle.getDegrees());
+
                 // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
                 SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
                 driveMotor.setVoltage((driveOutput + driveFF));
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
-                turnMotor.setVoltage(-(turnOutput + turnFF));
+                turnMotor.setVoltage(+(turnOutput + turnFF));
             }
         }
         // If not enabled
@@ -162,7 +168,7 @@ public class SwerveModule {
     public double getDrivePosition() {
         // getPosition() gives you the "mechanism rotations", so 1 should equal a 360 degree rotation.
         // Therefore, (rotations) * (wheel_circumference) / (gear_ratio) = (distance_traveled)
-        return (driveMotor.getPosition().getValueAsDouble()) * (Math.PI * 2 * Constants.WHEEL_RADIUS) / (Constants.SWERVE_DRIVE_MOTOR_GEAR_RATIO);
+        return (driveMotor.getEncoder().getPosition()) * DRIVE_UNITS_PER_METER;
     }
 
     /**
@@ -171,7 +177,7 @@ public class SwerveModule {
      */
     public double getDriveVelocity() {
         // Uses the same math at getDrivePosition()
-        return (driveMotor.getVelocity().getValueAsDouble()) * (Math.PI * 2 * Constants.WHEEL_RADIUS) / (Constants.SWERVE_DRIVE_MOTOR_GEAR_RATIO);
+        return (driveMotor.getEncoder().getVelocity()) * DRIVE_UNITS_PER_METER;
     }
 
 
@@ -211,7 +217,7 @@ public class SwerveModule {
      * This literally just sets the distance traveled to 0.
      */
     public void resetPosition() {
-        driveMotor.setPosition(0);
+        driveMotor.getEncoder().setPosition(0);
     }
 
 
@@ -250,6 +256,13 @@ public class SwerveModule {
 
     public SimpleMotorFeedforward getTurnFeedforward() {
         return turnFeedforward;
+    }
+
+    /** 
+     * @return True if this module is currently in manual mode.
+    */
+    public boolean isManualControl() {
+        return this.isManualControl;
     }
 
 

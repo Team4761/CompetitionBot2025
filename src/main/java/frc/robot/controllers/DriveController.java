@@ -2,6 +2,7 @@ package frc.robot.controllers;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -40,7 +41,7 @@ public class DriveController extends XboxController {
                 map.swerve.orientForwardsControllingDirection();
             }
             if (getYButtonPressed()) {
-                map.swerve.resetPosition();
+                map.swerve.resetPosition(new Pose2d());
             }
 
             // Joystick control

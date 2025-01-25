@@ -55,6 +55,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    map.setupPathPlanner();
     // Added so that you can copy the dashboard config put in the deploy folder.
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }

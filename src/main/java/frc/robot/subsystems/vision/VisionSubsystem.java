@@ -35,6 +35,9 @@ public class VisionSubsystem extends SubsystemBase {
     // +x = forwards. +y = left. +z = up. Rotation is AROUND those axises in a counterclockwise direction! So roll = rotation AROUND +x.
     public static final Transform3d CAMERA_ON_ROBOT_POSE = new Transform3d(0.3, 0, 0, new Rotation3d(0, 0, 0));
 
+    //  This is the last recorded pose by vision (which tries to update its pose in the periodic method)
+    // (0,0) represents the left corner of the blue alliance-wall, looking towards the red alliance. Towards the red alliance is +x, towards the other side of the alliance wall is +y.
+    private Pose3d fieldPosition;
     // Default hostname is "photonvision", but we changed that to "CAMERA_NAME"
     PhotonCamera camera;
     double lastTimestamp = 0;
@@ -65,6 +68,9 @@ public class VisionSubsystem extends SubsystemBase {
 
         // MULTI_TAG_PNP_ON_COPROCESSOR is best, but we're using CLOSEST_TO_LAST_POSE for now.
         photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CAMERA_ON_ROBOT_POSE);
+
+        // Maybe make this actually check for the robot's position once on startup?
+        fieldPosition = new Pose3d();
     }
 
 
@@ -98,7 +104,7 @@ public class VisionSubsystem extends SubsystemBase {
 
             // Calculate robot's field relative pose
             if (aprilTagFieldLayout.getTagPose(target.getFiducialId()).isPresent()) {
-                Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
                     target.getBestCameraToTarget(), // The position of the April Tag relative to the camera
                     aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
                     CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
@@ -115,12 +121,12 @@ public class VisionSubsystem extends SubsystemBase {
                 }
 
                 SmartDashboard.putNumber("April Tag ID", target.getFiducialId());
-                SmartDashboard.putNumber("X - Vision Pose", robotPose.getX());
-                SmartDashboard.putNumber("Y - Vision Pose", robotPose.getY());
-                SmartDashboard.putNumber("Z - Vision Pose", robotPose.getZ());
-                SmartDashboard.putNumber("Roll - Vision Pose", Units.radiansToDegrees(robotPose.getRotation().getX()));
-                SmartDashboard.putNumber("Pitch - Vision Pose", Units.radiansToDegrees(robotPose.getRotation().getY()));
-                SmartDashboard.putNumber("Yaw - Vision Pose", Units.radiansToDegrees(robotPose.getRotation().getZ()));
+                SmartDashboard.putNumber("X - Vision Pose", fieldPosition.getX());
+                SmartDashboard.putNumber("Y - Vision Pose", fieldPosition.getY());
+                SmartDashboard.putNumber("Z - Vision Pose", fieldPosition.getZ());
+                SmartDashboard.putNumber("Roll - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getX()));
+                SmartDashboard.putNumber("Pitch - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getY()));
+                SmartDashboard.putNumber("Yaw - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getZ()));
 
                 SmartDashboard.putNumber("Camera Latency", result.getTimestampSeconds() - lastTimestamp);
                 lastTimestamp = result.getTimestampSeconds();
