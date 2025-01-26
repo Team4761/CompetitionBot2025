@@ -15,7 +15,7 @@ public class RotateArmForTimeAtSpeed extends Command
 {
      /** The duration to rotate the arm for in seconds. */
      private double duration;
-     /** The speed as a value between -1 to 1 where +1 represents full speed Counter Clockwise 
+     /** The speed as a value between -1 to 1 where +1 represents full speed rotate upwards (Clock Wise) 
       * (Please make this slow so you dont break the robot).*/
      private double rotateSpeed;
  
