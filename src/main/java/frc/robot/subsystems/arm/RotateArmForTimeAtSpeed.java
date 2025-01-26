@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import javax.xml.datatype.Duration;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 
@@ -18,26 +20,25 @@ public class RotateArmForTimeAtSpeed extends Command
      /** The speed as a value between -1 to 1 where +1 represents full speed rotate upwards (Clock Wise) 
       * (Please make this slow so you dont break the robot).*/
      private double rotateSpeed;
- 
- 
-     /**
-      * Extends the arm for a duration at a specific speed.
-      * @param duration The duration to extend for in seconds.
-      * @param extensionSpeed The speed to extend for. Between -1 and 1 where 1 represents full speed extension.
-      */
-     public RotateArmForTimeAtSpeed(double duration, double rotateSpeed)
+
+    /**
+    * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
+    */
+     private RotateArmForTimeAtSpeed(double duration, double rotateSpeed)
      {
          this.duration = duration;
          this.rotateSpeed = rotateSpeed;
      }
 
-     @Override
-    public void initialize()
-    {
-        // Will end the command after the duration is over.
-        this.withTimeout(duration);
-    }
-
+     /**
+      * Extends the arm for a duration at a specific speed.
+      * @param duration The duration to extend for in seconds.
+      * @param extensionSpeed The speed to extend for. Between -1 and 1 where 1 represents full speed extension.
+      */
+     public static Command create(double duration, double rotateSpeed)
+     {
+        return new RotateArmForTimeAtSpeed(duration,rotateSpeed);
+     }
 
     /**
      * Guess what this does? It... rotates the arm at the speed specified!

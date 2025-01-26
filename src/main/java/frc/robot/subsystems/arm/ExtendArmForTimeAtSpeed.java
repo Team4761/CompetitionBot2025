@@ -18,28 +18,27 @@ public class ExtendArmForTimeAtSpeed extends Command
     /** The speed as a value between -1 to 1 where +1 represents full speed outwards.*/
     private double extensionSpeed;
 
-
+/**
+ * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
+ */
+    
+    private ExtendArmForTimeAtSpeed(double duration, double extensionSpeed)
+    {
+        this.duration = duration;
+        this.extensionSpeed = extensionSpeed;
+    }
     /**
      * Extends the arm for a duration at a specific speed.
      * @param duration The duration to extend for in seconds.
      * @param extensionSpeed The speed to extend for. Between -1 and 1 where 1 represents full speed extension.
      */
-    public ExtendArmForTimeAtSpeed(double duration, double extensionSpeed)
+    public static Command create(double duration, double extensionSpeed)
     {
-        this.duration = duration;
-        this.extensionSpeed = extensionSpeed;
+        return new ExtendArmForTimeAtSpeed(duration, extensionSpeed);
     }
 
-
-    /**
-     * All this will do is make the command timeout after the duration has passed.
-     */
-    @Override
-    public void initialize()
-    {
-        // Will end the command after the duration is over.
-        this.withTimeout(duration);
-    }
+    
+    
 
 
     /**
