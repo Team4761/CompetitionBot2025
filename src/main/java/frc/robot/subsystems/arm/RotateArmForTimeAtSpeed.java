@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 
 
 /**
@@ -10,6 +11,40 @@ import edu.wpi.first.wpilibj2.command.Command;
  * <p> It does NOT extend the arm.
  * <p> This should not be used if we have accurate encoders on the arm, as it is unaccurate and could potentially damage the mechanism if improperly used.
  */
-public class RotateArmForTimeAtSpeed extends Command {
+public class RotateArmForTimeAtSpeed extends Command 
+{
+     /** The duration to rotate the arm for in seconds. */
+     private double duration;
+     /** The speed as a value between -1 to 1 where +1 represents full speed Counter Clockwise 
+      * (Please make this slow so you dont break the robot).*/
+     private double rotateSpeed;
+ 
+ 
+     /**
+      * Extends the arm for a duration at a specific speed.
+      * @param duration The duration to extend for in seconds.
+      * @param extensionSpeed The speed to extend for. Between -1 and 1 where 1 represents full speed extension.
+      */
+     public RotateArmForTimeAtSpeed(double duration, double rotateSpeed)
+     {
+         this.duration = duration;
+         this.rotateSpeed = rotateSpeed;
+     }
 
+     @Override
+    public void initialize()
+    {
+        // Will end the command after the duration is over.
+        this.withTimeout(duration);
+    }
+
+
+    /**
+     * Guess what this does? It... rotates the arm at the speed specified!
+     */
+    @Override
+    public void execute()
+    {
+        Robot.map.arm.rotate(rotateSpeed);
+    }
 }
