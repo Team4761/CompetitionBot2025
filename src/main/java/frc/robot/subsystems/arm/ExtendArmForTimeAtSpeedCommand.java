@@ -13,8 +13,6 @@ import frc.robot.Robot;
  */
 public class ExtendArmForTimeAtSpeedCommand extends Command
  {
-    /** The duration to extend the arm for in seconds. */
-    private double duration;
     /** The speed as a value between -1 to 1 where +1 represents full speed outwards.*/
     private double extensionSpeed;
 
@@ -22,11 +20,11 @@ public class ExtendArmForTimeAtSpeedCommand extends Command
  * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
  */
     
-    private ExtendArmForTimeAtSpeedCommand(double duration, double extensionSpeed)
+    private ExtendArmForTimeAtSpeedCommand(double extensionSpeed)
     {
-        this.duration = duration;
         this.extensionSpeed = extensionSpeed;
     }
+
     /**
      * Extends the arm for a duration at a specific speed.
      * @param duration The duration to extend for in seconds.
@@ -34,12 +32,8 @@ public class ExtendArmForTimeAtSpeedCommand extends Command
      */
     public static Command create(double duration, double extensionSpeed)
     {
-        return new ExtendArmForTimeAtSpeedCommand(duration, extensionSpeed);
+        return new ExtendArmForTimeAtSpeedCommand(extensionSpeed).withTimeout(duration);
     }
-
-    
-    
-
 
     /**
      * Guess what this does? It... extends the arm at the speed specified!

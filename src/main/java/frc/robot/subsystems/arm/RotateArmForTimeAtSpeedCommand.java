@@ -1,7 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import javax.xml.datatype.Duration;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 
@@ -15,8 +13,6 @@ import frc.robot.Robot;
  */
 public class RotateArmForTimeAtSpeedCommand extends Command 
 {
-     /** The duration to rotate the arm for in seconds. */
-     private double duration;
      /** The speed as a value between -1 to 1 where +1 represents full speed rotate upwards (Clock Wise) 
       * (Please make this slow so you dont break the robot).*/
      private double rotateSpeed;
@@ -24,9 +20,8 @@ public class RotateArmForTimeAtSpeedCommand extends Command
     /**
     * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
     */
-     private RotateArmForTimeAtSpeedCommand(double duration, double rotateSpeed)
+     private RotateArmForTimeAtSpeedCommand(double rotateSpeed)
      {
-         this.duration = duration;
          this.rotateSpeed = rotateSpeed;
      }
 
@@ -37,7 +32,7 @@ public class RotateArmForTimeAtSpeedCommand extends Command
       */
      public static Command create(double duration, double rotateSpeed)
      {
-        return new RotateArmForTimeAtSpeedCommand(duration,rotateSpeed);
+        return new RotateArmForTimeAtSpeedCommand(rotateSpeed).withTimeout(duration);
      }
 
     /**

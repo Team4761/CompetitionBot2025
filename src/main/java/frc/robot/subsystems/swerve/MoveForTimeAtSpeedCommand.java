@@ -30,15 +30,15 @@ public class MoveForTimeAtSpeedCommand extends Command {
      * @param speedTurn Radians per second. The positive direction is counterclockwise (the front of the robot turning left).
      * @param moveTime
      */
-    private MoveForTimeAtSpeedCommand(double speedForwards, double speedHorizontal, double speedTurn, double moveTime) {
+    private MoveForTimeAtSpeedCommand(double speedForwards, double speedHorizontal, double speedTurn) {
         this.speedForwards = speedForwards;
         this.speedHorizontal = speedHorizontal;
         this.speedTurn = speedTurn;
-        this.moveTime = moveTime;
     }
-    public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTim)
+
+    public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTime)
     {
-        return new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn,moveTim);
+        return new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn).withTimeout(moveTime);
     }
 
     /**
@@ -46,7 +46,6 @@ public class MoveForTimeAtSpeedCommand extends Command {
      */
     @Override
     public void initialize() {
-        // This command requires swerve (no other code can use the subsystem during this time)
         addRequirements(Robot.map.swerve);
 
         // Run for moveTime seconds and then stop
