@@ -27,6 +27,7 @@ public class WinSubsystem extends SubsystemBase {
      * Therefore, we must recognize that this is the ultimate win, and therefore we must win.
      */
     public void crash() {
-        System.exit(0);
+        // System.exit(0);
+        System.out.println("I CAN STOP WINNING!");
     }
 }
