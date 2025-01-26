@@ -3,14 +3,14 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 /**
- * For the arm, +x represents forwards and +y represents up. Why not +z? Well, Translation2d uses x,y and I'm too lazy to make my own.
- * This includes both the pivot motor AND the extension motor as well as 1 absolute encoder on each motor.
+ * <p> For the arm, +x represents forwards and +y represents up. Why not +z? Well, Translation2d uses x,y and I'm too lazy to make my own.
+ * <p> This includes both the pivot motor AND the extension motor as well as 1 absolute encoder on each motor.
  */
-public class ArmSubsystem {
+public class ArmSubsystem extends SubsystemBase {
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
     private Translation2d desiredPosition;
@@ -41,23 +41,26 @@ public class ArmSubsystem {
             return new double[]{directionTowardsPoint, percentOfExtension};
         }
         return new double[]{-1,-1};
-    } 
-    //
-    //
-    //
+    }
+
+
+
     /**
-     * 
-     * @param time in seconds
-     * @param rotationalVelocity power of motor between -1 and 1
-     * @param extensionVelocity power of motor between -1 and 1
+     * Rotates the pivot of the arm at the specified speed.
+     * @param rotationalVelocity Power of the motor between -1 and 1 where +1 represents full rotation upwards.
      */
     public void rotate(double rotationalVelocity)
     {
-        pivotMotor.set(rotationalVelocity); //rotationalVelocity is beteeen -1 and 1 
+        pivotMotor.set(rotationalVelocity);
     }
+
+    /**
+     * Runs the extension motor for the arm at the specified speed.
+     * @param extensionVelocity Power of the motor between -1 and 1 where +1 represents full extension and -1 represents full retraction.
+     */
     public void extend(double extensionVelocity)
     {
-        extendMotor.set(extensionVelocity); //extensionVelocity is beteeen -1 and 1 
+        extendMotor.set(extensionVelocity);
     }
 
 

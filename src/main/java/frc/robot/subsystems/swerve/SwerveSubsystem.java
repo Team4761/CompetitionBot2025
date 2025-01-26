@@ -37,7 +37,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public double speedDriveModifier = 0.5;
     public double speedTurnModifier = 0.5;
 
-    // This controls which direction is the forwards direction for joystick control.
+    /** This controls which direction is the forwards direction for joystick control. */
     public Rotation2d forwardsControllingRotation;
 
     // Used for PathPlanner
@@ -64,14 +64,14 @@ public class SwerveSubsystem extends SubsystemBase {
     public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)));
     
     
-    // This is just the type of gyro we have.
+    /** This is just the type of gyro we have. */
     // private final SwerveGyroIO gyro = new SwerveCompetitionGyro(Constants.SWERVE_GYRO_OFFSET);
     private final SwerveGyroIO gyro = new SwerveTestGyro(Constants.SWERVE_GYRO_OFFSET);
 
-    // The kinematics is used for doing the math required for going from desired positions to actual speeds and vice versa.
+    /** The kinematics is used for doing the math required for going from desired positions to actual speeds and vice versa. */
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
-    // The odometry does the math for us to calculate current/expected position.
+    /** The odometry does the math for us to calculate current/expected position. */
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
             kinematics,
             getGyroRotation(),
@@ -83,11 +83,14 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     );
     
-    // All as a number between -1 to 1 where 1 represents 100% speed forwards.
+    /** Meters per second. +x is the forwards direction. */
     private double desiredSpeedX = 0.0;
+    /** Meters per second. +y is the left direction. */
     private double desiredSpeedY = 0.0;
+    /** Radians per second. Positive is the counterclockwise direction (the front of the robot turning left) */
     private double desiredSpeedRotation = 0.0;
-    // Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation.
+
+    /** Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation. */
     private boolean isFieldOriented = true;
 
 
