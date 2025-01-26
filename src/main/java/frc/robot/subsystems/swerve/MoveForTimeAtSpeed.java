@@ -30,11 +30,15 @@ public class MoveForTimeAtSpeed extends Command {
      * @param speedTurn Radians per second. The positive direction is counterclockwise (the front of the robot turning left).
      * @param moveTime
      */
-    public MoveForTimeAtSpeed(double speedForwards, double speedHorizontal, double speedTurn, double moveTime) {
+    private MoveForTimeAtSpeed(double speedForwards, double speedHorizontal, double speedTurn, double moveTime) {
         this.speedForwards = speedForwards;
         this.speedHorizontal = speedHorizontal;
         this.speedTurn = speedTurn;
         this.moveTime = moveTime;
+    }
+    public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTim)
+    {
+        return new MoveForTimeAtSpeed(speedForwards,speedHorizontal,speedTurn,moveTim);
     }
 
     /**
