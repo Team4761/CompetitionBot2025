@@ -23,7 +23,7 @@ public class GetArmToPositionCommand extends Command {
      * @param x The distance from (0,0) horizontally. +x is the front side of the Robot.
      * @param y The distance from (0,0) vertically. +y is the upwards direction.
      */
-    public void GetArmToPositionCommand(double x, double y) {
+    public GetArmToPositionCommand(double x, double y) {
         this.targetX = x;
         this.targetY = y;
     }
@@ -36,7 +36,6 @@ public class GetArmToPositionCommand extends Command {
     public void initialize() {
 
     }
-
 
     /**
      * This should only end when the current position is within MARGIN_OF_ERROR of the target position.
