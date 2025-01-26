@@ -1,8 +1,13 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.AbsoluteEncoder;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -10,16 +15,43 @@ import frc.robot.Robot;
  * For the arm, +x represents forwards and +y represents up. Why not +z? Well, Translation2d uses x,y and I'm too lazy to make my own.
  * This includes both the pivot motor AND the extension motor as well as 1 absolute encoder on each motor.
  */
-public class ArmSubsystem {
+public class ArmSubsystem extends SubsystemBase {
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
     private Translation2d desiredPosition;
     
     // Both are Krakens
-    private TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_ENCODER_PORT);
+    private TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_MOTOR_PORT);
     private TalonFX extendMotor = new TalonFX(Constants.ARM_EXTEND_MOTOR_PORT);
-    // TODO: Add encoders
+    
+    // Absolute Encoders
+    private DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(Constants.ARM_PIVOT_ENCODER_PORT);
+    private DutyCycleEncoder extendEncoder = new DutyCycleEncoder(Constants.ARM_EXTEND_ENCODER_PORT);
 
+    // PID controller
+    private ProfiledPIDController pivotPID = new ProfiledPIDController(
+        3,
+        0,
+        0,
+        new TrapezoidProfile.Constraints(Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_ACCELERATION)
+        );
+
+    private ProfiledPIDController extensionPID = new ProfiledPIDController(
+        3,
+        0,
+        0,
+        new TrapezoidProfile.Constraints(Constants.ARM_MAX_EXT_VELOCITY, Constants.ARM_MAX_EXT_ACCELERATION)
+        );
+
+    @Override
+    public void periodic(){
+        double[] setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
+        double pivotSpeed = pivotPID.calculate(pivotEncoder.get(), setPoint[0]);
+        double extensionSpeed = extensionPID.calculate(extendEncoder.get(), setPoint[1]);
+
+        pivotMotor.set(pivotSpeed);
+        extendMotor.set(extensionSpeed);
+    }
     
     /**
      * <p> Takes in a point in 2D space and returns the arm configuration to reach it. Outputs {-1, -1} if it is unreachable.
@@ -35,7 +67,7 @@ public class ArmSubsystem {
         double distanceToPoint = Math.sqrt(x*x+y*y);
         double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
         double percentOfExtension = lengthOfExtension/Constants.ARM_EXTEND_LENGTH;
-        // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees)
+        // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees) 
         // Extension Boundaries: 0% to 100%
         if ((0 < percentOfExtension && percentOfExtension < 1) && (0 < directionTowardsPoint && directionTowardsPoint < Math.PI)) {
             return new double[]{directionTowardsPoint, percentOfExtension};
