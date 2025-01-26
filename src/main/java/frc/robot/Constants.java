@@ -17,6 +17,10 @@ public class Constants {
     public static final int ARM_EXTEND_ENCODER_PORT = 0;   // DIO Port.
     public static final double ARM_PIVOT_LENGTH = 10; // Current temporary value, will be measured in meters
     public static final double ARM_EXTEND_LENGTH = 10; // Current temporary value, will be measured in meters
+    public static final double ARM_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360); // Max angular velocity of the arm
+    public static final double ARM_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360); // Max angular acceleration of the arm
+    public static final double ARM_MAX_EXT_VELOCITY = 30; // (M/s) Max velocity of the arm extension
+    public static final double ARM_MAX_EXT_ACCELERATION = 30; // (M/s) Max acceleration of the arm extension
 
     /*
      * LEDS
