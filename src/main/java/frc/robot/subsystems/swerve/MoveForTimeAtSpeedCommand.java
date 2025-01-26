@@ -11,7 +11,7 @@ import frc.robot.Robot;
  * <p> This will move the robot at the specified speed for the specified time and then stop the bot once done.
  * <p> This should not be used if we have odometry or vision because this makes it so that movement is not very accurate.
  */
-public class MoveForTimeAtSpeed extends Command {
+public class MoveForTimeAtSpeedCommand extends Command {
     /** Meters per second. This is the same as +x for swerve.*/
     double speedForwards;
     /** Meters per second. This is the same as +y for swerve. Positive direction is left. */
@@ -30,7 +30,7 @@ public class MoveForTimeAtSpeed extends Command {
      * @param speedTurn Radians per second. The positive direction is counterclockwise (the front of the robot turning left).
      * @param moveTime
      */
-    private MoveForTimeAtSpeed(double speedForwards, double speedHorizontal, double speedTurn, double moveTime) {
+    private MoveForTimeAtSpeedCommand(double speedForwards, double speedHorizontal, double speedTurn, double moveTime) {
         this.speedForwards = speedForwards;
         this.speedHorizontal = speedHorizontal;
         this.speedTurn = speedTurn;
@@ -38,7 +38,7 @@ public class MoveForTimeAtSpeed extends Command {
     }
     public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTim)
     {
-        return new MoveForTimeAtSpeed(speedForwards,speedHorizontal,speedTurn,moveTim);
+        return new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn,moveTim);
     }
 
     /**

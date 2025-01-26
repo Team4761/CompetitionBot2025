@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  * <p> TODO: Change (0,0) to a description of where the origin actually is.
  * <p> TODO: Actually implement this.
  */
-public class GetArmToPosition extends Command {
+public class GetArmToPositionCommand extends Command {
 
     // This is in meters and is the acceptable margin of error for how far the current point can be from the set point to end this command.
     private static final double ACCEPTABLE_MARGIN_OF_ERROR = 0.02;

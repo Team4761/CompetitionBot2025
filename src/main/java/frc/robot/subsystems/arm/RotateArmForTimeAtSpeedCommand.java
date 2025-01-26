@@ -13,7 +13,7 @@ import frc.robot.Robot;
  * <p> It does NOT extend the arm.
  * <p> This should not be used if we have accurate encoders on the arm, as it is unaccurate and could potentially damage the mechanism if improperly used.
  */
-public class RotateArmForTimeAtSpeed extends Command 
+public class RotateArmForTimeAtSpeedCommand extends Command 
 {
      /** The duration to rotate the arm for in seconds. */
      private double duration;
@@ -24,7 +24,7 @@ public class RotateArmForTimeAtSpeed extends Command
     /**
     * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
     */
-     private RotateArmForTimeAtSpeed(double duration, double rotateSpeed)
+     private RotateArmForTimeAtSpeedCommand(double duration, double rotateSpeed)
      {
          this.duration = duration;
          this.rotateSpeed = rotateSpeed;
@@ -37,7 +37,7 @@ public class RotateArmForTimeAtSpeed extends Command
       */
      public static Command create(double duration, double rotateSpeed)
      {
-        return new RotateArmForTimeAtSpeed(duration,rotateSpeed);
+        return new RotateArmForTimeAtSpeedCommand(duration,rotateSpeed);
      }
 
     /**

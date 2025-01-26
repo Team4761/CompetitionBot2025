@@ -11,7 +11,7 @@ import frc.robot.Robot;
  * <p> It does NOT pivot the arm.
  * <p> This should not be used if we have accurate encoders on the arm, as it is unaccurate and could potentially damage the mechanism if improperly used.
  */
-public class ExtendArmForTimeAtSpeed extends Command
+public class ExtendArmForTimeAtSpeedCommand extends Command
  {
     /** The duration to extend the arm for in seconds. */
     private double duration;
@@ -22,7 +22,7 @@ public class ExtendArmForTimeAtSpeed extends Command
  * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
  */
     
-    private ExtendArmForTimeAtSpeed(double duration, double extensionSpeed)
+    private ExtendArmForTimeAtSpeedCommand(double duration, double extensionSpeed)
     {
         this.duration = duration;
         this.extensionSpeed = extensionSpeed;
@@ -34,7 +34,7 @@ public class ExtendArmForTimeAtSpeed extends Command
      */
     public static Command create(double duration, double extensionSpeed)
     {
-        return new ExtendArmForTimeAtSpeed(duration, extensionSpeed);
+        return new ExtendArmForTimeAtSpeedCommand(duration, extensionSpeed);
     }
 
     

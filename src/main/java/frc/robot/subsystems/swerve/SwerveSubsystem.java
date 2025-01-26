@@ -58,10 +58,10 @@ public class SwerveSubsystem extends SubsystemBase {
     // public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(124.07)));
     
     // For Neo swerve (test bot)
-    public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)));
-    public final SwerveModuleIO frontRight = new SwerveModuleNeo(8, 5, 4, new Rotation2d(Units.degreesToRadians(-87.939)));
-    public final SwerveModuleIO backLeft = new SwerveModuleNeo(7, 9, 3, new Rotation2d(Units.degreesToRadians(-14.3)));
-    public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)));
+    public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
+    public final SwerveModuleIO frontRight = new SwerveModuleNeo(8, 5, 4, new Rotation2d(Units.degreesToRadians(-87.939)), false);
+    public final SwerveModuleIO backLeft = new SwerveModuleNeo(7, 9, 3, new Rotation2d(Units.degreesToRadians(-14.3)), true);
+    public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)), false);
     
     
     /** This is just the type of gyro we have. */
