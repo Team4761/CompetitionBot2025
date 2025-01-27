@@ -129,7 +129,12 @@ public class SwerveModuleNeo implements SwerveModuleIO {
                 SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
                 driveMotor.setVoltage((driveOutput + driveFF));
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
-                turnMotor.setVoltage(+(turnOutput + turnFF));
+                if (invertTurnMotor) {
+                    turnMotor.setVoltage(-(turnOutput + turnFF));
+                } 
+                else {
+                    turnMotor.setVoltage(+(turnOutput + turnFF));
+                }
             }
         }
         // If not enabled

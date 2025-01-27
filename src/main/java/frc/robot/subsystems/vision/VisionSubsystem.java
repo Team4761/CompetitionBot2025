@@ -137,4 +137,9 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putBoolean("Found April Tag", false);
         }
     }
+
+
+    public Pose3d getFieldPose() {
+        return fieldPosition;
+    }
 }

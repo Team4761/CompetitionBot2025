@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swerve;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -98,8 +97,11 @@ public class SwerveSubsystem extends SubsystemBase {
      * I honestly don't know if this constructor is needed yet.
      */
     public SwerveSubsystem() {
-        orientForwardsControllingDirection();
         gyro.resetGyro();
+
+        if (Robot.driveController != null) {
+            Robot.driveController.orientForwardsControllingDirection();
+        }
 
         try {
         RobotConfig config = RobotConfig.fromGUISettings();
@@ -180,7 +182,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (backRight.isManualControl()) { backRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
         else { backRight.getToDesiredState(swerveModuleStates[3]); }
 
-        Robot.shuffleboard.updateSwerve();
+        Robot.dashboard.updateSwerve();
     }
 
 
@@ -202,9 +204,10 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param isFieldOriented Determines if the math should be calculated with a coordinate system relative to the field or to the robot. If true, forwards is the same direction regardless of robot rotation. If false, forwards is dependent on the robot's rotation.
      */
     public void setDesiredSpeeds(double speedX, double speedY, double speedRotation) {
-        // I found the *5 through testing. We need this because the speeds are too slow and should be in voltages, not percentages.
+        // The actual speeds are in meters/second, not percentages. Currently, the max speed in 5 meters per second
         this.desiredSpeedX = speedX * speedDriveModifier * 5;
         this.desiredSpeedY = speedY * speedDriveModifier * 5;
+        // Except this one. Rotation is radians/second.
         this.desiredSpeedRotation = speedRotation * speedTurnModifier * 5;
         setUsingPathPlanner(false);
     }
@@ -274,15 +277,6 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void setUsingPathPlanner(boolean usingPathPlanner) {
         this.isPathPlannerRunning = usingPathPlanner;
-    }
-
-
-    /**
-     * This makes it so that the forwards direction for controlling purposes is whatever direction the robot is facing.
-     * This ONLY modifies the inputs given to the subsystem, the odometry stays the same.
-     */
-    public void orientForwardsControllingDirection() {
-        this.forwardsControllingRotation = getGyroRotation();
     }
 
 
