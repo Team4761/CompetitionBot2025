@@ -4,6 +4,7 @@ package frc.robot.shuffleboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.shuffleboard.reactive.ReactiveBooleanEntry;
@@ -17,6 +18,8 @@ import frc.robot.shuffleboard.reactive.ReactiveNumberEntry;
  * This is for long term logging and settings.
  */
 public class RobocketsDashboard {
+
+    Field2d field;
 
     /**
      * SWERVE
@@ -137,6 +140,8 @@ public class RobocketsDashboard {
      * INITIALIZATION
      */
     public RobocketsDashboard() {
+
+        field = new Field2d();
 
         initializeGeneralInfo();
         if (Robot.map.swerve != null) { initializeSwerveInfo(); }
@@ -288,6 +293,8 @@ public class RobocketsDashboard {
         swerveTurnD.update();
         swerveTurnFFs.update();
         swerveTurnFFv.update();
+
+        field.setRobotPose(Robot.map.swerve.getPosition());
     }
 
     

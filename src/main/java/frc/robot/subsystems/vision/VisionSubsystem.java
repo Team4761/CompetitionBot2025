@@ -50,7 +50,8 @@ public class VisionSubsystem extends SubsystemBase {
     // PLACEHOLDER FOR TESTING PURPOSES
     AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(
         List.of(
-            new AprilTag(2, new Pose3d(10, 10, 0, new Rotation3d(0, 0, Math.PI)))   // Should be facing towards the blue alliance... I think...
+            new AprilTag(2, new Pose3d(10, 10, 0, new Rotation3d(0, 0, Math.PI))),   // Should be facing towards the blue alliance... I think...
+            new AprilTag(4, new Pose3d(3, 3, 0, new Rotation3d(0, 0, Math.PI)))
         ),
         100,
         100
