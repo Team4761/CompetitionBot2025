@@ -32,8 +32,8 @@ public class Constants {
     /*
      * MUNCHER
      */
-    public static final int MUNCHER_MOTOR_PORT = 0;        // CAN Port.
-    public static final int MUNCHER_OUTTAKE_PORT = 0;      // CAN Port.
+    public static final int MUNCHER_INTAKE_MOTOR_PORT = 0;        // CAN Port.(TBD)
+    public static final int MUNCHER_EJECT_MOTOR_PORT = 0;      // CAN Port.(TBD)
     public static final int MUNCHER_BREAKBEAM_PORT = 0;    // DIO Port. Don't know if this will actually exist or not...
 
 
