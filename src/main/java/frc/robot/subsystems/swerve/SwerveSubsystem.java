@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swerve;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -37,7 +36,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public double speedDriveModifier = 0.5;
     public double speedTurnModifier = 0.5;
 
-    // This controls which direction is the forwards direction for joystick control.
+    /** This controls which direction is the forwards direction for joystick control. */
     public Rotation2d forwardsControllingRotation;
 
     // Used for PathPlanner
@@ -58,20 +57,20 @@ public class SwerveSubsystem extends SubsystemBase {
     // public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(124.07)));
     
     // For Neo swerve (test bot)
-    public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)));
-    public final SwerveModuleIO frontRight = new SwerveModuleNeo(8, 5, 4, new Rotation2d(Units.degreesToRadians(-87.939)));
-    public final SwerveModuleIO backLeft = new SwerveModuleNeo(7, 9, 3, new Rotation2d(Units.degreesToRadians(-14.3)));
-    public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)));
+    public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
+    public final SwerveModuleIO frontRight = new SwerveModuleNeo(8, 5, 4, new Rotation2d(Units.degreesToRadians(-87.939)), false);
+    public final SwerveModuleIO backLeft = new SwerveModuleNeo(7, 9, 3, new Rotation2d(Units.degreesToRadians(-14.3)), true);
+    public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)), false);
     
     
-    // This is just the type of gyro we have.
+    /** This is just the type of gyro we have. */
     // private final SwerveGyroIO gyro = new SwerveCompetitionGyro(Constants.SWERVE_GYRO_OFFSET);
     private final SwerveGyroIO gyro = new SwerveTestGyro(Constants.SWERVE_GYRO_OFFSET);
 
-    // The kinematics is used for doing the math required for going from desired positions to actual speeds and vice versa.
+    /** The kinematics is used for doing the math required for going from desired positions to actual speeds and vice versa. */
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
-    // The odometry does the math for us to calculate current/expected position.
+    /** The odometry does the math for us to calculate current/expected position. */
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
             kinematics,
             getGyroRotation(),
@@ -83,11 +82,14 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     );
     
-    // All as a number between -1 to 1 where 1 represents 100% speed forwards.
+    /** Meters per second. +x is the forwards direction. */
     private double desiredSpeedX = 0.0;
+    /** Meters per second. +y is the left direction. */
     private double desiredSpeedY = 0.0;
+    /** Radians per second. Positive is the counterclockwise direction (the front of the robot turning left) */
     private double desiredSpeedRotation = 0.0;
-    // Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation.
+
+    /** Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation. */
     private boolean isFieldOriented = true;
 
 
@@ -95,8 +97,11 @@ public class SwerveSubsystem extends SubsystemBase {
      * I honestly don't know if this constructor is needed yet.
      */
     public SwerveSubsystem() {
-        orientForwardsControllingDirection();
         gyro.resetGyro();
+
+        if (Robot.driveController != null) {
+            Robot.driveController.orientForwardsControllingDirection();
+        }
 
         try {
         RobotConfig config = RobotConfig.fromGUISettings();
@@ -177,7 +182,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (backRight.isManualControl()) { backRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
         else { backRight.getToDesiredState(swerveModuleStates[3]); }
 
-        Robot.shuffleboard.updateSwerve();
+        Robot.dashboard.updateSwerve();
     }
 
 
@@ -199,9 +204,10 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param isFieldOriented Determines if the math should be calculated with a coordinate system relative to the field or to the robot. If true, forwards is the same direction regardless of robot rotation. If false, forwards is dependent on the robot's rotation.
      */
     public void setDesiredSpeeds(double speedX, double speedY, double speedRotation) {
-        // I found the *5 through testing. We need this because the speeds are too slow and should be in voltages, not percentages.
+        // The actual speeds are in meters/second, not percentages. Currently, the max speed in 5 meters per second
         this.desiredSpeedX = speedX * speedDriveModifier * 5;
         this.desiredSpeedY = speedY * speedDriveModifier * 5;
+        // Except this one. Rotation is radians/second.
         this.desiredSpeedRotation = speedRotation * speedTurnModifier * 5;
         setUsingPathPlanner(false);
     }
@@ -271,15 +277,6 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void setUsingPathPlanner(boolean usingPathPlanner) {
         this.isPathPlannerRunning = usingPathPlanner;
-    }
-
-
-    /**
-     * This makes it so that the forwards direction for controlling purposes is whatever direction the robot is facing.
-     * This ONLY modifies the inputs given to the subsystem, the odometry stays the same.
-     */
-    public void orientForwardsControllingDirection() {
-        this.forwardsControllingRotation = getGyroRotation();
     }
 
 

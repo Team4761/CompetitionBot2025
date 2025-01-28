@@ -7,9 +7,8 @@ package frc.robot;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.auto.AutoHandler;
 import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
 import frc.robot.shuffleboard.RobocketsDashboard;
@@ -23,10 +22,10 @@ public class Robot extends TimedRobot {
   /**
    * We're gonna win cause this is here!
    */
-  boolean win = true;
+  public static boolean win = true;
 
   public static final RobotMap map = new RobotMap();
-  public static final RobocketsDashboard shuffleboard = new RobocketsDashboard();
+  public static final RobocketsDashboard dashboard = new RobocketsDashboard();
 
   public static final DriveController driveController = new DriveController(0);
   public static final ArmController armController = new ArmController(1);
@@ -35,27 +34,22 @@ public class Robot extends TimedRobot {
   // This gets updated in the robotPeriodic() function.
   public static double currentPeriod = 0.050;
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  public Robot() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-  }
+  public Robot() {}
 
   /**
    * This is called once when the robot code is first initialized (while the robot is on).
    */
   @Override
   public void robotInit() {
-    map.setupPathPlanner();
+    // Make sure our autos can be properly selected
+    AutoHandler.setupAutoSelector();
+    AutoHandler.setupPathPlanner();
+
     // Added so that you can copy the dashboard config put in the deploy folder.
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
@@ -83,24 +77,12 @@ public class Robot extends TimedRobot {
    * chooser code above as well.
    */
   @Override
-  public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-  }
+  public void autonomousInit() {}
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+    CommandScheduler.getInstance().run();
   }
 
   /** This function is called once when teleop is enabled. */

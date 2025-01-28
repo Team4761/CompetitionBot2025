@@ -17,12 +17,16 @@ public class Constants {
     public static final int ARM_EXTEND_ENCODER_PORT = 0;   // DIO Port.
     public static final double ARM_PIVOT_LENGTH = 10; // Current temporary value, will be measured in meters
     public static final double ARM_EXTEND_LENGTH = 10; // Current temporary value, will be measured in meters
+    public static final double ARM_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360); // Max angular velocity of the arm
+    public static final double ARM_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360); // Max angular acceleration of the arm
+    public static final double ARM_MAX_EXT_VELOCITY = 30; // (M/s) Max velocity of the arm extension
+    public static final double ARM_MAX_EXT_ACCELERATION = 30; // (M/s) Max acceleration of the arm extension
 
     /*
      * LEDS
      */
     public static final int LEDS_PORT = 0;                 // PWM Port.
-    public static final int LEDS_NUMBER_OF_LEDS = 256;      // I counted them. 32x8
+    public static final int LEDS_NUMBER_OF_LEDS = 256;      // I counted them. 32x8 (OLD)
 
 
     /*
@@ -56,7 +60,7 @@ public class Constants {
     public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(180);           // Radians per second.
     public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360);       // Radians per second squared.
     public static final double SWERVE_MAX_DRIVE_SPEED = 3.0;                                                // Meters per second?
-    public static final double SWERVE_MAX_DRIVE_VOLTAGE = 4.0;
+    public static final double SWERVE_MAX_DRIVE_VOLTAGE = 4.0;                                              // In Volts
 
     public static final Rotation2d SWERVE_GYRO_OFFSET = new Rotation2d(Units.degreesToRadians(0));  // To find this, set it to 0 and record the value you get on startup.
 
@@ -66,4 +70,5 @@ public class Constants {
       /*
        * VISION
        */
+    // a lot of nothing
 }

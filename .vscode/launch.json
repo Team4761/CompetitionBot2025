@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ArmSubsystem",
+      "request": "launch",
+      "mainClass": "frc.robot.subsystems.arm.ArmSubsystem",
+      "projectName": "CompetitionBot2025"
+    },
+    {
+      "type": "java",
       "name": "MuncherSubsystem",
       "request": "launch",
       "mainClass": "frc.robot.subsystems.muncher.MuncherSubsystem",

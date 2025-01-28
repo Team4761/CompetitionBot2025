@@ -4,6 +4,7 @@ package frc.robot.shuffleboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.shuffleboard.reactive.ReactiveBooleanEntry;
@@ -18,10 +19,12 @@ import frc.robot.shuffleboard.reactive.ReactiveNumberEntry;
  */
 public class RobocketsDashboard {
 
+    Field2d field;
+
     /**
-     * ALL ENTRIES
+     * SWERVE
      */
-    // Swerve
+    // Modules
     NetworkTableEntry swerveFLDistanceTraveled;
     NetworkTableEntry swerveFLCurrentRotation;
     NetworkTableEntry swerveFLDesiredDriveSpeed;
@@ -51,11 +54,13 @@ public class RobocketsDashboard {
     ReactiveBooleanEntry swerveBREnabled;
     ReactiveBooleanEntry swerveBRManualControl;
 
+    // Entire Drivetrain
     NetworkTableEntry swerveXPosition;
     NetworkTableEntry swerveYPosition;
     NetworkTableEntry swerveRotation;
     NetworkTableEntry swerveGyroRotation;
 
+    // Tuning
     ReactiveNumberEntry swerveDriveP;
     ReactiveNumberEntry swerveDriveI;
     ReactiveNumberEntry swerveDriveD;
@@ -72,12 +77,71 @@ public class RobocketsDashboard {
     ReactiveNumberEntry swerveDriveSpeed;
     ReactiveNumberEntry swerveTurnSpeed;
     ReactiveBooleanEntry swerveFieldOriented;
+
+
+    /**
+     * ARM
+     */
+    // Pivot
+    NetworkTableEntry armPivotAngle;
+    NetworkTableEntry armPivotRaw;
+
+    // Extension
+    NetworkTableEntry armExtensionLength;
+    NetworkTableEntry armExtensionRaw;
+
+    // Tuning
+    ReactiveNumberEntry armPivotP;
+    ReactiveNumberEntry armPivotI;
+    ReactiveNumberEntry armPivotD;
+    ReactiveNumberEntry armPivotKs;
+    ReactiveNumberEntry armPivotKv;
+
+    ReactiveNumberEntry armExtensionP;
+    ReactiveNumberEntry armExtensionI;
+    ReactiveNumberEntry armExtensionD;
+    ReactiveNumberEntry armExtensionKs;
+    ReactiveNumberEntry armExtensionKv;
+
+    // Visualization?
+    // I don't know what to do here yet...
+
+
+    /**
+     * MUNCHER
+     */
+    // Intake/Outtake
+    ReactiveNumberEntry muncherIntakeSpeed;
+    ReactiveNumberEntry muncherOuttakeSpeed;
+
+    // Yeeter
+    ReactiveNumberEntry muncherYeetSpeed;
+
+
+    /**
+     * LEDs
+     */
+    // No idea what to put here...
+
+
+    /**
+     * VISION
+     */
+    // April Tag Info
+    NetworkTableEntry visionAprilTagID;
+    NetworkTableEntry visionX;
+    NetworkTableEntry visionY;
+    NetworkTableEntry visionZ;
+    NetworkTableEntry visionYaw;
+    NetworkTableEntry visionPitch;
     
 
     /**
      * INITIALIZATION
      */
     public RobocketsDashboard() {
+
+        field = new Field2d();
 
         initializeGeneralInfo();
         if (Robot.map.swerve != null) { initializeSwerveInfo(); }
@@ -94,6 +158,7 @@ public class RobocketsDashboard {
     public void initializeGeneralInfo() {
         // Currently nothing here...
     }
+
 
     /**
      * There's a lot of stuff here, so buckle up.
@@ -228,6 +293,8 @@ public class RobocketsDashboard {
         swerveTurnD.update();
         swerveTurnFFs.update();
         swerveTurnFFv.update();
+
+        field.setRobotPose(Robot.map.swerve.getPosition());
     }
 
     
