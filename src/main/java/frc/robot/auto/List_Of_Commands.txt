@@ -1,16 +1,16 @@
 Fundamental Commands:
     - MoveForTimeAtSpeed        (Status: FINISHED, UNTESTED)
-    - MoveDistance              (Status: UNFINISHED, UNTESTED)
+    - MoveDistance              (Status: FINISHED, UNTESTED)
     - GetToFieldPosition        (Status: UNFINISHED, UNTESTED)
-    - RotateArmForTimeAtSpeed   (Status: UNFINISHED, UNTESTED)
-    - ExtendArmForTimeAtSpeed   (Status: UNFINISHED, UNTESTED)
-    - YeetForTimeAtSpeed        (Status: UNFINISHED, UNTESTED)
-    - IntakeForTimeAtSpeed      (Status: UNFINISHED, UNTESTED)
+    - RotateArmForTimeAtSpeed   (Status: FINISHED, UNTESTED)
+    - ExtendArmForTimeAtSpeed   (Status: FINISHED, UNTESTED)
+    - YeetForTimeAtSpeed        (Status: FINISHED, UNTESTED)
+    - IntakeForTimeAtSpeed      (Status: FINISHED, UNTESTED)
     - GetArmToPosition          (Status: UNFINISHED, UNTESTED)
 
 "Very" Important Commands:
     - Win                       (Status: FINISHED, UNTESTED)
-    - Flip                      (Status: UNFINISHED, UNTESTED)
+    - Flip                      (Status: FINISHED, UNTESTED)
 
 Autos:
 none so far D:
