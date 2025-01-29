@@ -1,19 +1,22 @@
 package frc.robot.subsystems.muncher;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * This is in charge of both "munching" coral (intaking through the front "mouth") and outtaking/scoring coral.
  */
 public class MuncherSubsystem extends SubsystemBase {
-
-    
-    public void yeetForSpeed(double speed) {
-        // TODO: run the motor at speed
+    private TalonFX intakeMotor = new TalonFX(Constants.MUNCHER_INTAKE_MOTOR_PORT);
+    private TalonFX ejectMotor = new TalonFX(Constants.MUNCHER_EJECT_MOTOR_PORT);
+    public void intake(double intakeSpeed)
+    {
+        intakeMotor.set(intakeSpeed);
     }
-
-    public void intakeForSpeed(double speed) {
-    
+    public void eject(double ejectSpeed)
+    {
+        ejectMotor.set(ejectSpeed);
     }
 }

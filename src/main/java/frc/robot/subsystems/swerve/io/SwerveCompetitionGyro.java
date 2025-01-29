@@ -3,7 +3,6 @@ package frc.robot.subsystems.swerve.io;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import frc.robot.Constants;
 
 public class SwerveCompetitionGyro implements SwerveGyroIO {
 

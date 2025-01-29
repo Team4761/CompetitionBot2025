@@ -3,6 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -11,6 +12,9 @@ import frc.robot.RobotMap;
  * This just controls swerve.
  */
 public class DriveController extends XboxController {
+
+    /** This stores which direction should be considered forwards. On robot initialization, this is towards the front of the robot. */
+    private Rotation2d currentForwardsDirection = new Rotation2d();
 
     // Slew rate limiters caps the transition between different speeds. (ex, a limiter of 3 means that the max change in speed is 3 per second.)
     // A rateLimit of 3 means that it will take ~1/3 second to go from 0 -> 1.
@@ -36,18 +40,19 @@ public class DriveController extends XboxController {
     public void teleopPeriodic() {
         // Swerve
         if (map.swerve != null) {
-
+            // Buttons
             if (getXButtonPressed()) {
-                map.swerve.orientForwardsControllingDirection();
+                this.orientForwardsControllingDirection();
             }
             if (getYButtonPressed()) {
                 map.swerve.resetPosition(new Pose2d());
             }
 
             // Joystick control
+            // Check out this desmos graph to see how the math works: https://www.desmos.com/calculator/6sio2uwvi1
             map.swerve.setDesiredSpeeds(
-                -getLeftY(),   // Negative to make up the positive direction
-                -getLeftX(),   // Negative to make left the positive direction
+                getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftX()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make up the positive direction
+                -getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftY()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make left the positive direction
                 -getRightX()   // Negative to make left (counterclockwise) the positive direction.
             );
         }
@@ -70,5 +75,18 @@ public class DriveController extends XboxController {
     @Override
     public double getRightY() {
         return rightYLimiter.calculate(MathUtil.applyDeadband(super.getRightY(), 0.02));
+    }
+
+
+    /**
+     * This will take the current orientation of the robot and make it the forwards direction.
+     */
+    public void orientForwardsControllingDirection() {
+        if (Robot.map.swerve != null) {
+            currentForwardsDirection = Robot.map.swerve.getGyroRotation();
+        }
+        else {
+            System.out.println("Tried to orient the forwards direction for controlling... but swerve is turned off in RobotMap (or something else has gone terribly wrong).");
+        }
     }
 }

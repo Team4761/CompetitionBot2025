@@ -37,6 +37,9 @@ public class SwerveModuleNeo implements SwerveModuleIO {
     // This determines if the wheels can be manually controlled rather than PID controlled.
     public boolean isManualControl = false;
 
+    // Determines if the turn motor should be inverted. SHOULD BE FALSE NORMALLY.
+    private boolean invertTurnMotor = false;
+
     // The turn motor is a NEO. The drive motor is a Kraken.
     // They changed CANSparkMax to SparkMAX... :(  -https://docs.revrobotics.com/brushless/spark-max/overview
     private SparkMax turnMotor;
@@ -77,8 +80,9 @@ public class SwerveModuleNeo implements SwerveModuleIO {
      * @param turnMotorID CAN bus: SparkMAX motor controller ID for a NEO. Find using Rev Hardware Client.
      * @param turnEncoderID CAN bus: CANcoder id. Find using Phoenix Tuner X.
      * @param turnOffset Find by setting this to 0.0, rotating the wheel to face forwards, and use the value recorded on Shuffleboard.
+     * @param invertTurnMotor Before changing this, make sure the rotation is not measuring in the wrong direction!!!
      */
-    public SwerveModuleNeo(int driveMotorID, int turnMotorID, int turnEncoderID, Rotation2d turnOffset) {
+    public SwerveModuleNeo(int driveMotorID, int turnMotorID, int turnEncoderID, Rotation2d turnOffset, boolean invertTurnMotor) {
         this.driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
         this.turnEncoder = new CANcoder(turnEncoderID);
@@ -125,7 +129,12 @@ public class SwerveModuleNeo implements SwerveModuleIO {
                 SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
                 driveMotor.setVoltage((driveOutput + driveFF));
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
-                turnMotor.setVoltage(+(turnOutput + turnFF));
+                if (invertTurnMotor) {
+                    turnMotor.setVoltage(-(turnOutput + turnFF));
+                } 
+                else {
+                    turnMotor.setVoltage(+(turnOutput + turnFF));
+                }
             }
         }
         // If not enabled
