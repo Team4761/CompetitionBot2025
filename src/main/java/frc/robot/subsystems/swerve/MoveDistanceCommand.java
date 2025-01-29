@@ -90,4 +90,20 @@ public class MoveDistanceCommand extends Command{
         
         
     }
+    @Override
+    public boolean isFinished() {
+        Pose2d currentPosition = Robot.map.swerve.getPosition();
+        double differenceX = Math.abs(currentPosition.getX() - targetPosition.getX());
+        double differenceY = Math.abs(currentPosition.getY() - targetPosition.getY());
+        double differenceRot = Math.abs(currentPosition.getRotation().getRadians() - targetPosition.getRotation().getRadians());
+        if (differenceX + differenceY <= 0.01 && differenceRot <= Math.toRadians(5)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public void end(boolean isInterrupted) {
+        Robot.map.swerve.setDesiredSpeeds(0,0,0);
+    }
 }
