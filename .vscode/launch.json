@@ -6,9 +6,9 @@
   "configurations": [
     {
       "type": "java",
-      "name": "MuncherSubsystem",
+      "name": "LEDSubsystem",
       "request": "launch",
-      "mainClass": "frc.robot.subsystems.muncher.MuncherSubsystem",
+      "mainClass": "frc.robot.subsystems.leds.LEDSubsystem",
       "projectName": "CompetitionBot2025"
     },
     {

@@ -27,7 +27,7 @@ public class DriveController extends XboxController {
         super(port);
         map = Robot.map;
     }
-    
+
 
     /**
      * Call this function during teleop to actually run!

@@ -4,15 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.net.WebServer;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
-import frc.robot.shuffleboard.RobocketsDashboard;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -25,8 +22,14 @@ public class Robot extends TimedRobot {
    */
   boolean win = true;
 
+  /**
+   * constatntly flips the robot if the command works
+   */
+  public void flip(boolean shouldWeFlip, boolean areWeSure, boolean areWeTrulySure, boolean areYouTrusted, int onAScaleFrom1To10HowReadyAreYou, boolean functionRunnable, boolean isFlippedAlready, boolean isThePersonWhoIsGoingToRunThisCommandReadyForTheConsequencesOfYourActionsDueToTheCommandCausingSevereDamagesToTheRobot, int stupidityScale){
+    byte publicStaticVoidMainStringArgs;
+  }
+
   public static final RobotMap map = new RobotMap();
-  public static final RobocketsDashboard shuffleboard = new RobocketsDashboard();
 
   public static final DriveController driveController = new DriveController(0);
   public static final ArmController armController = new ArmController(1);
@@ -48,16 +51,6 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-  }
-
-  /**
-   * This is called once when the robot code is first initialized (while the robot is on).
-   */
-  @Override
-  public void robotInit() {
-    map.setupPathPlanner();
-    // Added so that you can copy the dashboard config put in the deploy folder.
-    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
 
   /**
@@ -105,17 +98,20 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {
-    if (Robot.map.swerve != null) {
-      map.swerve.setFieldOriented(true);
-    }
-  }
+  public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-    driveController.teleopPeriodic();
+    
+    if (map.swerve != null) {
+      map.swerve.setDesiredSpeeds(
+        -driveController.getLeftY(),   // Negative to make up the positive direction
+        driveController.getLeftX(),
+        -driveController.getRightX()   // Negative to make left (counterclockwise) the positive direction.
+      );
+    }
   }
 
   /** This function is called once when the robot is disabled. */
@@ -141,4 +137,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+
+
+
+
+  public byte publicStaticVoidMainStringArgs = (byte) 0011010;
 }

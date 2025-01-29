@@ -1,5 +1,6 @@
 package frc.robot.subsystems.muncher;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -7,4 +8,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class MuncherSubsystem extends SubsystemBase {
 
+    
+    public void yeetForSpeed(double speed) {
+        // TODO: run the motor at speed
+    }
+
+    public void intakeForSpeed(double speed) {
+    
+    }
 }

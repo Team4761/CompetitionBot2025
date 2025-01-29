@@ -176,8 +176,6 @@ public class SwerveSubsystem extends SubsystemBase {
         else { backLeft.getToDesiredState(swerveModuleStates[2]); }
         if (backRight.isManualControl()) { backRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
         else { backRight.getToDesiredState(swerveModuleStates[3]); }
-
-        Robot.shuffleboard.updateSwerve();
     }
 
 
