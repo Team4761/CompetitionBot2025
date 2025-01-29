@@ -25,6 +25,6 @@ public class IntakeForTimeAtSpeed extends Command{
     
     @Override
     public void execute() {
-        RobotMap.muncher.intakeForSpeed(speed);
+        RobotMap.muncher.intake(speed);
     }
 }

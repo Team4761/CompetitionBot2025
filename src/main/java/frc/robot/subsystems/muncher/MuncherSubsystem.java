@@ -10,13 +10,13 @@ import frc.robot.Constants;
  */
 public class MuncherSubsystem extends SubsystemBase {
     private TalonFX intakeMotor = new TalonFX(Constants.MUNCHER_INTAKE_MOTOR_PORT);
-    private TalonFX ejectMotor = new TalonFX(Constants.MUNCHER_EJECT_MOTOR_PORT);
+    private TalonFX yeetMotor = new TalonFX(Constants.MUNCHER_EJECT_MOTOR_PORT);
     public void intake(double intakeSpeed)
     {
         intakeMotor.set(intakeSpeed);
     }
-    public void eject(double ejectSpeed)
+    public void yeet(double yeetSpeed)
     {
-        ejectMotor.set(ejectSpeed);
+        yeetMotor.set(yeetSpeed);
     }
 }

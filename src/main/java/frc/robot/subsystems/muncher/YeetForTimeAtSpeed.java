@@ -25,6 +25,6 @@ public class YeetForTimeAtSpeed extends Command {
 
     @Override
     public void execute() {
-        RobotMap.muncher.yeetForSpeed(speed);
+        RobotMap.muncher.yeet(speed);
     }
 }

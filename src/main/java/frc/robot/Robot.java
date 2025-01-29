@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.auto.AutoHandler;
 import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
+import frc.robot.shuffleboard.RobocketsDashboard;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -20,13 +23,6 @@ public class Robot extends TimedRobot {
    * We're gonna win cause this is here!
    */
   public static boolean win = true;
-
-  /**
-   * constatntly flips the robot if the command works
-   */
-  public void flip(boolean shouldWeFlip, boolean areWeSure, boolean areWeTrulySure, boolean areYouTrusted, int onAScaleFrom1To10HowReadyAreYou, boolean functionRunnable, boolean isFlippedAlready, boolean isThePersonWhoIsGoingToRunThisCommandReadyForTheConsequencesOfYourActionsDueToTheCommandCausingSevereDamagesToTheRobot, int stupidityScale){
-    byte publicStaticVoidMainStringArgs;
-  }
 
   public static final RobotMap map = new RobotMap();
   public static final RobocketsDashboard dashboard = new RobocketsDashboard();
