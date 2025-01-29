@@ -8,12 +8,13 @@ public class YeetCommand extends Command
 /**
  * DONT USE THIS CONSTRUCTER, use create instead, please it aint worth it
  */
-private YeetCommand(){}
- public Command create() 
- {
-   return new SequentialCommandGroup
-   (
-      YeetForTimeAtSpeedCommand.create(5,0.1), 
-      YeetForTimeAtSpeedCommand.create(5,-0.1)
-   );
+   private YeetCommand(){}
+   public Command create() 
+   {
+      return new SequentialCommandGroup
+      (
+         YeetForTimeAtSpeedCommand.create(5,0.1), 
+         YeetForTimeAtSpeedCommand.create(5,-0.1)
+      );
+   }
 }
