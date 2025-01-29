@@ -30,4 +30,11 @@ public class WinSubsystem extends SubsystemBase {
         // System.exit(0);
         System.out.println("I CAN STOP WINNING!");
     }
+    /**
+    * constatntly flips the robot if the command works
+    */
+    @SuppressWarnings("unused")
+    public void flip(boolean shouldWeFlip, boolean areWeSure, boolean areWeTrulySure, boolean areYouTrusted, int onAScaleFrom1To10HowReadyAreYou, boolean functionRunnable, boolean isFlippedAlready, boolean isThePersonWhoIsGoingToRunThisCommandReadyForTheConsequencesOfYourActionsDueToTheCommandCausingSevereDamagesToTheRobot, int stupidityScale){
+        byte publicStaticVoidMainStringArgs;
+    }
 }
