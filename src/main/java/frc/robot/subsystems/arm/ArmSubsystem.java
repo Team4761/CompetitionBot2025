@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -105,7 +106,26 @@ public class ArmSubsystem extends SubsystemBase {
         return new double[]{-1,-1};
     }
 
+    public static void setDesiredPosition(double x, double y) {
+        double directionTowardsPoint = Math.atan2(y,x);
+        double unsafeAngle = Math.atan2(-Constants.ARM_PIVOT_TO_BASE_DISTANCE, Constants.ROBOT_SIDE_LENGTH/2); //Angles past this point are deemed unsafe.
+        double[] parameters = getRotationExtensionFromSetPoint(x, y);
+        if (directionTowardsPoint <= unsafeAngle) {
+            System.out.println("POINT CLIPS ROBOT");
+            return;
+        } else if (y <= -(Constants.ARM_PIVOT_TO_BASE_DISTANCE + Constants.ROBOT_HEIGHT)) {
+            System.out.println("POINT CLIPS GROUND");
+            return;
+        } else if (directionTowardsPoint >= Units.degreesToRadians(90)) {
+            System.out.println("POINT CAUSES SIGNFICANT STRAIN");
+            return;
+        } else if (parameters[0] == -1) {
+            System.out.println("POINT IS UNREACHABLE");
+            return;
+        }
+        System.out.println("POINT IS REACHABLE AND SAFE");
 
+    }
     /**
      * <p> Rotates the pivot of the arm at the specified speed.
      * @param rotationalVelocity Power of the motor between -1 and 1 where +1 represents full rotation upwards.
@@ -151,8 +171,11 @@ public class ArmSubsystem extends SubsystemBase {
      * https://www.desmos.com/calculator/acillm6yyc
      */
     public static void main(String[] args) {
+        /* 
         double[] output = getRotationExtensionFromSetPoint(20,20);
         System.out.println(output[0]);
         System.out.println(output[1]);
+        */
+        setDesiredPosition(0, 15);
     }
 }
