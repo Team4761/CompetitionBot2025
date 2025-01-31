@@ -10,7 +10,7 @@ Fundamental Commands:
 
 "Very" Important Commands:
     - Win                       (Status: FINISHED, UNTESTED)
-    - Flip                      (Status: UNFINISHED, UNTESTED)
+    - Flip                      (Status: FINISHED, TESTED :O )
 
 Autos:
 none so far D:

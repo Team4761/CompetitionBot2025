@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
+import frc.robot.subsystems.swerve.MoveForTimeAtSpeedCommand;
 
 public class AutoHandler {
 
@@ -24,6 +25,8 @@ public class AutoHandler {
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi", new SayHiCommand());
+        autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(1, 0, 0, 0));
+        autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-1, 0, 0, 0));
         autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
 
 

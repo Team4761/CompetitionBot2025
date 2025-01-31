@@ -39,6 +39,6 @@ public class EjectForTimeAtSpeedCommand extends Command
     @Override
     public void execute()
     {
-        Robot.map.muncher.eject(ejectSpeed);
+        Robot.map.muncher.yeet(ejectSpeed);
     }
 }
