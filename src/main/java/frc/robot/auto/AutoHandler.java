@@ -21,13 +21,14 @@ public class AutoHandler {
      * <p> This makes a list of our autos and puts them on the Dashboard.
      */
     public static void setupAutoSelector() {
-        autoChooser = AutoBuilder.buildAutoChooser(); 
+        autoChooser = new SendableChooser<Command>();
+        // autoChooser = AutoBuilder.buildAutoChooser(); 
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi", new SayHiCommand());
         autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(1, 0, 0, 1));
         autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-1, 0, 0, 1));
-        autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
+        // autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
 
 
         SmartDashboard.putData("Selected Auto", autoChooser);

@@ -9,7 +9,7 @@ public class YeetCommand extends Command
  * DONT USE THIS CONSTRUCTER, use create instead, please it aint worth it
  */
    private YeetCommand(){}
-   public Command create() 
+   public static Command create() 
    {
       return new SequentialCommandGroup
       (
