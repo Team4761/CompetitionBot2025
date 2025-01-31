@@ -1,16 +1,17 @@
 Fundamental Commands:
     - MoveForTimeAtSpeed        (Status: FINISHED, UNTESTED)
-    - MoveDistance              (Status: UNFINISHED, UNTESTED)
+    - MoveDistance              (Status: FINISHED, UNTESTED)
     - GetToFieldPosition        (Status: UNFINISHED, UNTESTED)
-    - RotateArmForTimeAtSpeed   (Status: UNFINISHED, UNTESTED)
-    - ExtendArmForTimeAtSpeed   (Status: UNFINISHED, UNTESTED)
-    - YeetForTimeAtSpeed        (Status: UNFINISHED, UNTESTED)
-    - IntakeForTimeAtSpeed      (Status: UNFINISHED, UNTESTED)
+    - RotateArmForTimeAtSpeed   (Status: FINISHED, UNTESTED)
+    - ExtendArmForTimeAtSpeed   (Status: FINISHED, UNTESTED)
+    - YeetForTimeAtSpeed        (Status: FINISHED, UNTESTED)
+    - IntakeForTimeAtSpeed      (Status: FINISHED, UNTESTED)
     - GetArmToPosition          (Status: UNFINISHED, UNTESTED)
 
 "Very" Important Commands:
     - Win                       (Status: FINISHED, UNTESTED)
-    - Flip                      (Status: FINISHED, TESTED :O )
+    - Flip                      (Status: FINISHED, TESTED)
 
 Autos:
-none so far D:
+Move frowaards at 100% speed for 1 seconds
+move barckwaards at 100% speed for 1 seconds

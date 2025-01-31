@@ -88,6 +88,7 @@ public class SwerveModuleNeo implements SwerveModuleIO {
         this.turnEncoder = new CANcoder(turnEncoderID);
 
         this.turnOffset = turnOffset;
+        this.invertTurnMotor = invertTurnMotor;
     }
 
 
@@ -101,7 +102,11 @@ public class SwerveModuleNeo implements SwerveModuleIO {
             // Just turn motors at desired speeds.
             if (this.isManualControl && manualSpeeds != null) {
                 driveMotor.setVoltage(manualSpeeds[0]);
-                turnMotor.setVoltage(manualSpeeds[1]);
+                if (this.invertTurnMotor) {
+                    turnMotor.setVoltage(-manualSpeeds[1]);
+                } else {
+                    turnMotor.setVoltage(manualSpeeds[1]);
+                }
             }
             // Use PID control
             else {
