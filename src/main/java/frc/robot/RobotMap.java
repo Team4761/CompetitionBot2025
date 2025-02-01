@@ -18,7 +18,7 @@ public class RobotMap {
     
     public ArmSubsystem arm = null;
     public LEDSubsystem leds = null;
-    public static MuncherSubsystem muncher = null;
+    public MuncherSubsystem muncher = null;
     public SwerveSubsystem swerve = null;
     public VisionSubsystem vision = null;
     public WinSubsystem win = null;

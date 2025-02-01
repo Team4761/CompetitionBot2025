@@ -19,13 +19,26 @@ public class GetArmToPositionCommand extends Command {
     private double targetY;
     
     /**
-     * This sets the setpoints in the ArmSubsystem and ends when the 
+     * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
+     */
+    private GetArmToPositionCommand() {}
+
+    /**
+     * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
+     */
+    private GetArmToPositionCommand(double x, double y) {
+        this.targetX = x;
+        this.targetY = y;
+    }
+
+
+    /**
+     * This sets the setpoints in the ArmSubsystem and ends when the arm is within the margin of error of that position.
      * @param x The distance from (0,0) horizontally. +x is the front side of the Robot.
      * @param y The distance from (0,0) vertically. +y is the upwards direction.
      */
-    public GetArmToPositionCommand(double x, double y) {
-        this.targetX = x;
-        this.targetY = y;
+    public static Command create(double x, double y) {
+        return new GetArmToPositionCommand(x, y);
     }
 
 

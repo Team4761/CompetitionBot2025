@@ -20,9 +20,9 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * Sadly, there is no easy way to zero the encoders. Therefore, the best we can do is have an offset.
      */
-    /** To determine this, move the arm into the (0,0) state which is [...] and record the value of the absolute encoder read in the dashboard. */
+    /** To determine this, move the arm into the (0,0) state which is being in front of the robot, parallel to the ground and record the value of the absolute encoder read in the dashboard. */
     private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(0);
-    /** Meters. To determine this, move the arm into the (0,0) state which is [...] and record the value of the absolute encoder read in the dashboard. */
+    /** Meters. To determine this, move the arm into the (0,0) state which is unextended and record the value of the absolute encoder read in the dashboard. */
     private static final double EXTENSION_ENCODER_OFFSET = 0.0;
 
     // This is the conversion factor from encoder units to radians for the pivot absolute encoder.
@@ -106,26 +106,39 @@ public class ArmSubsystem extends SubsystemBase {
         return new double[]{-1,-1};
     }
 
-    public static void setDesiredPosition(double x, double y) {
+    /**
+     * <p> This checks if the desired position is reachable and safe, and if it is, will set the desired position to the new position.
+     * <p> (0,0) is the pivot point of the arm.
+     * @param x How forwards the end of the arm should get to in meters. +x represents the forwards direction.
+     * @param y How up the arm should get to in meters. +y represents the upwards direction.
+     */
+    public void setDesiredPosition(double x, double y) {
+        // Check to see if the desired location is within the constraints
         double directionTowardsPoint = Math.atan2(y,x);
         double unsafeAngle = Math.atan2(-Constants.ARM_PIVOT_TO_BASE_DISTANCE, Constants.ROBOT_SIDE_LENGTH/2); //Angles past this point are deemed unsafe.
         double[] parameters = getRotationExtensionFromSetPoint(x, y);
+
         if (directionTowardsPoint <= unsafeAngle) {
-            System.out.println("POINT CLIPS ROBOT");
-            return;
-        } else if (y <= -(Constants.ARM_PIVOT_TO_BASE_DISTANCE + Constants.ROBOT_HEIGHT)) {
-            System.out.println("POINT CLIPS GROUND");
-            return;
-        } else if (directionTowardsPoint >= Units.degreesToRadians(90)) {
-            System.out.println("POINT CAUSES SIGNFICANT STRAIN");
-            return;
-        } else if (parameters[0] == -1) {
-            System.out.println("POINT IS UNREACHABLE");
+            // System.out.println("POINT CLIPS ROBOT");
             return;
         }
-        System.out.println("POINT IS REACHABLE AND SAFE");
+        else if (y <= -(Constants.ARM_PIVOT_TO_BASE_DISTANCE + Constants.ROBOT_HEIGHT)) {
+            // System.out.println("POINT CLIPS GROUND");
+            return;
+        }
+        else if (directionTowardsPoint >= Units.degreesToRadians(90)) {
+            // System.out.println("POINT CAUSES SIGNFICANT STRAIN (GOES OVER THE ROBOT)");
+            return;
+        }
+        else if (parameters[0] == -1) {
+            // System.out.println("POINT IS UNREACHABLE (MECHANICALLY IMPOSSIBLE)");
+            return;
+        }
 
+        desiredPosition = new Pose2d(x, y, new Rotation2d());
     }
+
+
     /**
      * <p> Rotates the pivot of the arm at the specified speed.
      * @param rotationalVelocity Power of the motor between -1 and 1 where +1 represents full rotation upwards.
@@ -176,6 +189,5 @@ public class ArmSubsystem extends SubsystemBase {
         System.out.println(output[0]);
         System.out.println(output[1]);
         */
-        setDesiredPosition(0, 15);
     }
 }

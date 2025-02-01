@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.auto.AutoHandler;
 import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
-import frc.robot.shuffleboard.RobocketsDashboard;
+import frc.robot.dashboard.RobocketsDashboard;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in

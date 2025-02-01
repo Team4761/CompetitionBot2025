@@ -1,4 +1,4 @@
-package frc.robot.shuffleboard.reactive;
+package frc.robot.dashboard.reactive;
 
 import java.util.function.DoubleConsumer;
 
