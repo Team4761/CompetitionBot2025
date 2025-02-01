@@ -8,19 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 
 /** Add your docs here. */
-public class YeetForTimeAtSpeed extends Command {
+public class YeetForTimeAtSpeedCommand extends Command {
     private double speed;
     private double seconds;
     /**
      * do not use this this constructor, use create instead
      */
-    private YeetForTimeAtSpeed(double seconds) {
+    private YeetForTimeAtSpeedCommand(double seconds) {
         this.speed = speed;
         this.seconds = seconds;
     }
 
     public static Command create(double speed, double seconds) {
-        return new YeetForTimeAtSpeed(speed).withTimeout(seconds);
+        return new YeetForTimeAtSpeedCommand(speed).withTimeout(seconds);
     }
 
     @Override

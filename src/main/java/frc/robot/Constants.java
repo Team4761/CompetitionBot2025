@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
  * A port of 0 means that it is currently unknown/undecided.
  */
 public class Constants {
-    
+
     /*
      * ARM
      */
@@ -21,7 +21,14 @@ public class Constants {
     public static final double ARM_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360); // Max angular acceleration of the arm
     public static final double ARM_MAX_EXT_VELOCITY = 30; // (M/s) Max velocity of the arm extension
     public static final double ARM_MAX_EXT_ACCELERATION = 30; // (M/s) Max acceleration of the arm extension
-
+    public static final double L1_X = Units.inchesToMeters(15);
+    public static final double L1_Y = Units.inchesToMeters(-2.0);
+    public static final double L2_X = Units.inchesToMeters(16.625);
+    public static final double L2_Y = Units.inchesToMeters(11.875);
+    public static final double L3_X = Units.inchesToMeters(16.625);
+    public static final double L3_Y = Units.inchesToMeters(27.625);
+    public static final double L4_X = Units.inchesToMeters(16.125);
+    public static final double L4_Y = Units.inchesToMeters(52.0);
     /*
      * LEDS
      */

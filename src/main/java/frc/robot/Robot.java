@@ -22,7 +22,16 @@ public class Robot extends TimedRobot {
   /**
    * We're gonna win cause this is here!
    */
-  public static boolean win = true;
+  public static final boolean win = true;
+  
+  /**
+   * <p> Jamme, jamme, 'ncoppa, jamme jà! 
+   * <p> Jamme, jamme, 'ncoppa, jamme jà,
+   * <p> Funiculì, Funiculà,
+   * <p> Funiculì, Funiculà!
+   * <p> 'Ncoppa jamme jà, Funiculì, Funiculà!
+   */
+  public void Italy() {}
 
   public static final RobotMap map = new RobotMap();
   public static final RobocketsDashboard dashboard = new RobocketsDashboard();
@@ -131,5 +140,5 @@ public class Robot extends TimedRobot {
 
 
 
-  public byte publicStaticVoidMainStringArgs = (byte) 0011010;
+  public byte publicStaticVoidMainStringArgs = (byte) 00000100;
 }

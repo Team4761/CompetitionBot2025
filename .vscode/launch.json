@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Constants",
+      "request": "launch",
+      "mainClass": "frc.robot.Constants",
+      "projectName": "CompetitionBot2025"
+    },
+    {
+      "type": "java",
       "name": "ArmSubsystem",
       "request": "launch",
       "mainClass": "frc.robot.subsystems.arm.ArmSubsystem",
