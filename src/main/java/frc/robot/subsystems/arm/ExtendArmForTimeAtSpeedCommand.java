@@ -16,10 +16,15 @@ public class ExtendArmForTimeAtSpeedCommand extends Command
     /** The speed as a value between -1 to 1 where +1 represents full speed outwards.*/
     private double extensionSpeed;
 
-/**
- * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
- */
-    
+
+    /**
+     * DON'T USE THE CONSTUCTOR please use ExtendArmForTimeAtSpeedCommand.create() instead
+     */
+    private ExtendArmForTimeAtSpeedCommand() {}
+
+    /**
+     * DON'T USE THE CONSTUCTOR please use ExtendArmForTimeAtSpeedCommand.create() instead
+     */
     private ExtendArmForTimeAtSpeedCommand(double extensionSpeed)
     {
         this.extensionSpeed = extensionSpeed;
@@ -42,6 +47,15 @@ public class ExtendArmForTimeAtSpeedCommand extends Command
     public void execute()
     {
         Robot.map.arm.extend(extensionSpeed);
+    }
+
+    /**
+     * It then needs to make sure to set the speed to zero when it's done.
+     */
+    @Override
+    public void end(boolean isInterrupted)
+    {
+        Robot.map.arm.extend(0);
     }
 }
     

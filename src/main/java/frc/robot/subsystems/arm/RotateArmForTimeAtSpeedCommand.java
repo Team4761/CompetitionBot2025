@@ -15,10 +15,16 @@ public class RotateArmForTimeAtSpeedCommand extends Command
 {
      /** The speed as a value between -1 to 1 where +1 represents full speed rotate upwards (Clock Wise) 
       * (Please make this slow so you dont break the robot).*/
-     private double rotateSpeed;
+    private double rotateSpeed;
+
+    
+    /**
+    * DONT USE THE CONSTUCTOR! Please use RotateArmForTimeAtSpeedCommand.create() instead.
+    */
+    private RotateArmForTimeAtSpeedCommand() {}
 
     /**
-    * DONT USE THE CONSTUCTOR please use the 'create' method INSTEAD
+    * DONT USE THE CONSTUCTOR! Please use RotateArmForTimeAtSpeedCommand.create() instead.
     */
      private RotateArmForTimeAtSpeedCommand(double rotateSpeed)
      {
@@ -42,5 +48,14 @@ public class RotateArmForTimeAtSpeedCommand extends Command
     public void execute()
     {
         Robot.map.arm.rotate(rotateSpeed);
+    }
+
+
+    /**
+     * Need to set the speed to 0 just in case it keeps running infinitely...
+     */
+    public void end(boolean isFinished)
+    {
+        Robot.map.arm.rotate(0);
     }
 }

@@ -21,14 +21,17 @@ public class MoveForTimeAtSpeedCommand extends Command {
     /** Duration to move for in seconds. */
     double moveTime;
 
-    // Changed it from storing a variable for endTime to using the withTimeout function to keep the code more consistent.
+    
+    /**
+     * DO NOT USE THE CONSTRUCTOR. Use MoveForTimeAtSpeedCommand.create() instead.
+     */
+    private MoveForTimeAtSpeedCommand() {}
 
     /**
-     * <p> This will move the robot at the specified speed for the specified time and then stop the bot once done.
+     * DO NOT USE THE CONSTRUCTOR. Use MoveForTimeAtSpeedCommand.create() instead.
      * @param speedForwards Meters per second. This is the same as +x for swerve.
      * @param speedHorizontal Meters per second. This is the same as +y for swerve. Positive direction is left.
      * @param speedTurn Radians per second. The positive direction is counterclockwise (the front of the robot turning left).
-     * @param moveTime
      */
     private MoveForTimeAtSpeedCommand(double speedForwards, double speedHorizontal, double speedTurn) {
         this.speedForwards = speedForwards;
@@ -36,6 +39,13 @@ public class MoveForTimeAtSpeedCommand extends Command {
         this.speedTurn = speedTurn;
     }
 
+    /**
+     * <p> This will move the robot at the specified speed for the specified time and then stop the bot once done.
+     * @param speedForwards Meters per second. This is the same as +x for swerve.
+     * @param speedHorizontal Meters per second. This is the same as +y for swerve. Positive direction is left.
+     * @param speedTurn Radians per second. The positive direction is counterclockwise (the front of the robot turning left).
+     * @param moveTime The duration to move for in seconds.
+     */
     public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTime)
     {
         return new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn).withTimeout(moveTime);

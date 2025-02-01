@@ -5,26 +5,43 @@
 package frc.robot.subsystems.muncher;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
 
 /** Add your docs here. */
 public class YeetForTimeAtSpeedCommand extends Command {
     private double speed;
-    private double seconds;
+
+    /**
+     * DO NOT USE THE CONSTRUCTOR. Use YeetForTimeAtSpeedCommand.create() instead.
+     */
+    private YeetForTimeAtSpeedCommand() {}
+
+
     /**
      * do not use this this constructor, use create instead
      */
-    private YeetForTimeAtSpeedCommand(double seconds) {
+    private YeetForTimeAtSpeedCommand(double speed) {
         this.speed = speed;
-        this.seconds = seconds;
     }
 
+    
+    /**
+     * This runs the yeet device of the muncher at a set speed for a set duration.
+     * @param speed The speed as a percent between -1 and 1 where 1 represents full speed pushing outwards and -1 represents full speed pulling inwards.
+     * @param seconds The duration in seconds to run the yeet device.
+     * @return The YeetForTimeCommand that can be scheduled.
+     */
     public static Command create(double speed, double seconds) {
         return new YeetForTimeAtSpeedCommand(speed).withTimeout(seconds);
     }
 
     @Override
     public void execute() {
-        RobotMap.muncher.yeet(speed);
+        Robot.map.muncher.yeet(speed);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        Robot.map.muncher.yeet(0);
     }
 }

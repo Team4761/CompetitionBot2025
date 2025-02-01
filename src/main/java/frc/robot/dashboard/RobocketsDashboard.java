@@ -1,4 +1,4 @@
-package frc.robot.shuffleboard;
+package frc.robot.dashboard;
 
 
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -7,8 +7,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.shuffleboard.reactive.ReactiveBooleanEntry;
-import frc.robot.shuffleboard.reactive.ReactiveNumberEntry;
+import frc.robot.dashboard.reactive.ReactiveBooleanEntry;
+import frc.robot.dashboard.reactive.ReactiveNumberEntry;
 
 /**
  * This is to have a nice and straightforward way of displaying data/settings on the dashboard during competition and debugging.

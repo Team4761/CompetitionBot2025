@@ -17,6 +17,7 @@ public class Constants {
     public static final int ARM_EXTEND_ENCODER_PORT = 0;   // DIO Port.
     public static final double ARM_PIVOT_LENGTH = 10; // Current temporary value, will be measured in meters
     public static final double ARM_EXTEND_LENGTH = 10; // Current temporary value, will be measured in meters
+    public static final double ARM_PIVOT_TO_BASE_DISTANCE = Units.inchesToMeters(16.5); // Distance between the pivot point of the arm and the robot base.
     public static final double ARM_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360); // Max angular velocity of the arm
     public static final double ARM_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360); // Max angular acceleration of the arm
     public static final double ARM_MAX_EXT_VELOCITY = 30; // (M/s) Max velocity of the arm extension
@@ -74,6 +75,9 @@ public class Constants {
     public static final double WHEEL_RADIUS = 0.04955;                  // Meters. Double check this; it's based on the 2024 Competition code.
     public static final double SWERVE_DRIVE_MOTOR_GEAR_RATIO = 6.12;    // Double check this; it's based on the 2024 Competition code!
 
+    // PHYSICAL CONSTANTS
+    public static final double ROBOT_SIDE_LENGTH = Units.inchesToMeters(30); // Width & Length of the robot.
+    public static final double ROBOT_HEIGHT = Units.inchesToMeters(3); // temporary value, height of the robot.-
       /*
        * VISION
        */
