@@ -14,13 +14,13 @@ public class Field {
     public static final double REEF_PIPE_DAIMETER = Units.inchesToMeters(1.25); // not sure if radius or diameter but 90% sure its diameter (pg 24)
     public static final double L1_FRONT_EDGE_HEIGHT = Units.inchesToMeters(18);
     public static final double L2_HEIGHT = Units.inchesToMeters(31.875);
-    public static final double L2_ANGLE = 35.0; //In degress
+    public static final Rotation2D L2_ANGLE = units.degreesToRadians(35.0); //In degress
     public static final double L2_INSET = Units.inchesToMeters(1.625);
     public static final double L3_HEIGHT = Units.inchesToMeters(47.625);
-    public static final double L3_ANGLE = 35.0; //In degress
+    public static final Rotation2D L3_ANGLE = degressToRadians(35.0); //In degress
     public static final double L3_INSET = Units.inchesToMeters(1.625);
     public static final double L4_HEIGHT = Units.inchesToMeters(72.0);
-    public static final double L4_ANGLE = 90.0; //In degress Dont know if 90 is vertical but I think so
+    public static final Rotation2D L4_ANGLE = degressToRadians(90.0); //In degress Dont know if 90 is vertical but I think so
     public static final double L4_INSET = Units.inchesToMeters(1.125);
 
     public static final double CORAL_STATION_TO_REEF_X_COMPONET = Units.inchesToMeters(144.0); 
