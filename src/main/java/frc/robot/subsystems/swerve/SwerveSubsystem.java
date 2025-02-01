@@ -51,16 +51,16 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Translation2d backRightLocation = new Translation2d(-0.32, -0.32);
 
     // For Kraken swerve (competition bot)
-    // public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(33.38)));
-    // public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-19.35)));
-    // public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(146.53)));
-    // public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(124.07)));
+    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-118.52)));
+    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-27.693)));
+    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-56.115)));
+    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(112.785)));
     
     // For Neo swerve (test bot)
-    public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
-    public final SwerveModuleIO frontRight = new SwerveModuleNeo(8, 5, 4, new Rotation2d(Units.degreesToRadians(-87.939)), false);
-    public final SwerveModuleIO backLeft = new SwerveModuleNeo(7, 9, 3, new Rotation2d(Units.degreesToRadians(-14.3)), true);
-    public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)), false);
+    // public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
+    // public final SwerveModuleIO frontRight = new SwerveModuleNeo(8, 5, 4, new Rotation2d(Units.degreesToRadians(-87.939)), false);
+    // public final SwerveModuleIO backLeft = new SwerveModuleNeo(7, 9, 3, new Rotation2d(Units.degreesToRadians(-14.3)), true);
+    // public final SwerveModuleIO backRight = new SwerveModuleNeo(12, 11, 2, new Rotation2d(Units.degreesToRadians(10.637)), false);
     
     
     /** This is just the type of gyro we have. */

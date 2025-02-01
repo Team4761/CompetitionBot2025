@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 
 /**
  * <p> This controls the arm to get to the setpoint and ends when it gets within (TBD) meters of the desired location.
@@ -47,14 +48,16 @@ public class GetArmToPositionCommand extends Command {
      */
     @Override
     public void initialize() {
-
+        Robot.map.arm.setDesiredPosition(targetX, targetY);
     }
 
     /**
      * This should only end when the current position is within MARGIN_OF_ERROR of the target position.
      */
     @Override
-    public void end(boolean isFinished) {
-
+    public boolean isFinished() {
+        // TODO: Implement this
+        System.out.println("Not Implemented Yet!");
+        return true;
     }
 }

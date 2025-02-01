@@ -29,8 +29,8 @@ public class RobotMap {
         // arm = new ArmSubsystem();
         // leds = new LEDSubsystem();
         // muncher = new MuncherSubsystem();
-        // swerve = new SwerveSubsystem();
-        vision = new VisionSubsystem();
+        swerve = new SwerveSubsystem();
+        // vision = new VisionSubsystem();
         // win = new WinSubsystem();
     }
 
