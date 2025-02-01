@@ -95,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public static double[] getRotationExtensionFromSetPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
-        double distanceToPoint = Math.sqrt(x*x+y*y);
+        double distanceToPoint = Math.sqrt((x*x)+(y*y));
         double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
         double percentOfExtension = lengthOfExtension/Constants.ARM_EXTEND_LENGTH;
         // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees) 
@@ -105,6 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
         }
         return new double[]{-1,-1};
     }
+
 
     /**
      * <p> This checks if the desired position is reachable and safe, and if it is, will set the desired position to the new position.
