@@ -16,6 +16,10 @@ public class DriveController extends XboxController {
     /** This stores which direction should be considered forwards. On robot initialization, this is towards the front of the robot. */
     private Rotation2d currentForwardsDirection = new Rotation2d();
 
+    private boolean driveInverted = false;
+    private boolean strafeInverted = false;
+    private boolean turnInverted = true;
+
     // Slew rate limiters caps the transition between different speeds. (ex, a limiter of 3 means that the max change in speed is 3 per second.)
     // A rateLimit of 3 means that it will take ~1/3 second to go from 0 -> 1.
     private final SlewRateLimiter leftXLimiter = new SlewRateLimiter(3);
@@ -51,9 +55,9 @@ public class DriveController extends XboxController {
             // Joystick control
             // Check out this desmos graph to see how the math works: https://www.desmos.com/calculator/6sio2uwvi1
             map.swerve.setDesiredSpeeds(
-                getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftX()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make up the positive direction
-                -getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftY()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make left the positive direction
-                -getRightX()   // Negative to make left (counterclockwise) the positive direction.
+                (driveInverted ? -1 : 1) * getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftX()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make up the positive direction
+                (strafeInverted ? -1 : 1) * getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftY()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make left the positive direction
+                (turnInverted ? -1 : 1) * getRightX()   // Negative to make left (counterclockwise) the positive direction.
             );
         }
     }
@@ -88,5 +92,26 @@ public class DriveController extends XboxController {
         else {
             System.out.println("Tried to orient the forwards direction for controlling... but swerve is turned off in RobotMap (or something else has gone terribly wrong).");
         }
+    }
+
+    public void setDriveInverted(boolean isInverted) {
+        this.driveInverted = isInverted;
+    }
+    public void setStrafeInverted(boolean isInverted) {
+        this.strafeInverted = isInverted;
+    }
+    public void setTurnInverted(boolean isInverted) {
+        this.turnInverted = isInverted;
+    }
+
+
+    public boolean getSwerveDriveInverted() {
+        return this.driveInverted;
+    }
+    public boolean getSwerveStrafeInverted() {
+        return this.strafeInverted;
+    }
+    public boolean getSwerveTurnInverted() {
+        return this.turnInverted;
     }
 }

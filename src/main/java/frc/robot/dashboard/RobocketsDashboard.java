@@ -73,6 +73,10 @@ public class RobocketsDashboard {
     ReactiveNumberEntry swerveTurnFFs;
     ReactiveNumberEntry swerveTurnFFv;
 
+    ReactiveBooleanEntry swerveDriveInverted;
+    ReactiveBooleanEntry swerveStrafeInverted;
+    ReactiveBooleanEntry swerveTurnInverted;
+
     // Settings
     ReactiveNumberEntry swerveDriveSpeed;
     ReactiveNumberEntry swerveTurnSpeed;
@@ -237,6 +241,12 @@ public class RobocketsDashboard {
         swerveTurnD = new ReactiveNumberEntry(Robot.map.swerve::updateTurnD, putNumber("Turn D", Robot.map.swerve.frontRight.getTurningPIDController().getD()));
         swerveTurnFFs = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFs, putNumber("Turn FFs", Robot.map.swerve.frontRight.getTurnFeedforward().getKs()));
         swerveTurnFFv = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFv, putNumber("Turn FFv", Robot.map.swerve.frontRight.getTurnFeedforward().getKv()));
+
+        // if (Robot.driveController != null) {
+        //     swerveDriveInverted = new ReactiveBooleanEntry(Robot.driveController::setDriveInverted, putBoolean("Is Drive Inverted", Robot.driveController.getSwerveDriveInverted()));
+        //     swerveStrafeInverted = new ReactiveBooleanEntry(Robot.driveController::setStrafeInverted, putBoolean("Is Strafe Inverted", Robot.driveController.getSwerveStrafeInverted()));
+        //     swerveTurnInverted = new ReactiveBooleanEntry(Robot.driveController::setTurnInverted, putBoolean("Is Turn Inverted", Robot.driveController.getSwerveTurnInverted()));
+        // }
     }
 
     

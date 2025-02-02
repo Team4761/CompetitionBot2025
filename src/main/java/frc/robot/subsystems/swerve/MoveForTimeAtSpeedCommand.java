@@ -48,7 +48,7 @@ public class MoveForTimeAtSpeedCommand extends Command {
      */
     public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTime)
     {
-        return new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn).withTimeout(moveTime);
+        return (new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn).withTimeout(moveTime));
     }
 
     /**

@@ -86,7 +86,9 @@ public class Robot extends TimedRobot {
    * chooser code above as well.
    */
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    CommandScheduler.getInstance().schedule(AutoHandler.getSelectedAuto());
+  }
 
   /** This function is called periodically during autonomous. */
   @Override
