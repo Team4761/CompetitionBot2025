@@ -14,7 +14,7 @@ import frc.robot.dashboard.reactive.ReactiveNumberEntry;
  * This is to have a nice and straightforward way of displaying data/settings on the dashboard during competition and debugging.
  * You might be thinking to yourself: why am I not using Shuffleboard?
  * Well, the WPILib gods have determined that Shuffleboard is blasphemy, and for some reason, it has forever stopped working.
- * Instead, we now use Glass for most things and Elastic when Glass doesn't work.
+ * Instead, we now use Elastic for most things and Glass when Elastic doesn't work.
  * This is for long term logging and settings.
  */
 public class RobocketsDashboard {
