@@ -26,7 +26,7 @@ public class ArmController extends XboxController {
                 CommandScheduler.getInstance().schedule(YeetCommand.create());
             }
         }
-        if(Robot.map.arm != null)
+        if(Robot.map.arm != null && armManualControl)
         {
             ArmSubsystem.rotate(getLeftY());
             ArmSubsystem.extend(getRightY());
@@ -49,6 +49,6 @@ public class ArmController extends XboxController {
 
     public void armManualControl(boolean armManualControl)
     {
-        armManualControl=true;
+        this.armManualControl = armManualControl;
     }
 }
