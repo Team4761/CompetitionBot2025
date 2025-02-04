@@ -154,6 +154,7 @@ public class RobocketsDashboard {
 
         initializeGeneralInfo();
         if (Robot.map.swerve != null) { initializeSwerveInfo(); }
+        if (Robot.map.arm != null) { setUpArm(); }
     }
 
 
@@ -256,14 +257,19 @@ public class RobocketsDashboard {
 
     public void setUpArm()
     {
-        extendArmMotorEnabled= new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Extend Arm Motor Enabled", true));
-        rotateArmMotorEnabled= new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Rotate Arm Motor Enabled", true));
+        extendArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Extend Arm Motor Enabled", true));
+        rotateArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Rotate Arm Motor Enabled", true));
         armManualControlEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Arm Manual Control Enabled", false));
     }
     /**
      * UPDATING TABS
      */
-    
+    public void updateArm()
+    {
+        extendArmMotorEnabled.update();
+        rotateArmMotorEnabled.update();
+        armManualControlEnabled.update();
+    }
     /**
      * Called in the SwerveSubsystem's periodic method.
      */
