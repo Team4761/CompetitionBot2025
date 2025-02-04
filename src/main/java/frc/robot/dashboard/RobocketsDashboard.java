@@ -86,14 +86,19 @@ public class RobocketsDashboard {
     /**
      * ARM
      */
+    ReactiveBooleanEntry armManualControlEnabled;
     // Pivot
     NetworkTableEntry armPivotAngle;
     NetworkTableEntry armPivotRaw;
+    ReactiveBooleanEntry rotateArmMotorEnabled;
+ 
 
     // Extension
     NetworkTableEntry armExtensionLength;
     NetworkTableEntry armExtensionRaw;
+    ReactiveBooleanEntry extendArmMotorEnabled;
 
+    
     // Tuning
     ReactiveNumberEntry armPivotP;
     ReactiveNumberEntry armPivotI;
@@ -249,7 +254,12 @@ public class RobocketsDashboard {
         // }
     }
 
-    
+    public void setUpArm()
+    {
+        extendArmMotorEnabled= new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Extend Arm Motor Enabled", true));
+        rotateArmMotorEnabled= new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Rotate Arm Motor Enabled", true));
+        armManualControlEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Arm Manual Control Enabled", false));
+    }
     /**
      * UPDATING TABS
      */
