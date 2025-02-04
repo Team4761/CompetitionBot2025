@@ -16,8 +16,8 @@ public class DriveController extends XboxController {
     /** This stores which direction should be considered forwards. On robot initialization, this is towards the front of the robot. */
     private Rotation2d currentForwardsDirection = new Rotation2d();
 
-    private boolean driveInverted = false;
-    private boolean strafeInverted = false;
+    private boolean driveInverted = true;
+    private boolean strafeInverted = true;
     private boolean turnInverted = true;
 
     // Slew rate limiters caps the transition between different speeds. (ex, a limiter of 3 means that the max change in speed is 3 per second.)
@@ -55,8 +55,8 @@ public class DriveController extends XboxController {
             // Joystick control
             // Check out this desmos graph to see how the math works: https://www.desmos.com/calculator/6sio2uwvi1
             map.swerve.setDesiredSpeeds(
-                (driveInverted ? -1 : 1) * getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftX()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make up the positive direction
-                (strafeInverted ? -1 : 1) * getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + -getLeftY()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make left the positive direction
+                (driveInverted ? -1 : 1) * getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + (driveInverted ? -1 : 1) * getLeftY()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make up the positive direction
+                (strafeInverted ? 1 : -1) * getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + (strafeInverted ? -1 : 1) * getLeftX()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make left the positive direction
                 (turnInverted ? -1 : 1) * getRightX()   // Negative to make left (counterclockwise) the positive direction.
             );
         }

@@ -51,10 +51,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Translation2d backRightLocation = new Translation2d(-0.32, -0.32);
 
     // For Kraken swerve (competition bot)
-    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(0)));
-    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(0)));
-    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(0)));
-    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(0)));
+    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-64.556)));
+    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(118.012)));
+    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(151.849)));
+    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(61.438)));
     
     // For Neo swerve (test bot)
     // public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
@@ -88,6 +88,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private double desiredSpeedY = 0.0;
     /** Radians per second. Positive is the counterclockwise direction (the front of the robot turning left) */
     private double desiredSpeedRotation = 0.0;
+    /** This should be true if the robot is actively being rotated, false if otherwise */
+    private boolean isBeingRotated = false;
+    /** This stores the rotation of the robot the last time it was being rotated */
+    private Rotation2d lastRotation = new Rotation2d();
 
     /** Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation. */
     private boolean isFieldOriented = true;
@@ -156,6 +160,12 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         updateOdometry();
 
+        // If not actively rotating, then we should be correcting the rotation to stop "drifting"
+        // Math.signum(number) returns -1 if the number is negative and +1 if the number is positive (or 0 if it is 0)
+        if (!isBeingRotated && Math.abs(lastRotation.getDegrees() - getGyroRotation().getDegrees()) > 3) {
+            this.desiredSpeedRotation = -Math.signum(lastRotation.getDegrees() - getGyroRotation().getDegrees());
+        }
+
         // Represents the desired speeds of the entire robot essentially
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(this.desiredSpeedX, this.desiredSpeedY, this.desiredSpeedRotation);
         // Makes the speeds relative to the field if true
@@ -210,6 +220,14 @@ public class SwerveSubsystem extends SubsystemBase {
         // Except this one. Rotation is radians/second.
         this.desiredSpeedRotation = speedRotation * speedTurnModifier * 5;
         setUsingPathPlanner(false);
+
+        if (desiredSpeedRotation != 0) {
+            this.isBeingRotated = true;
+            this.lastRotation = getGyroRotation();
+        }
+        else {
+            this.isBeingRotated = false;
+        }
     }
 
 

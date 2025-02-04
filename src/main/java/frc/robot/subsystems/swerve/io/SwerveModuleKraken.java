@@ -105,7 +105,7 @@ public class SwerveModuleKraken implements SwerveModuleIO {
                 // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
                 // direction of travel that can occur when modules change directions.
                 // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
-                // desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
+                desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
 
                 // Calculate the voltage sent to the driving motor using the drive PID controller.
                 final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
