@@ -105,13 +105,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
     
-    if (map.swerve != null) {
-      map.swerve.setDesiredSpeeds(
-        -driveController.getLeftY(),   // Negative to make up the positive direction
-        driveController.getLeftX(),
-        -driveController.getRightX()   // Negative to make left (counterclockwise) the positive direction.
-      );
-    }
+    driveController.teleopPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */

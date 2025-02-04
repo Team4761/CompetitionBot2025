@@ -2,7 +2,7 @@ package frc.robot.subsystems.swerve;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 
 /**
@@ -48,7 +48,7 @@ public class MoveForTimeAtSpeedCommand extends Command {
      */
     public static Command create(double speedForwards, double speedHorizontal, double speedTurn, double moveTime)
     {
-        return (new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn).withTimeout(moveTime));
+        return new MoveForTimeAtSpeedCommand(speedForwards,speedHorizontal,speedTurn).withTimeout(moveTime);
     }
 
     /**
@@ -57,9 +57,6 @@ public class MoveForTimeAtSpeedCommand extends Command {
     @Override
     public void initialize() {
         addRequirements(Robot.map.swerve);
-
-        // Run for moveTime seconds and then stop
-        this.withTimeout(moveTime);
     }
 
     /**
