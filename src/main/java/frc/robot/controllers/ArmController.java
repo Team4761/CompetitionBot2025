@@ -3,7 +3,6 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.muncher.YeetCommand;
 
 /**
@@ -12,15 +11,24 @@ import frc.robot.subsystems.muncher.YeetCommand;
  * rightBumper().onTrue(YeetCommand.create())
  */
 public class ArmController extends XboxController {
-    public Boolean armManualControl = false;
-    public Boolean extendArmMotorEnabled = true;
-    public Boolean rotateArmMotorEnabled = true;
+    public boolean armManualControl = false;
+    public boolean extendArmMotorEnabled = true;
+    public boolean rotateArmMotorEnabled = true;
+
+    /**
+     * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
+     */
     public ArmController(int port) {
         super(port);
+        // These run the onLeftTrigger and onRightTrigger methods when the triggers are pressed more than 25% down.
         leftTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onLeftTrigger);
         rightTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onRightTrigger);
     }
 
+
+    /**
+     * This should be called in Robot.java during teleopPeriodic with armController.teleopPeriodic()
+     */
     public void teleopPeriodic() {
         if (Robot.map.muncher != null) {
             if (getRightBumperButtonPressed()) {
@@ -29,10 +37,11 @@ public class ArmController extends XboxController {
         }
         if(Robot.map.arm != null && armManualControl)
         {
-            ArmSubsystem.rotate(getLeftY());
-            ArmSubsystem.extend(getRightY());
+            Robot.map.arm.rotate(getLeftY());
+            Robot.map.arm.extend(getRightY());
         }
     }
+
 
     public void onLeftTrigger() {
         Robot.map.muncher.intake(getLeftTriggerAxis());
@@ -42,8 +51,19 @@ public class ArmController extends XboxController {
         Robot.map.muncher.intake(-getRightTriggerAxis());
     }
 
-    public void armManualControl(boolean armManualControl)
+    // These functions are pretty much only used for the dashboard.
+    public void setArmManualControl(boolean armManualControl)
     {
         this.armManualControl = armManualControl;
+    }
+
+    public void setExtendArmMotorEnabled(boolean extendArmMotorEnabled)
+    {
+        this.extendArmMotorEnabled = extendArmMotorEnabled;
+    }
+
+    public void setRotateArmMotorEnabled(boolean rotateArmMotorEnabled)
+    {
+        this.rotateArmMotorEnabled = rotateArmMotorEnabled;
     }
 }

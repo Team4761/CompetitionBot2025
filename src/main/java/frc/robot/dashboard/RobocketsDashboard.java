@@ -257,9 +257,9 @@ public class RobocketsDashboard {
 
     public void setUpArm()
     {
-        extendArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Extend Arm Motor Enabled", true));
-        rotateArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Rotate Arm Motor Enabled", true));
-        armManualControlEnabled = new ReactiveBooleanEntry(Robot.armController::armManualControl, putBoolean("Arm Manual Control Enabled", false));
+        rotateArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::setRotateArmMotorEnabled, putBoolean("Arm Rotate Motor Enabled", true));
+        extendArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Extend Motor Enabled", true));
+        armManualControlEnabled = new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Manual Control Enabled", false));
     }
     /**
      * UPDATING TABS

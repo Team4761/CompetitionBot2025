@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 
@@ -56,8 +57,12 @@ public class GetArmToPositionCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        // TODO: Implement this
-        System.out.println("Not Implemented Yet!");
-        return true;
+        Translation2d currentPosition = Robot.map.arm.getSetPointFromRotationAndExtension(Robot.map.arm.getPivotRotation(), Robot.map.arm.getExtensionLength());
+
+        // If within ACCEPTABLE_MARGIN_OF_ERROR meters of the target location, end the command.
+        if (Math.pow((currentPosition.getX() - targetX),2) + Math.pow((currentPosition.getX() - targetY),2) < Math.pow(ACCEPTABLE_MARGIN_OF_ERROR,2)) {
+            return true;
+        }
+        return false;
     }
 }
