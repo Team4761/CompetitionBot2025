@@ -86,6 +86,8 @@ public class ArmSubsystem extends SubsystemBase {
             rotate(pivotSpeed);
             extend(extensionSpeed);
         }
+
+        Robot.dashboard.updateArm();
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }
 
