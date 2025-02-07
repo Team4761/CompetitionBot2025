@@ -3,7 +3,6 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -41,7 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
-    private Pose2d desiredPosition;
+    private Translation2d desiredPosition;
     
     // Both are Krakens
     private static TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_MOTOR_PORT);
@@ -86,8 +85,6 @@ public class ArmSubsystem extends SubsystemBase {
             rotate(pivotSpeed);
             extend(extensionSpeed);
         }
-
-        Robot.dashboard.updateArm();
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }
 
@@ -157,7 +154,7 @@ public class ArmSubsystem extends SubsystemBase {
             return;
         }
 
-        desiredPosition = new Pose2d(x, y, new Rotation2d());
+        desiredPosition = new Translation2d(x, y);
     }
 
 
@@ -218,4 +215,25 @@ public class ArmSubsystem extends SubsystemBase {
         System.out.println(output[1]);
         */
     }
+
+
+    public Translation2d getTargetPoint() {
+        return this.desiredPosition;
+    }
+
+
+    public Translation2d getCurrentPoint() {
+        return getSetPointFromRotationAndExtension(getPivotRotation(), getExtensionLength());
+    }
+
+
+    public void setExtendP(double p) { this.extensionPID.setP(p); }
+    public void setExtendI(double i) { this.extensionPID.setI(i); }
+    public void setExtendD(double d) { this.extensionPID.setD(d); }
+    public void setRotateP(double p) { this.pivotPID.setP(p); }
+    public void setRotateI(double i) { this.pivotPID.setI(i); }
+    public void setRotateD(double d) { this.pivotPID.setD(d); }
+
+    public ProfiledPIDController getExtensionPID() { return this.extensionPID; }
+    public ProfiledPIDController getPivotPID() { return this.pivotPID; }
 }

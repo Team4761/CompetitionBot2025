@@ -3,17 +3,24 @@
   "grid_size": 128,
   "tabs": [
     {
-      "name": "Teleoperated",
+      "name": "General",
       "grid_layout": {
         "layouts": [],
-        "containers": []
-      }
-    },
-    {
-      "name": "Autonomous",
-      "grid_layout": {
-        "layouts": [],
-        "containers": []
+        "containers": [
+          {
+            "title": "Selected Auto",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Selected Auto",
+              "period": 0.06,
+              "sort_options": false
+            }
+          }
+        ]
       }
     },
     {
@@ -21,7 +28,7 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "General",
+            "title": "Swerve",
             "x": 0.0,
             "y": 0.0,
             "width": 256.0,
@@ -32,70 +39,28 @@
             },
             "children": [
               {
-                "title": "Swerve Drive",
-                "x": 384.0,
+                "title": "Swerve Drive Representation",
+                "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 256.0,
                 "type": "SwerveDrive",
                 "properties": {
-                  "topic": "/SmartDashboard/Swerve Drive",
+                  "topic": "/SmartDashboard/Swerve Drive Representation",
                   "period": 0.06,
                   "show_robot_rotation": true,
                   "rotation_unit": "Radians"
                 }
               },
               {
-                "title": "X Position",
-                "x": 128.0,
-                "y": 384.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/X Position",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Y Position",
-                "x": 128.0,
-                "y": 384.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Y Position",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Gyro Rotation",
-                "x": 128.0,
-                "y": 384.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Gyro Rotation",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
                 "title": "Swerve Drive Speed",
-                "x": 128.0,
-                "y": 512.0,
+                "x": 0.0,
+                "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Swerve Drive Speed",
+                  "topic": "/SmartDashboard/Swerve/Swerve Drive Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "min_value": 0.0,
@@ -106,19 +71,114 @@
               },
               {
                 "title": "Swerve Turn Speed",
-                "x": 128.0,
-                "y": 512.0,
+                "x": 0.0,
+                "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Swerve Turn Speed",
+                  "topic": "/SmartDashboard/Swerve/Swerve Turn Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "min_value": 0.0,
                   "max_value": 1.0,
                   "divisions": 5,
                   "update_continuously": false
+                }
+              },
+              {
+                "title": "Gyro Rotation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/Gyro Rotation",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Rotation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/Rotation",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "X Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/X Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Y Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/Y Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Is Drive Inverted",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve Controller/Is Drive Inverted",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Is Strafe Inverted",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve Controller/Is Strafe Inverted",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Is Turn Inverted",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve Controller/Is Turn Inverted",
+                  "period": 0.06,
+                  "data_type": "boolean"
                 }
               }
             ]
@@ -142,7 +202,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/FL: Enabled?",
+                  "topic": "/SmartDashboard/Swerve/FL: Enabled?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -155,7 +215,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/FL: Manual Control?",
+                  "topic": "/SmartDashboard/Swerve/FL: Manual Control?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -168,7 +228,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/FL: Current Rotation",
+                  "topic": "/SmartDashboard/Swerve/FL: Current Rotation",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -182,21 +242,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/FL: Distance Traveled",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "FL: Desired Drive Speed",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/FL: Desired Drive Speed",
+                  "topic": "/SmartDashboard/Swerve/FL: Distance Traveled",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -210,7 +256,21 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/FL: Desired Turn Speed",
+                  "topic": "/SmartDashboard/Swerve/FL: Desired Turn Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "FL: Desired Drive Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/FL: Desired Drive Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -237,7 +297,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/FR: Enabled?",
+                  "topic": "/SmartDashboard/Swerve/FR: Enabled?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -250,7 +310,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/FR: Manual Control?",
+                  "topic": "/SmartDashboard/Swerve/FR: Manual Control?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -263,7 +323,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/FR: Current Rotation",
+                  "topic": "/SmartDashboard/Swerve/FR: Current Rotation",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -277,21 +337,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/FR: Distance Traveled",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "FR: Desired Drive Speed",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/FR: Desired Drive Speed",
+                  "topic": "/SmartDashboard/Swerve/FR: Distance Traveled",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -305,7 +351,21 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/FR: Desired Turn Speed",
+                  "topic": "/SmartDashboard/Swerve/FR: Desired Turn Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "FR: Desired Drive Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/FR: Desired Drive Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -326,13 +386,13 @@
             "children": [
               {
                 "title": "BL: Enabled?",
-                "x": 896.0,
-                "y": 128.0,
+                "x": 0.0,
+                "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/BL: Enabled?",
+                  "topic": "/SmartDashboard/Swerve/BL: Enabled?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -345,7 +405,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/BL: Manual Control?",
+                  "topic": "/SmartDashboard/Swerve/BL: Manual Control?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -358,7 +418,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/BL: Current Rotation",
+                  "topic": "/SmartDashboard/Swerve/BL: Current Rotation",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -372,21 +432,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/BL: Distance Traveled",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "BL: Desired Drive Speed",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/BL: Desired Drive Speed",
+                  "topic": "/SmartDashboard/Swerve/BL: Distance Traveled",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -400,7 +446,21 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/BL: Desired Turn Speed",
+                  "topic": "/SmartDashboard/Swerve/BL: Desired Turn Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "BL: Desired Drive Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/BL: Desired Drive Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -427,7 +487,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/BR: Enabled?",
+                  "topic": "/SmartDashboard/Swerve/BR: Enabled?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -440,7 +500,7 @@
                 "height": 128.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "/SmartDashboard/BR: Manual Control?",
+                  "topic": "/SmartDashboard/Swerve/BR: Manual Control?",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -453,7 +513,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/BR: Current Rotation",
+                  "topic": "/SmartDashboard/Swerve/BR: Current Rotation",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -467,21 +527,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/BR: Distance Traveled",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "BR: Desired Drive Speed",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/BR: Desired Drive Speed",
+                  "topic": "/SmartDashboard/Swerve/BR: Distance Traveled",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -495,7 +541,21 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/BR: Desired Turn Speed",
+                  "topic": "/SmartDashboard/Swerve/BR: Desired Turn Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "BR: Desired Drive Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve/BR: Desired Drive Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -520,12 +580,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive P",
+                  "topic": "/SmartDashboard/Swerve/Drive P",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 10.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -534,12 +597,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive I",
+                  "topic": "/SmartDashboard/Swerve/Drive I",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 10.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -548,12 +614,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive D",
+                  "topic": "/SmartDashboard/Swerve/Drive D",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 10.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -562,12 +631,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive FFs",
+                  "topic": "/SmartDashboard/Swerve/Drive FFs",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 20.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -576,18 +648,21 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive FFv",
+                  "topic": "/SmartDashboard/Swerve/Drive FFv",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 20.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               }
             ]
           },
           {
-            "title": "Turn Tuning",
+            "title": "PID Tuning",
             "x": 1536.0,
             "y": 0.0,
             "width": 256.0,
@@ -603,12 +678,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Turn P",
+                  "topic": "/SmartDashboard/Swerve/Turn P",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 10.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -617,12 +695,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Turn I",
+                  "topic": "/SmartDashboard/Swerve/Turn I",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 10.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -631,12 +712,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Turn D",
+                  "topic": "/SmartDashboard/Swerve/Turn D",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 10.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -645,12 +729,15 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Turn FFs",
+                  "topic": "/SmartDashboard/Swerve/Turn FFs",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 20.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               },
               {
@@ -659,17 +746,135 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "Number Slider",
                 "properties": {
-                  "topic": "/SmartDashboard/Turn FFv",
+                  "topic": "/SmartDashboard/Swerve/Turn FFv",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "min_value": 0.0,
+                  "max_value": 20.0,
+                  "divisions": 5,
+                  "update_continuously": false
                 }
               }
             ]
           }
         ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Arm",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Arm",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 896.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Manual Control Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Arm Controller/Manual Control Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Rotate Motor Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Arm Controller/Rotate Motor Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Extend Motor Enabled",
+                "x": 128.0,
+                "y": 384.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Arm Controller/Extend Motor Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Pivot",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 896.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Extend",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 896.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Pivot Tuning",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 896.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Extend Tuning",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 896.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          }
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Vision",
+      "grid_layout": {
+        "layouts": [],
         "containers": []
       }
     }

@@ -2,13 +2,14 @@ package frc.robot.dashboard.reactive;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.function.BooleanConsumer;
+import frc.robot.dashboard.DashboardHandler;
 
 /**
  * This allows you to store a boolean entry on the shuffleboard and call a function automatically whenever that value is updated.
  * The update() function must be called in order to check for the updates, but this allows for almost all the shuffleboard code to be contained to RobocketsShuffleboard.java
  * This is useful for updating PID values, swerve values, etc. without having to constantly check the shuffleboard values in the main robot code.
  */
-public class ReactiveBooleanEntry {
+public class ReactiveBooleanEntry implements ReactiveEntry {
 
     /** This entry should be taken directly from shuffleboard */
     private NetworkTableEntry entry;
@@ -30,6 +31,8 @@ public class ReactiveBooleanEntry {
      * @param entry The shuffleboard entry to update. You can see how to get this by looking at RobocketsShuffleboard.java
      */
     public ReactiveBooleanEntry(BooleanConsumer functionToCallOnUpdate, NetworkTableEntry entry) {
+        DashboardHandler.addReactiveEntry(this);
+
         this.functionToCallOnUpdate = functionToCallOnUpdate;
         this.entry = entry;
         this.lastValue = entry.getBoolean(false);

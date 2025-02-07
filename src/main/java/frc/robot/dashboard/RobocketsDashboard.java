@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.dashboard.reactive.ReactiveBooleanEntry;
 import frc.robot.dashboard.reactive.ReactiveNumberEntry;
+import frc.robot.dashboard.telemetry.TelemetryNumberEntry;
 
 /**
  * This is to have a nice and straightforward way of displaying data/settings on the dashboard during competition and debugging.
@@ -19,335 +20,180 @@ import frc.robot.dashboard.reactive.ReactiveNumberEntry;
  */
 public class RobocketsDashboard {
 
-    Field2d field;
-
-    /**
-     * SWERVE
-     */
-    // Modules
-    NetworkTableEntry swerveFLDistanceTraveled;
-    NetworkTableEntry swerveFLCurrentRotation;
-    NetworkTableEntry swerveFLDesiredDriveSpeed;
-    NetworkTableEntry swerveFLDesiredTurnSpeed;
-    ReactiveBooleanEntry swerveFLEnabled;
-    ReactiveBooleanEntry swerveFLManualControl;
-
-    NetworkTableEntry swerveFRDistanceTraveled;
-    NetworkTableEntry swerveFRCurrentRotation;
-    NetworkTableEntry swerveFRTurnEncoderReading;
-    NetworkTableEntry swerveFRDesiredDriveSpeed;
-    NetworkTableEntry swerveFRDesiredTurnSpeed;
-    ReactiveBooleanEntry swerveFREnabled;
-    ReactiveBooleanEntry swerveFRManualControl;
-
-    NetworkTableEntry swerveBLDistanceTraveled;
-    NetworkTableEntry swerveBLCurrentRotation;
-    NetworkTableEntry swerveBLDesiredDriveSpeed;
-    NetworkTableEntry swerveBLDesiredTurnSpeed;
-    ReactiveBooleanEntry swerveBLEnabled;
-    ReactiveBooleanEntry swerveBLManualControl;
-
-    NetworkTableEntry swerveBRDistanceTraveled;
-    NetworkTableEntry swerveBRCurrentRotation;
-    NetworkTableEntry swerveBRDesiredDriveSpeed;
-    NetworkTableEntry swerveBRDesiredTurnSpeed;
-    ReactiveBooleanEntry swerveBREnabled;
-    ReactiveBooleanEntry swerveBRManualControl;
-
-    // Entire Drivetrain
-    NetworkTableEntry swerveXPosition;
-    NetworkTableEntry swerveYPosition;
-    NetworkTableEntry swerveRotation;
-    NetworkTableEntry swerveGyroRotation;
-
-    // Tuning
-    ReactiveNumberEntry swerveDriveP;
-    ReactiveNumberEntry swerveDriveI;
-    ReactiveNumberEntry swerveDriveD;
-    ReactiveNumberEntry swerveDriveFFs;
-    ReactiveNumberEntry swerveDriveFFv;
-
-    ReactiveNumberEntry swerveTurnP;
-    ReactiveNumberEntry swerveTurnI;
-    ReactiveNumberEntry swerveTurnD;
-    ReactiveNumberEntry swerveTurnFFs;
-    ReactiveNumberEntry swerveTurnFFv;
-
-    ReactiveBooleanEntry swerveDriveInverted;
-    ReactiveBooleanEntry swerveStrafeInverted;
-    ReactiveBooleanEntry swerveTurnInverted;
-
-    // Settings
-    ReactiveNumberEntry swerveDriveSpeed;
-    ReactiveNumberEntry swerveTurnSpeed;
-    ReactiveBooleanEntry swerveFieldOriented;
-
-
-    /**
-     * ARM
-     */
-    ReactiveBooleanEntry armManualControlEnabled;
-    // Pivot
-    NetworkTableEntry armPivotAngle;
-    NetworkTableEntry armPivotRaw;
-    ReactiveBooleanEntry rotateArmMotorEnabled;
- 
-
-    // Extension
-    NetworkTableEntry armExtensionLength;
-    NetworkTableEntry armExtensionRaw;
-    ReactiveBooleanEntry extendArmMotorEnabled;
-
-    
-    // Tuning
-    ReactiveNumberEntry armPivotP;
-    ReactiveNumberEntry armPivotI;
-    ReactiveNumberEntry armPivotD;
-    ReactiveNumberEntry armPivotKs;
-    ReactiveNumberEntry armPivotKv;
-
-    ReactiveNumberEntry armExtensionP;
-    ReactiveNumberEntry armExtensionI;
-    ReactiveNumberEntry armExtensionD;
-    ReactiveNumberEntry armExtensionKs;
-    ReactiveNumberEntry armExtensionKv;
-
-    // Visualization?
-    // I don't know what to do here yet...
-
-
-    /**
-     * MUNCHER
-     */
-    // Intake/Outtake
-    ReactiveNumberEntry muncherIntakeSpeed;
-    ReactiveNumberEntry muncherOuttakeSpeed;
-
-    // Yeeter
-    ReactiveNumberEntry muncherYeetSpeed;
-
-
-    /**
-     * LEDs
-     */
-    // No idea what to put here...
-
-
-    /**
-     * VISION
-     */
-    // April Tag Info
-    NetworkTableEntry visionAprilTagID;
-    NetworkTableEntry visionX;
-    NetworkTableEntry visionY;
-    NetworkTableEntry visionZ;
-    NetworkTableEntry visionYaw;
-    NetworkTableEntry visionPitch;
+    /** Literally represents the field with the robot on it (tis a pretty cool visualization) */
+    private Field2d field;
     
 
     /**
-     * INITIALIZATION
+     * There should only be one RobocketsDashboard initialized in Robot.java
      */
     public RobocketsDashboard() {
-
         field = new Field2d();
 
-        initializeGeneralInfo();
-        if (Robot.map.swerve != null) { initializeSwerveInfo(); }
-        if (Robot.map.arm != null) { setUpArm(); }
+        setupArmController();
+        setupDriveController();
+        setupSwerve();
+        setupArm();
     }
 
 
     /**
-     * INITIALIZING INFO
+     * Only call this if swerve is initialized!
      */
+    public void setupSwerve() {
+        if (Robot.map.swerve != null) {
+            // This puts swerve onto the shuffleboard in a really nice way.
+            // Here's the documentation for it: https://frc-elastic.gitbook.io/docs/additional-features-and-references/custom-widget-examples
+            // All the () -> Robot.map... stuff is something called a lambda expression. In this case, that's just a fancy way of saying the dashboard will call the method after the arrow (->) every time it wants to get the current value.
+            SmartDashboard.putData("Swerve Drive Representation", new Sendable() {
+                @Override
+                public void initSendable(SendableBuilder builder) {
+                    builder.setSmartDashboardType("SwerveDrive");
 
-    /**
-     * This is for any information that is not subsystem specific.
-     */
-    public void initializeGeneralInfo() {
-        // Currently nothing here...
+                    builder.addDoubleProperty("Front Left Angle", () -> Robot.map.swerve.frontLeft.getWheelRotation().getRadians(), null);
+                    builder.addDoubleProperty("Front Left Velocity", () -> Robot.map.swerve.frontLeft.getDriveVelocity(), null);
+
+                    builder.addDoubleProperty("Front Right Angle", () -> Robot.map.swerve.frontRight.getWheelRotation().getRadians(), null);
+                    builder.addDoubleProperty("Front Right Velocity", () -> Robot.map.swerve.frontRight.getDriveVelocity(), null);
+
+                    builder.addDoubleProperty("Back Left Angle", () -> Robot.map.swerve.backLeft.getWheelRotation().getRadians(), null);
+                    builder.addDoubleProperty("Back Left Velocity", () -> Robot.map.swerve.backLeft.getDriveVelocity(), null);
+
+                    builder.addDoubleProperty("Back Right Angle", () -> Robot.map.swerve.backRight.getWheelRotation().getRadians(), null);
+                    builder.addDoubleProperty("Back Right Velocity", () -> Robot.map.swerve.backRight.getDriveVelocity(), null);
+
+                    builder.addDoubleProperty("Robot Angle", () -> Robot.map.swerve.getGyroRotation().getRadians(), null);
+                }
+            });
+
+            // Settings
+            new ReactiveNumberEntry(Robot.map.swerve::setDriveMultiplier, putNumber("Swerve", "Swerve Drive Speed", 0.5));
+            new ReactiveNumberEntry(Robot.map.swerve::setTurnMultiplier, putNumber("Swerve", "Swerve Turn Speed", 0.5));
+            new ReactiveBooleanEntry(Robot.map.swerve::setFieldOriented, putBoolean("Swerve", "Swerve Field Oriented", true));
+
+            // Module Specific Info
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getDrivePosition(), putNumber("Swerve", "FL: Distance Traveled", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getWheelRotation().getDegrees(), putNumber("Swerve", "FL: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getDriveVelocity(), putNumber("Swerve", "FL: Desired Drive Speed", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getAngularVelocity().getDegrees(), putNumber("Swerve", "FL: Desired Turn Speed", 0));
+            new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setEnabled, putBoolean("Swerve", "FL: Enabled?", true));
+            new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setManualControl, putBoolean("Swerve", "FL: Manual Control?", false));
+
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getDrivePosition(), putNumber("Swerve", "FR: Distance Traveled", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getWheelRotation().getDegrees(), putNumber("Swerve", "FR: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getDriveVelocity(), putNumber("Swerve", "FR: Desired Drive Speed", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getAngularVelocity().getDegrees(), putNumber("Swerve", "FR: Desired Turn Speed", 0));
+            new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setEnabled, putBoolean("Swerve", "FR: Enabled?", true));
+            new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setManualControl, putBoolean("Swerve", "FR: Manual Control?", false));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getTurnEncoderReading(), putNumber("Swerve", "FR: Distance Traveled", 0));
+
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getDrivePosition(), putNumber("Swerve", "BL: Distance Traveled", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getWheelRotation().getDegrees(), putNumber("Swerve", "BL: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getDriveVelocity(), putNumber("Swerve", "BL: Desired Drive Speed", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getAngularVelocity().getDegrees(), putNumber("Swerve", "BL: Desired Turn Speed", 0));
+            new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setEnabled, putBoolean("Swerve", "BL: Enabled?", true));
+            new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setManualControl, putBoolean("Swerve", "BL: Manual Control?", false));
+
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getDrivePosition(), putNumber("Swerve", "BR: Distance Traveled", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getWheelRotation().getDegrees(), putNumber("Swerve", "BR: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getDriveVelocity(), putNumber("Swerve", "BR: Desired Drive Speed", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getAngularVelocity().getDegrees(), putNumber("Swerve", "BR: Desired Turn Speed", 0));
+            new ReactiveBooleanEntry(Robot.map.swerve.backRight::setEnabled, putBoolean("Swerve", "BR: Enabled?", true));
+            new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("Swerve", "BR: Manual Control?", false));
+
+            // Swerve General Info
+            new TelemetryNumberEntry(() -> Robot.map.swerve.getPosition().getRotation().getDegrees(), putNumber("Swerve", "Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.getGyroRotation().getDegrees(), putNumber("Swerve", "Gyro Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.getPosition().getX(), putNumber("Swerve", "X Position", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.getPosition().getY(), putNumber("Swerve", "Y Position", 0));
+
+            // Tuning Info
+            new ReactiveNumberEntry(Robot.map.swerve::updateDriveP, putNumber("Swerve", "Drive P", Robot.map.swerve.frontRight.getDrivePIDController().getP()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateDriveI, putNumber("Swerve", "Drive I", Robot.map.swerve.frontRight.getDrivePIDController().getI()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateDriveD, putNumber("Swerve", "Drive D", Robot.map.swerve.frontRight.getDrivePIDController().getD()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFs, putNumber("Swerve", "Drive FFs", Robot.map.swerve.frontRight.getDriveFeedforward().getKs()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFv, putNumber("Swerve", "Drive FFv", Robot.map.swerve.frontRight.getDriveFeedforward().getKv()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateTurnP, putNumber("Swerve", "Turn P", Robot.map.swerve.frontRight.getTurningPIDController().getP()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateTurnI, putNumber("Swerve", "Turn I", Robot.map.swerve.frontRight.getTurningPIDController().getI()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateTurnD, putNumber("Swerve", "Turn D", Robot.map.swerve.frontRight.getTurningPIDController().getD()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFs, putNumber("Swerve", "Turn FFs", Robot.map.swerve.frontRight.getTurnFeedforward().getKs()));
+            new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFv, putNumber("Swerve", "Turn FFv", Robot.map.swerve.frontRight.getTurnFeedforward().getKv()));
+        }
     }
 
 
-    /**
-     * There's a lot of stuff here, so buckle up.
-     */
-    public void initializeSwerveInfo() {
-        // Settings
-        swerveDriveSpeed = new ReactiveNumberEntry(Robot.map.swerve::setDriveMultiplier, putNumber("Swerve Drive Speed", 0.5));
-        swerveTurnSpeed = new ReactiveNumberEntry(Robot.map.swerve::setTurnMultiplier, putNumber("Swerve Turn Speed", 0.5));
-        swerveFieldOriented = new ReactiveBooleanEntry(Robot.map.swerve::setFieldOriented, putBoolean("Swerve Field Oriented", true));
-
-        // This puts swerve onto the shuffleboard in a really nice way.
-        // Here's the documentation for it: https://frc-elastic.gitbook.io/docs/additional-features-and-references/custom-widget-examples
-        // All the () -> Robot.map... stuff is something called a lambda expression. In this case, that's just a fancy way of saying the dashboard will call the method after the arrow (->) every time it wants to get the current value.
-        SmartDashboard.putData("Swerve Drive", new Sendable() {
-            @Override
-            public void initSendable(SendableBuilder builder) {
-                builder.setSmartDashboardType("SwerveDrive");
-
-                builder.addDoubleProperty("Front Left Angle", () -> Robot.map.swerve.frontLeft.getWheelRotation().getRadians(), null);
-                builder.addDoubleProperty("Front Left Velocity", () -> Robot.map.swerve.frontLeft.getDriveVelocity(), null);
-
-                builder.addDoubleProperty("Front Right Angle", () -> Robot.map.swerve.frontRight.getWheelRotation().getRadians(), null);
-                builder.addDoubleProperty("Front Right Velocity", () -> Robot.map.swerve.frontRight.getDriveVelocity(), null);
-
-                builder.addDoubleProperty("Back Left Angle", () -> Robot.map.swerve.backLeft.getWheelRotation().getRadians(), null);
-                builder.addDoubleProperty("Back Left Velocity", () -> Robot.map.swerve.backLeft.getDriveVelocity(), null);
-
-                builder.addDoubleProperty("Back Right Angle", () -> Robot.map.swerve.backRight.getWheelRotation().getRadians(), null);
-                builder.addDoubleProperty("Back Right Velocity", () -> Robot.map.swerve.backRight.getDriveVelocity(), null);
-
-                builder.addDoubleProperty("Robot Angle", () -> Robot.map.swerve.getGyroRotation().getRadians(), null);
-            }
-        });
-
-        swerveFLDistanceTraveled = putNumber("FL: Distance Traveled", 0);
-        swerveFLCurrentRotation = putNumber("FL: Current Rotation", 0);
-        swerveFLDesiredDriveSpeed = putNumber("FL: Desired Drive Speed", 0);
-        swerveFLDesiredTurnSpeed = putNumber("FL: Desired Turn Speed", 0);
-        swerveFLEnabled = new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setEnabled, putBoolean("FL: Enabled?", true));
-        swerveFLManualControl = new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setManualControl, putBoolean("FL: Manual Control?", false));
-
-        swerveFRDistanceTraveled = putNumber("FR: Distance Traveled", 0);
-        swerveFRCurrentRotation = putNumber("FR: Current Rotation", 0);
-        swerveFRTurnEncoderReading = putNumber("FR: Turn Encoder Reading", 0);
-        swerveFRDesiredDriveSpeed = putNumber("FR: Desired Drive Speed", 0);
-        swerveFRDesiredTurnSpeed = putNumber("FR: Desired Turn Speed", 0);
-        swerveFREnabled = new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setEnabled, putBoolean("FR: Enabled?", true));
-        swerveFRManualControl = new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setManualControl, putBoolean("FR: Manual Control?", false));
-
-        swerveBLDistanceTraveled = putNumber("BL: Distance Traveled", 0);
-        swerveBLCurrentRotation = putNumber("BL: Current Rotation", 0);
-        swerveBLDesiredDriveSpeed = putNumber("BL: Desired Drive Speed", 0);
-        swerveBLDesiredTurnSpeed = putNumber("BL: Desired Turn Speed", 0);
-        swerveBLEnabled = new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setEnabled, putBoolean("BL: Enabled?", true));
-        swerveBLManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setManualControl, putBoolean("BL: Manual Control?", false));
-
-        swerveBRDistanceTraveled = putNumber("BR: Distance Traveled", 0);
-        swerveBRCurrentRotation = putNumber("BR: Current Rotation", 0);
-        swerveBRDesiredDriveSpeed = putNumber("BR: Desired Drive Speed", 0);
-        swerveBRDesiredTurnSpeed = putNumber("BR: Desired Turn Speed", 0);
-        swerveBREnabled = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setEnabled, putBoolean("BR: Enabled?", true));
-        swerveBRManualControl = new ReactiveBooleanEntry(Robot.map.swerve.backRight::setManualControl, putBoolean("BR: Manual Control?", false));
-
-        swerveRotation = putNumber("Rotation", 0);
-        swerveGyroRotation = putNumber("Gyro Rotation", 0);
-        swerveXPosition = putNumber("X Position", 0);
-        swerveYPosition = putNumber("Y Position", 0);
-
-        swerveDriveP = new ReactiveNumberEntry(Robot.map.swerve::updateDriveP, putNumber("Drive P", Robot.map.swerve.frontRight.getDrivePIDController().getP()));
-        swerveDriveI = new ReactiveNumberEntry(Robot.map.swerve::updateDriveI, putNumber("Drive I", Robot.map.swerve.frontRight.getDrivePIDController().getI()));
-        swerveDriveD = new ReactiveNumberEntry(Robot.map.swerve::updateDriveD, putNumber("Drive D", Robot.map.swerve.frontRight.getDrivePIDController().getD()));
-        swerveDriveFFs = new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFs, putNumber("Drive FFs", Robot.map.swerve.frontRight.getDriveFeedforward().getKs()));
-        swerveDriveFFv = new ReactiveNumberEntry(Robot.map.swerve::updateDriveFFv, putNumber("Drive FFv", Robot.map.swerve.frontRight.getDriveFeedforward().getKv()));
-        swerveTurnP = new ReactiveNumberEntry(Robot.map.swerve::updateTurnP, putNumber("Turn P", Robot.map.swerve.frontRight.getTurningPIDController().getP()));
-        swerveTurnI = new ReactiveNumberEntry(Robot.map.swerve::updateTurnI, putNumber("Turn I", Robot.map.swerve.frontRight.getTurningPIDController().getI()));
-        swerveTurnD = new ReactiveNumberEntry(Robot.map.swerve::updateTurnD, putNumber("Turn D", Robot.map.swerve.frontRight.getTurningPIDController().getD()));
-        swerveTurnFFs = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFs, putNumber("Turn FFs", Robot.map.swerve.frontRight.getTurnFeedforward().getKs()));
-        swerveTurnFFv = new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFv, putNumber("Turn FFv", Robot.map.swerve.frontRight.getTurnFeedforward().getKv()));
-
-        // if (Robot.driveController != null) {
-        //     swerveDriveInverted = new ReactiveBooleanEntry(Robot.driveController::setDriveInverted, putBoolean("Is Drive Inverted", Robot.driveController.getSwerveDriveInverted()));
-        //     swerveStrafeInverted = new ReactiveBooleanEntry(Robot.driveController::setStrafeInverted, putBoolean("Is Strafe Inverted", Robot.driveController.getSwerveStrafeInverted()));
-        //     swerveTurnInverted = new ReactiveBooleanEntry(Robot.driveController::setTurnInverted, putBoolean("Is Turn Inverted", Robot.driveController.getSwerveTurnInverted()));
-        // }
-    }
-
-    public void setUpArm()
+    public void setupArm()
     {
-        rotateArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::setRotateArmMotorEnabled, putBoolean("Arm Rotate Motor Enabled", true));
-        extendArmMotorEnabled = new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Extend Motor Enabled", true));
-        armManualControlEnabled = new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Manual Control Enabled", false));
+        if (Robot.map.arm != null) {
+            // Arm Info
+            new TelemetryNumberEntry(() -> Robot.map.arm.getPivotRotation().getDegrees(), putNumber("Arm", "Pivot Angle", 0));
+            new TelemetryNumberEntry(() -> Robot.map.arm.getExtensionLength(), putNumber("Arm", "Extension Length", 0));
+            new TelemetryNumberEntry(() -> Robot.map.arm.getTargetPoint().getX(), putNumber("Arm", "Target X", 0));
+            new TelemetryNumberEntry(() -> Robot.map.arm.getTargetPoint().getY(), putNumber("Arm", "Target Y", 0));
+            new TelemetryNumberEntry(() -> Robot.map.arm.getCurrentPoint().getX(), putNumber("Arm", "Current X", 0));
+            new TelemetryNumberEntry(() -> Robot.map.arm.getCurrentPoint().getY(), putNumber("Arm", "Current Y", 0));
+
+            // Tuning
+            new ReactiveNumberEntry(Robot.map.arm::setExtendP, putNumber("Arm", "Extend P", Robot.map.arm.getExtensionPID().getP()));
+            new ReactiveNumberEntry(Robot.map.arm::setExtendI, putNumber("Arm", "Extend I", Robot.map.arm.getExtensionPID().getI()));
+            new ReactiveNumberEntry(Robot.map.arm::setExtendD, putNumber("Arm", "Extend D", Robot.map.arm.getExtensionPID().getD()));
+            new ReactiveNumberEntry(Robot.map.arm::setRotateP, putNumber("Arm", "Pivot P", Robot.map.arm.getPivotPID().getP()));
+            new ReactiveNumberEntry(Robot.map.arm::setRotateI, putNumber("Arm", "Pivot I", Robot.map.arm.getPivotPID().getI()));
+            new ReactiveNumberEntry(Robot.map.arm::setRotateD, putNumber("Arm", "Pivot D", Robot.map.arm.getPivotPID().getD()));
+        }
     }
+
+
+    public void setupArmController() {
+        if (Robot.driveController != null) {
+            new ReactiveBooleanEntry(Robot.armController::setRotateArmMotorEnabled, putBoolean("Arm Controller", "Rotate Motor Enabled", true));
+            new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Controller", "Extend Motor Enabled", true));
+            new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Controller", "Manual Control Enabled", false));
+        }
+    }
+
+
+    public void setupDriveController() {
+        if (Robot.driveController != null) {
+            new ReactiveBooleanEntry(Robot.driveController::setDriveInverted, putBoolean("Swerve Controller", "Is Drive Inverted", Robot.driveController.getSwerveDriveInverted()));
+            new ReactiveBooleanEntry(Robot.driveController::setStrafeInverted, putBoolean("Swerve Controller", "Is Strafe Inverted", Robot.driveController.getSwerveStrafeInverted()));
+            new ReactiveBooleanEntry(Robot.driveController::setTurnInverted, putBoolean("Swerve Controller", "Is Turn Inverted", Robot.driveController.getSwerveTurnInverted()));
+        }
+    }
+
+
     /**
-     * UPDATING TABS
+     * This is only needed for things that can't be easily fit into a reactive/telemetry entry
+     * This method is called by the DashboardHandler
      */
-    public void updateArm()
+    public void update()
     {
-        extendArmMotorEnabled.update();
-        rotateArmMotorEnabled.update();
-        armManualControlEnabled.update();
-    }
-    /**
-     * Called in the SwerveSubsystem's periodic method.
-     */
-    public void updateSwerve() {
-        // Currently no desired speed data yet.
-        swerveFLDistanceTraveled.setDouble(Robot.map.swerve.frontLeft.getDrivePosition());
-        swerveFLCurrentRotation.setDouble(Robot.map.swerve.frontLeft.getWheelRotation().getDegrees());
-
-        swerveFRDistanceTraveled.setDouble(Robot.map.swerve.frontRight.getDrivePosition());
-        swerveFRCurrentRotation.setDouble(Robot.map.swerve.frontRight.getWheelRotation().getDegrees());
-        swerveFRTurnEncoderReading.setDouble(Robot.map.swerve.frontRight.getTurnEncoderReading());
-
-        swerveBLDistanceTraveled.setDouble(Robot.map.swerve.backLeft.getDrivePosition());
-        swerveBLCurrentRotation.setDouble(Robot.map.swerve.backLeft.getWheelRotation().getDegrees());
-
-        swerveBRDistanceTraveled.setDouble(Robot.map.swerve.backRight.getDrivePosition());
-        swerveBRCurrentRotation.setDouble(Robot.map.swerve.backRight.getWheelRotation().getDegrees());
-
-        swerveGyroRotation.setDouble(Robot.map.swerve.getGyroRotation().getDegrees());
-        swerveRotation.setDouble(Robot.map.swerve.getPosition().getRotation().getDegrees());
-        swerveXPosition.setDouble(Robot.map.swerve.getPosition().getX());
-        swerveYPosition.setDouble(Robot.map.swerve.getPosition().getY());
-
-        // REACTIVE ELEMENTS
-
-        swerveFLEnabled.update();
-        swerveFREnabled.update();
-        swerveBLEnabled.update();
-        swerveBREnabled.update();
-
-        swerveFLManualControl.update();
-        swerveFRManualControl.update();
-        swerveBLManualControl.update();
-        swerveBRManualControl.update();
-
-        swerveDriveSpeed.update();
-        swerveTurnSpeed.update();
-        swerveFieldOriented.update();
-
-        swerveDriveP.update();
-        swerveDriveI.update();
-        swerveDriveD.update();
-        swerveDriveFFs.update();
-        swerveDriveFFv.update();
-        swerveTurnP.update();
-        swerveTurnI.update();
-        swerveTurnD.update();
-        swerveTurnFFs.update();
-        swerveTurnFFv.update();
-
         field.setRobotPose(Robot.map.swerve.getPosition());
     }
 
-    
-    /**
-     * HELPER FUNCTIONS
-     */
 
     /**
      * This puts a number onto the SmartDashboard.
-     * @param topic The name of the data.
+     * @param group The folder/group to put the value inside of.
+     * @param name The name of the data.
      * @param defaultValue The default value.
      * @return A reference to the entry of that number in the SmartDashboard.
      */
-    public static NetworkTableEntry putNumber(String topic, double defaultValue) {
-        SmartDashboard.putNumber(topic, defaultValue);
-        return SmartDashboard.getEntry(topic);
+    public static NetworkTableEntry putNumber(String group, String name, double defaultValue) {
+        SmartDashboard.putNumber(group+"/"+name, defaultValue);
+        return SmartDashboard.getEntry(group+"/"+name);
     }
 
 
     /**
      * This puts a boolean onto the SmartDashboard.
-     * @param topic The name of the data.
+     * @param group The folder/group to put the value inside of.
+     * @param name The name of the data.
      * @param defaultValue The default value.
      * @return A reference to the entry of that number in the SmartDashboard.
      */
-    public static NetworkTableEntry putBoolean(String topic, boolean defaultValue) {
-        SmartDashboard.putBoolean(topic, defaultValue);
-        return SmartDashboard.getEntry(topic);
+    public static NetworkTableEntry putBoolean(String group, String name, boolean defaultValue) {
+        SmartDashboard.putBoolean(group+"/"+name, defaultValue);
+        return SmartDashboard.getEntry(group+"/"+name);
     }
 }

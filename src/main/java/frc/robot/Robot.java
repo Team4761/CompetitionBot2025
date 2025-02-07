@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.auto.AutoHandler;
 import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
+import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
 
 /**
@@ -34,10 +35,11 @@ public class Robot extends TimedRobot {
   public void Italy() {}
 
   public static final RobotMap map = new RobotMap();
-  public static final RobocketsDashboard dashboard = new RobocketsDashboard();
 
   public static final DriveController driveController = new DriveController(0);
   public static final ArmController armController = new ArmController(1);
+
+  public static RobocketsDashboard dashboard;
 
   // The time between periodic() calls.
   // This gets updated in the robotPeriodic() function.
@@ -55,6 +57,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    dashboard = new RobocketsDashboard();
+    
     // Make sure our autos can be properly selected
     AutoHandler.setupAutoSelector();
     AutoHandler.setupPathPlanner();
@@ -73,6 +77,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     currentPeriod = getPeriod();
+
+    DashboardHandler.updateDashboard();
   }
 
   /**
