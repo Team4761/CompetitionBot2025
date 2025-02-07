@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.dashboard.reactive.ReactiveBooleanEntry;
 import frc.robot.dashboard.reactive.ReactiveNumberEntry;
+import frc.robot.dashboard.telemetry.TelemetryBooleanEntry;
 import frc.robot.dashboard.telemetry.TelemetryNumberEntry;
 
 /**
@@ -34,6 +35,7 @@ public class RobocketsDashboard {
         setupDriveController();
         setupSwerve();
         setupArm();
+        setupVision();
     }
 
 
@@ -158,6 +160,23 @@ public class RobocketsDashboard {
             new ReactiveBooleanEntry(Robot.driveController::setDriveInverted, putBoolean("Swerve Controller", "Is Drive Inverted", Robot.driveController.getSwerveDriveInverted()));
             new ReactiveBooleanEntry(Robot.driveController::setStrafeInverted, putBoolean("Swerve Controller", "Is Strafe Inverted", Robot.driveController.getSwerveStrafeInverted()));
             new ReactiveBooleanEntry(Robot.driveController::setTurnInverted, putBoolean("Swerve Controller", "Is Turn Inverted", Robot.driveController.getSwerveTurnInverted()));
+        }
+    }
+
+
+    public void setupVision() {
+        if (Robot.map.vision != null) {
+            // April Tag Info
+            new TelemetryNumberEntry(() -> Robot.map.vision.getFieldPose().getX(), putNumber("Vision", "X", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getFieldPose().getY(), putNumber("Vision", "Y", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getFieldPose().getZ(), putNumber("Vision", "Z", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getFieldPose().getRotation().getX(), putNumber("Vision", "Roll", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getFieldPose().getRotation().getY(), putNumber("Vision", "Pitch", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getFieldPose().getRotation().getZ(), putNumber("Vision", "Yaw", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getLastAprilTagID(), putNumber("Vision", "April Tag ID", 0));
+            new TelemetryNumberEntry(() -> Robot.map.vision.getLatency(), putNumber("Vision", "Latency", 0));
+            new TelemetryBooleanEntry(() -> Robot.map.vision.isSeeingAprilTag(), putBoolean("Vision", "Is Seeing April Tag?", false));
+            
         }
     }
 

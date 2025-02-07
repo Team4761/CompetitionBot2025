@@ -38,6 +38,10 @@ public class VisionSubsystem extends SubsystemBase {
     //  This is the last recorded pose by vision (which tries to update its pose in the periodic method)
     // (0,0) represents the left corner of the blue alliance-wall, looking towards the red alliance. Towards the red alliance is +x, towards the other side of the alliance wall is +y.
     private Pose3d fieldPosition;
+    private int aprilTagID = -1;
+    private double latency = 0;
+    private boolean foundAprilTag = false;
+
     // Default hostname is "photonvision", but we changed that to "CAMERA_NAME"
     PhotonCamera camera;
     double lastTimestamp = 0;
@@ -123,17 +127,10 @@ public class VisionSubsystem extends SubsystemBase {
                         SmartDashboard.putNumber("Z - Estimated Vision Pose", estimatedPose.estimatedPose.getZ());
                     }
 
-                    SmartDashboard.putNumber("April Tag ID", target.getFiducialId());
-                    SmartDashboard.putNumber("X - Vision Pose", fieldPosition.getX());
-                    SmartDashboard.putNumber("Y - Vision Pose", fieldPosition.getY());
-                    SmartDashboard.putNumber("Z - Vision Pose", fieldPosition.getZ());
-                    SmartDashboard.putNumber("Roll - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getX()));
-                    SmartDashboard.putNumber("Pitch - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getY()));
-                    SmartDashboard.putNumber("Yaw - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getZ()));
-
-                    SmartDashboard.putNumber("Camera Latency", result.getTimestampSeconds() - lastTimestamp);
+                    aprilTagID = target.getFiducialId();
+                    latency = result.getTimestampSeconds() - lastTimestamp;
                     lastTimestamp = result.getTimestampSeconds();
-                    SmartDashboard.putBoolean("Found April Tag", true);
+                    foundAprilTag = true;
                 }
             }
             else {
@@ -145,5 +142,20 @@ public class VisionSubsystem extends SubsystemBase {
 
     public Pose3d getFieldPose() {
         return fieldPosition;
+    }
+
+
+    public double getLastAprilTagID() {
+        return aprilTagID;
+    }
+
+
+    public boolean isSeeingAprilTag() {
+        return foundAprilTag;
+    }
+
+
+    public double getLatency() {
+        return latency;
     }
 }
