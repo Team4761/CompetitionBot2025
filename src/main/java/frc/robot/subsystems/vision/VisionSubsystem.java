@@ -58,7 +58,9 @@ public class VisionSubsystem extends SubsystemBase {
     );
 
     // Actual field layout for when testing is done.
-    // AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    // If the following line is throwing an error message, you don't have the most up-to-date WPILib version.
+    // This requires version 2025.1.1+ to work.
+    AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
     /**
@@ -81,61 +83,62 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Get the last processed frame (technically just results) from the camera.
-        PhotonPipelineResult result = camera.getLatestResult();
+        List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         
         // Check for if there are any April Tags in the result
-        if (result.hasTargets()) {
-            // Normally, we wouldn't get both the best AND all targets, but I want to for testing purposes.
-            // List<PhotonTrackedTarget> targets = result.getTargets();
-            PhotonTrackedTarget target = result.getBestTarget();
+        for (PhotonPipelineResult result : results) {
+            if (result.hasTargets()) {
+                // List<PhotonTrackedTarget> targets = result.getTargets();
+                PhotonTrackedTarget target = result.getBestTarget();
 
-            // Get information from a generic target (not necessarily april tags)
-            // List<TargetCorner> corners = target.getDetectedCorners();
-            // double yaw = target.getYaw();
-            // double pitch = target.getPitch();
-            // double area = target.getArea();
+                // Get information from a generic target (not necessarily april tags)
+                // List<TargetCorner> corners = target.getDetectedCorners();
+                // double yaw = target.getYaw();
+                // double pitch = target.getPitch();
+                // double area = target.getArea();
 
-            // Skew is not available with April Tags sadly :(
-            // double skew = target.getSkew();
+                // Skew is not available with April Tags sadly :(
+                // double skew = target.getSkew();
 
-            // April tag specific information
-            // Transform3d pose = target.getBestCameraToTarget();
-            // int targetID = target.getFiducialId();
-            // double poseAmbiguity = target.getPoseAmbiguity();
+                // April tag specific information
+                // Transform3d pose = target.getBestCameraToTarget();
+                // int targetID = target.getFiducialId();
+                // double poseAmbiguity = target.getPoseAmbiguity();
 
-            // Calculate robot's field relative pose
-            if (aprilTagFieldLayout.getTagPose(target.getFiducialId()).isPresent()) {
-                fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
-                    target.getBestCameraToTarget(), // The position of the April Tag relative to the camera
-                    aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
-                    CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
-                );
+                // Calculate robot's field relative pose
+                if (aprilTagFieldLayout.getTagPose(target.getFiducialId()).isPresent()) {
+                    fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
+                        target.getBestCameraToTarget(), // The position of the April Tag relative to the camera
+                        aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
+                        CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
+                    );
 
-                // This "should" do the same thing as above, but I want to compare the two for differences.
-                Optional<EstimatedRobotPose> estimatedPoseMaybeNull = photonPoseEstimator.update(result);
+                    // This "should" do the same thing as above, but I want to compare the two for differences.
+                    Optional<EstimatedRobotPose> estimatedPoseMaybeNull = photonPoseEstimator.update(result);
 
-                if (estimatedPoseMaybeNull.isPresent()) {
-                    EstimatedRobotPose estimatedPose = estimatedPoseMaybeNull.get();
-                    SmartDashboard.putNumber("X - Estimated Vision Pose", estimatedPose.estimatedPose.getX());
-                    SmartDashboard.putNumber("Y - Estimated Vision Pose", estimatedPose.estimatedPose.getY());
-                    SmartDashboard.putNumber("Z - Estimated Vision Pose", estimatedPose.estimatedPose.getZ());
+                    if (estimatedPoseMaybeNull.isPresent()) {
+                        EstimatedRobotPose estimatedPose = estimatedPoseMaybeNull.get();
+                        SmartDashboard.putNumber("X - Estimated Vision Pose", estimatedPose.estimatedPose.getX());
+                        SmartDashboard.putNumber("Y - Estimated Vision Pose", estimatedPose.estimatedPose.getY());
+                        SmartDashboard.putNumber("Z - Estimated Vision Pose", estimatedPose.estimatedPose.getZ());
+                    }
+
+                    SmartDashboard.putNumber("April Tag ID", target.getFiducialId());
+                    SmartDashboard.putNumber("X - Vision Pose", fieldPosition.getX());
+                    SmartDashboard.putNumber("Y - Vision Pose", fieldPosition.getY());
+                    SmartDashboard.putNumber("Z - Vision Pose", fieldPosition.getZ());
+                    SmartDashboard.putNumber("Roll - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getX()));
+                    SmartDashboard.putNumber("Pitch - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getY()));
+                    SmartDashboard.putNumber("Yaw - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getZ()));
+
+                    SmartDashboard.putNumber("Camera Latency", result.getTimestampSeconds() - lastTimestamp);
+                    lastTimestamp = result.getTimestampSeconds();
+                    SmartDashboard.putBoolean("Found April Tag", true);
                 }
-
-                SmartDashboard.putNumber("April Tag ID", target.getFiducialId());
-                SmartDashboard.putNumber("X - Vision Pose", fieldPosition.getX());
-                SmartDashboard.putNumber("Y - Vision Pose", fieldPosition.getY());
-                SmartDashboard.putNumber("Z - Vision Pose", fieldPosition.getZ());
-                SmartDashboard.putNumber("Roll - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getX()));
-                SmartDashboard.putNumber("Pitch - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getY()));
-                SmartDashboard.putNumber("Yaw - Vision Pose", Units.radiansToDegrees(fieldPosition.getRotation().getZ()));
-
-                SmartDashboard.putNumber("Camera Latency", result.getTimestampSeconds() - lastTimestamp);
-                lastTimestamp = result.getTimestampSeconds();
-                SmartDashboard.putBoolean("Found April Tag", true);
             }
-        }
-        else {
-            SmartDashboard.putBoolean("Found April Tag", false);
+            else {
+                SmartDashboard.putBoolean("Found April Tag", false);
+            }
         }
     }
 
