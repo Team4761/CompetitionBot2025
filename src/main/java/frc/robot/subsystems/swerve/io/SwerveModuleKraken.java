@@ -54,6 +54,7 @@ public class SwerveModuleKraken implements SwerveModuleIO {
     private final PIDController drivePIDController = new PIDController(2, 0, 0);
 
     // A ProfiledPIDController is the same as above but also includes a max speed and max acceleration.
+    // The value from last year's code was 21 (but it was in rotations, not radians. So it would be 21/2PI = 3.34 for this code...)
     private final ProfiledPIDController turningPIDController = new ProfiledPIDController(
         4,
         0,
@@ -63,8 +64,11 @@ public class SwerveModuleKraken implements SwerveModuleIO {
 
     // Feed forward literally predicts the future and determines a MINIMUM speed to maintain the current position.
     // Typically this isn't needed, so the values (ks and kv) are set to 0 for now (Jan 11, 2025).
+    // k_s = "constant of static friction" = minimum voltage required to overcome the static friction in the gears. (value taken from last year's code = 0.15)
+    // k_v = "constant of maintaining position" = minimum voltage required to maintain the current position. This is NOT needed for Swerve.
+    // k_a = "constant of acceleration" = expected voltage required to induce an acceleration (?). Generally is <0.01 so probably not needed...
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0);
-    private SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0, 0);
+    private SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(0.15, 0);
 
     
     /**
