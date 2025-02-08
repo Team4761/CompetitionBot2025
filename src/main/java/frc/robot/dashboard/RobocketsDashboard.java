@@ -153,7 +153,7 @@ public class RobocketsDashboard {
         if (Robot.driveController != null) {
             new ReactiveBooleanEntry(Robot.armController::setRotateArmMotorEnabled, putBoolean("Arm Controller", "Rotate Motor Enabled", true));
             new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Controller", "Extend Motor Enabled", true));
-            new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Controller", "Manual Control Enabled", false));
+            new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Controller", "Manual Control Enabled", true));
         }
     }
 

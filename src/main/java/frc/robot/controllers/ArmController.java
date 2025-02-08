@@ -11,7 +11,7 @@ import frc.robot.subsystems.muncher.YeetCommand;
  * rightBumper().onTrue(YeetCommand.create())
  */
 public class ArmController extends XboxController {
-    public boolean armManualControl = false;
+    public boolean armManualControl = true;
     public boolean extendArmMotorEnabled = true;
     public boolean rotateArmMotorEnabled = true;
 
