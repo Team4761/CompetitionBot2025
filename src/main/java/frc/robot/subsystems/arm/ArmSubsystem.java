@@ -40,7 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
-    private Translation2d desiredPosition;
+    private Translation2d desiredPosition = new Translation2d();
     
     // Both are Krakens
     private static TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_MOTOR_PORT);
@@ -164,9 +164,9 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void rotate(double rotationalVelocity)
     {
-        if(Robot.armController.armManualControl == true && Robot.armController.rotateArmMotorEnabled == true)
+        if(Robot.armController.rotateArmMotorEnabled == true)
         {
-            pivotMotor.set(rotationalVelocity);
+            pivotMotor.set(-rotationalVelocity);
         }
     }   
 
@@ -176,7 +176,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void extend(double extensionVelocity)
     {
-        if(Robot.armController.armManualControl == true && Robot.armController.extendArmMotorEnabled == true)
+        if(Robot.armController.extendArmMotorEnabled == true)
         {
             extendMotor.set(extensionVelocity);
         }
@@ -188,7 +188,11 @@ public class ArmSubsystem extends SubsystemBase {
      * @return The rotation of the arm where 0 radians/degrees represents [...] <-- NEED TO DETERMINE THIS
      */
     public Rotation2d getPivotRotation() {
-        return new Rotation2d(pivotEncoder.get() * PIVOT_ENCODER_UNITS_TO_RADIANS).minus(PIVOT_ENCODER_OFFSET);
+        if (pivotEncoder.isConnected())
+            return new Rotation2d(pivotEncoder.get() * PIVOT_ENCODER_UNITS_TO_RADIANS).minus(PIVOT_ENCODER_OFFSET);
+        else
+        // This is the motor's native encoder units (which is rotations) times the gear ratio (11/56*...) minus the offset (the arm at 0 degrees)
+            return new Rotation2d(pivotMotor.getPosition().getValueAsDouble()*(0.1)).minus(new Rotation2d(0.0));
         // TODO: Maybe implement encoder.isConnected() for doomsday code?
     }
 
@@ -200,6 +204,14 @@ public class ArmSubsystem extends SubsystemBase {
     public double getExtensionLength() {
         return extendEncoder.get() * EXTENSION_ENCODER_UNITS_TO_METERS - EXTENSION_ENCODER_OFFSET;
         // TODO: Maybe implement encoder.isConnected() for doomsday code?
+    }
+
+
+    public boolean isPivotEncoderConnected() {
+        return pivotEncoder.isConnected();
+    }
+    public boolean isExtensionEncoderConnected() {
+        return extendEncoder.isConnected();
     }
 
 

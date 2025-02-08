@@ -37,8 +37,8 @@ public class ArmController extends XboxController {
         }
         if(Robot.map.arm != null && armManualControl)
         {
-            Robot.map.arm.rotate(getLeftY());
-            Robot.map.arm.extend(getRightY());
+            Robot.map.arm.rotate(0.1*getLeftY());
+            Robot.map.arm.extend(0.1*getRightY());
         }
     }
 

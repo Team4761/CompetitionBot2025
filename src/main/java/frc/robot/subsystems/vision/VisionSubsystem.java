@@ -64,7 +64,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Actual field layout for when testing is done.
     // If the following line is throwing an error message, you don't have the most up-to-date WPILib version.
     // This requires version 2025.1.1+ to work.
-    AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    // AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
     /**
