@@ -135,6 +135,9 @@ public class RobocketsDashboard {
             new TelemetryNumberEntry(() -> Robot.map.arm.getCurrentPoint().getX(), putNumber("Arm", "Current X", 0));
             new TelemetryNumberEntry(() -> Robot.map.arm.getCurrentPoint().getY(), putNumber("Arm", "Current Y", 0));
 
+            new TelemetryBooleanEntry(() -> Robot.map.arm.isPivotEncoderConnected(), putBoolean("Arm", "Is Pivot Encoder Connected?", false));
+            new TelemetryBooleanEntry(() -> Robot.map.arm.isExtensionEncoderConnected(), putBoolean("Arm", "Is Extension Encoder Connected?", false));
+
             // Tuning
             new ReactiveNumberEntry(Robot.map.arm::setExtendP, putNumber("Arm", "Extend P", Robot.map.arm.getExtensionPID().getP()));
             new ReactiveNumberEntry(Robot.map.arm::setExtendI, putNumber("Arm", "Extend I", Robot.map.arm.getExtensionPID().getI()));

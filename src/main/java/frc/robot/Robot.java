@@ -57,6 +57,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CommandScheduler.getInstance().cancelAll();
     dashboard = new RobocketsDashboard();
     
     // Make sure our autos can be properly selected
@@ -112,6 +113,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     
     driveController.teleopPeriodic();
+    armController.teleopPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */
