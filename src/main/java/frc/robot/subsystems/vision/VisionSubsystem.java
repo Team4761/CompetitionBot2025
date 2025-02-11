@@ -17,7 +17,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -41,6 +40,7 @@ public class VisionSubsystem extends SubsystemBase {
     private int aprilTagID = -1;
     private double latency = 0;
     private boolean foundAprilTag = false;
+    private List<PhotonPipelineResult> results;
 
     // Default hostname is "photonvision", but we changed that to "CAMERA_NAME"
     PhotonCamera camera;
@@ -63,7 +63,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Actual field layout for when testing is done.
     // If the following line is throwing an error message, you don't have the most up-to-date WPILib version.
-    // This requires version 2025.1.1+ to work.
+    // This requires version 2025.2.1+ to work.
     // AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
@@ -87,7 +87,7 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Get the last processed frame (technically just results) from the camera.
-        List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+        results = camera.getAllUnreadResults();
         
         // Check for if there are any April Tags in the result
         for (PhotonPipelineResult result : results) {
@@ -137,6 +137,26 @@ public class VisionSubsystem extends SubsystemBase {
                 SmartDashboard.putBoolean("Found April Tag", false);
             }
         }
+    }
+
+
+    /**
+     * This will iterate through the last list of april tags that were found and give the relative position of the robot in relation to the april tag.
+     * @param aprilTagID The ID of the april tag to look for.
+     * @return The position of the robot's center RELATIVE to the april tag in meters! null if the april tag was not found.
+     */
+    public Transform3d getRobotRelativeToAprilTag(int aprilTagID) {
+        // TODO: Make this work with Pose3d (as in get rotational information of the robot as well)
+        for (PhotonPipelineResult result : results) {
+            if (result.hasTargets()) {
+                PhotonTrackedTarget target = result.getBestTarget();
+                if (target.getFiducialId() == aprilTagID) {
+                    return target.getBestCameraToTarget().inverse().plus(CAMERA_ON_ROBOT_POSE);
+                }
+            }
+        }
+
+        return null;
     }
 
 

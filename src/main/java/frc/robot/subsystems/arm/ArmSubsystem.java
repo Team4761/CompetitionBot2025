@@ -18,6 +18,10 @@ import frc.robot.Robot;
  */
 public class ArmSubsystem extends SubsystemBase {
 
+
+    /** This is the really funky gear ratio of the kraken motor we have hooked up to the pivot. 11 teeth turn 56 teeth, connected to 18 teeth turning 56 teeth... etc */
+    private static final double ARM_PIVOT_KRAKEN_UNITS_TO_RADIANS = (2.0*Math.PI*(11.0/56.0)*(18.0/56.0)*(16.0/56.0));
+
     /**
      * Sadly, there is no easy way to zero the encoders. Therefore, the best we can do is have an offset.
      */
@@ -40,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
-    private Translation2d desiredPosition = new Translation2d();
+    private Translation2d desiredPosition = getSetPointFromRotationAndExtension(new Rotation2d(0), 0);
     
     // Both are Krakens
     private static TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_MOTOR_PORT);
@@ -191,9 +195,8 @@ public class ArmSubsystem extends SubsystemBase {
         if (pivotEncoder.isConnected())
             return new Rotation2d(pivotEncoder.get() * PIVOT_ENCODER_UNITS_TO_RADIANS).minus(PIVOT_ENCODER_OFFSET);
         else
-        // This is the motor's native encoder units (which is rotations) times the gear ratio (11/56*...) minus the offset (the arm at 0 degrees)
-            return new Rotation2d(pivotMotor.getPosition().getValueAsDouble()*(0.1)).minus(new Rotation2d(0.0));
-        // TODO: Maybe implement encoder.isConnected() for doomsday code?
+            // This is the motor's native encoder units (which is rotations) times the gear ratio (ARM_PIVOT_KRAKEN_UNITS_TO_RADIANS) minus the offset (the arm at 0 degrees)
+            return new Rotation2d(pivotMotor.getPosition().getValueAsDouble()*ARM_PIVOT_KRAKEN_UNITS_TO_RADIANS).minus(new Rotation2d(0.0));
     }
 
 
