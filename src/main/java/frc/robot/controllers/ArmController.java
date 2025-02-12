@@ -3,6 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import frc.robot.subsystems.muncher.IntakeCommand;
 import frc.robot.subsystems.muncher.YeetCommand;
 
 /**
@@ -14,7 +15,8 @@ public class ArmController extends XboxController {
     public boolean armManualControl = true;
     public boolean extendArmMotorEnabled = true;
     public boolean rotateArmMotorEnabled = true;
-
+    public double intakeSpeed = 0.1;
+    public double yeetSpeed = 0.1;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
      */
@@ -23,6 +25,15 @@ public class ArmController extends XboxController {
         // These run the onLeftTrigger and onRightTrigger methods when the triggers are pressed more than 25% down.
         leftTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onLeftTrigger);
         rightTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onRightTrigger);
+    }
+
+    public void setIntakeSpeed(double speed)
+    {
+        intakeSpeed = speed;
+    }
+    public void setYeetSpeed(double speed)
+    {
+        yeetSpeed = speed;
     }
 
 
@@ -40,6 +51,8 @@ public class ArmController extends XboxController {
             Robot.map.arm.rotate(0.1*getLeftY());
             Robot.map.arm.extend(0.1*getRightY());
         }
+        Robot.map.muncher.intake(0.1*getLeftTriggerAxis());
+        Robot.map.muncher.yeet(0.1*getRightTriggerAxis());
     }
 
 
