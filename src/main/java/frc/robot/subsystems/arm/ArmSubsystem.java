@@ -78,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        if(!Robot.armController.armManualControl){
+        if(!Robot.armController.armManualControl && isPivotEncoderConnected() && isExtensionEncoderConnected()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
             double[] setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
