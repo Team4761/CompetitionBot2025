@@ -16,6 +16,7 @@ public class ArmController extends XboxController {
     public boolean extendArmMotorEnabled = true;
     public boolean rotateArmMotorEnabled = true;
     public double intakeSpeed = 0.1;
+    public double yeetSpeed = 0.1;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
      */
@@ -26,9 +27,13 @@ public class ArmController extends XboxController {
         rightTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onRightTrigger);
     }
 
-    public void setSpeed(double speed)
+    public void setIntakeSpeed(double speed)
     {
         intakeSpeed = speed;
+    }
+    public void setYeetSpeed(double speed)
+    {
+        yeetSpeed = speed;
     }
 
 
@@ -47,6 +52,7 @@ public class ArmController extends XboxController {
             Robot.map.arm.extend(0.1*getRightY());
         }
         Robot.map.muncher.intake(0.1*getLeftTriggerAxis());
+        Robot.map.muncher.yeet(0.1*getRightTriggerAxis());
     }
 
 
