@@ -8,11 +8,23 @@ import edu.wpi.first.wpilibj2.command.Command;
  * <p> +x is the meters across in the direction from the blue alliance wall to the red alliance wall.
  * <p> +y is the meters across from the right side of the blue alliance wall to the left side of the blue alliance wall.
  */
-public class GetToFieldPositionCommand extends Command{
-    public static void GetToFieldPostion(float x, float y, float desiredRotation){
-        System.out.println(x);
-        System.out.println(y);
-        System.out.println(desiredRotation);
+public class GetToFieldPositionCommand extends Command {
 
+    private double x;
+    private double y;
+    private double desiredRotation;
+
+    /**
+     * DO NOT USE THE CONSTRUCTOR!!! USE GetToFieldPositionCommand.create()!!
+     */
+    private GetToFieldPositionCommand(double x, double y, double desiredRotation){
+        this.x = x;
+        this.y = y;
+        this.desiredRotation = desiredRotation;
+
+    }
+    public static Command create(double x, double y, double desiredRotation)
+    {
+        return new GetToFieldPositionCommand(x, y, desiredRotation);
     }
 }

@@ -4,7 +4,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +18,6 @@ import frc.robot.subsystems.swerve.MoveForTimeAtSpeedCommand;
 public class AutoHandler {
 
     private static SendableChooser<Command> autoChooser;
-    private static SendableChooser<StartingPosition> startingPositionChooser;
     
 
     /**
@@ -27,33 +25,16 @@ public class AutoHandler {
      */
     public static void setupAutoSelector() {
         autoChooser = new SendableChooser<Command>();
-        startingPositionChooser = new SendableChooser<StartingPosition>();
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi", new SayHiCommand());
         autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(1, 0, 0, 1));
         autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-1, 0, 0, 1));
-        autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
+        autoChooser.addOption("Score L2", ScoreL2Command.create()); // command not finished
+        autoChooser.addOption("Knock Algae", AlgaeKnockerAuto.create()); // command not finished
         autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
-
-        // This is for choosing which spot we started in
-        startingPositionChooser.addOption("LEFT", StartingPosition.LEFT);
-        startingPositionChooser.addOption("CENTER", StartingPosition.CENTER);
-        startingPositionChooser.addOption("RIGHT", StartingPosition.RIGHT);
  
         SmartDashboard.putData("Selected Auto", autoChooser);
-        SmartDashboard.putData("Starting Position", startingPositionChooser);
-
-        // Check the alliance and put it on the dashboard as well (as a boolean. True = red alliance)
-        boolean onRedAlliance = false;
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            onRedAlliance = alliance.get() == DriverStation.Alliance.Red;
-        }
-        else {
-            onRedAlliance = false;
-        }
-        SmartDashboard.putBoolean("Alliance", onRedAlliance);
     }   
 
 
@@ -84,14 +65,5 @@ public class AutoHandler {
         if (autoChooser.getSelected() == null)
             return new PrintCommand("No Auto Selected");
         return autoChooser.getSelected(); // Default auto will be `Commands.none()`
-    }
-
-
-    public static StartingPosition getStartingPosition() {
-        if (autoChooser.getSelected() == null) {
-            System.out.println("Errrm there is no selected starting position, so I'm going to assume left.");
-            return StartingPosition.LEFT;
-        }
-        return startingPositionChooser.getSelected(); // Default auto will be `Commands.none()`
     }
 }

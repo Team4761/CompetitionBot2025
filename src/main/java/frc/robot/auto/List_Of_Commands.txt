@@ -15,3 +15,13 @@ Fundamental Commands:
 Autos:
 Move frowaards at 100% speed for 1 seconds
 move barckwaards at 100% speed for 1 seconds
+
+When robot GET!:
+   Make sure robot doesn't kill itself upon starting
+   Intake/Outake
+   Yeet 
+   Extension Motor
+   L1, L2, L3, L4 commands
+   Autos
+
+   
