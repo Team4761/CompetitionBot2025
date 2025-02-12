@@ -154,6 +154,7 @@ public class RobocketsDashboard {
             new ReactiveBooleanEntry(Robot.armController::setRotateArmMotorEnabled, putBoolean("Arm Controller", "Rotate Motor Enabled", true));
             new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Controller", "Extend Motor Enabled", true));
             new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Controller", "Manual Control Enabled", true));
+            new ReactiveNumberEntry(Robot.armController::setSpeed, putNumber("Arm Controller", "Intake Speed", Robot.armController.intakeSpeed));
         }
     }
 
