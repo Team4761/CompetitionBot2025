@@ -1,7 +1,13 @@
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+
+// Note from Ben Clark: looking at some other people's code strucutre, perhaps making classes within the class constants
+// would be a good idea. For example, having a class called "Arm" and having all the constants related to the arm. 
+// This would make it easier to find constants and keep the code organized.
 
 /**
  * A port of 0 means that it is currently unknown/undecided.
@@ -30,6 +36,13 @@ public class Constants {
     public static final double L3_Y = Units.inchesToMeters(27.625);
     public static final double L4_X = Units.inchesToMeters(16.125);
     public static final double L4_Y = Units.inchesToMeters(52.0);
+
+    // arm pid constants
+    public static final double ARM_PID_KS = 0.0; // Ks Volts
+    public static final double ARM_PID_KV = 0.0; // Kv VoltSecondsPerMeter
+    public static final double ARM_PID_KA = 0.0; // Ka VoltSecondsSquaredPerMeter
+    public static final double ARM_PID_KP = 0.0; // Kp Drive Velocity
+
     /*
      * LEDS
      */
@@ -41,12 +54,10 @@ public class Constants {
      */
     public static final int MUNCHER_INTAKE_MOTOR_PORT = 19;        // CAN Port.
     public static final int MUNCHER_EJECT_MOTOR_PORT = 20;      // CAN Port.
-   
 
-
-     /*
-      * SWERVE
-      */
+    /*
+     * SWERVE
+     */
     // FL = "front left", FR = "front right", BL = "back left", BR = "back right"
     public static final int SWERVE_FL_DRIVE_MOTOR_PORT = 16;    // CAN Port.
     public static final int SWERVE_FL_TURN_MOTOR_PORT = 8;      // CAN Port.
@@ -74,6 +85,18 @@ public class Constants {
 
     public static final double WHEEL_RADIUS = 0.04955;                  // Meters. Double check this; it's based on the 2024 Competition code.
     public static final double SWERVE_DRIVE_MOTOR_GEAR_RATIO = 6.12;    // Double check this; it's based on the 2024 Competition code!
+
+    // swerve pid constants
+    public static final double SWERVE_PID_KS = 0.0; // Ks Volts
+    public static final double SWERVE_PID_KV = 0.0; // Kv Volts Seconds Per Meter
+    public static final double SWERVE_PID_KA = 0.0; // Ka Volts Seconds SQUARED Per Meter
+    public static final double SWERVE_PID_KP = 0.0; // Kp Drive Velocity
+
+    public static final double SWERVE_PID_KMAXSPEED = 0.0; // KMaxSpeed Meters Per Second
+    public static final double SWERVE_PID_KMAXACCELERATION = 0.0; // KMaxSpeed Meters Per Second SQUARED
+    public static final double SWERVE_PID_KTRACKWIDTH = 0.0; // In meters
+    public static final DifferentialDriveKinematics SWERVE_PID_DRIVE_KINEMATICS = new DifferentialDriveKinematics(SWERVE_PID_KTRACKWIDTH);
+
 
     // PHYSICAL CONSTANTS
     public static final double ROBOT_SIDE_LENGTH = Units.inchesToMeters(30); // Width & Length of the robot.
