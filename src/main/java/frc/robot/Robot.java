@@ -13,6 +13,8 @@ import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
 import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
+import main.java.frc.robot.controllers.DriveTestController;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -38,6 +40,8 @@ public class Robot extends TimedRobot {
 
   public static final DriveController driveController = new DriveController(0);
   public static final ArmController armController = new ArmController(1);
+
+  private DriveTestController testController;
 
   public static RobocketsDashboard dashboard;
 
@@ -126,11 +130,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    testController = new DriveTestController();
+  }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    CommandScheduler.getInstance().run();
+
+    double currentTime = Timer.getFPGATimestamp();
+    testController.runTestPeriodic(currentTime);
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
