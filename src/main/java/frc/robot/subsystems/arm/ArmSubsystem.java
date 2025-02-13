@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -57,6 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
     private DutyCycleEncoder extendEncoder = new DutyCycleEncoder(Constants.ARM_EXTEND_ENCODER_PORT);
 
     // PID controllers for the arm
+    FancyArmFeedForward ff = new FancyArmFeedForward();
     // TODO: Tune these controllers!
     private ProfiledPIDController pivotPID = new ProfiledPIDController(
         3,
@@ -86,8 +88,12 @@ public class ArmSubsystem extends SubsystemBase {
             double pivotSpeed = pivotPID.calculate(pivotEncoder.get(), setPoint[0]);
             double extensionSpeed = extensionPID.calculate(extendEncoder.get(), setPoint[1]);
 
-            rotate(pivotSpeed);
-            extend(extensionSpeed);
+            SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
+            SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
+
+            SmartDashboard.putNumber("Arm FF", ff.calculate(new Rotation2d(setPoint[0]), setPoint[1]));
+            // rotate(pivotSpeed);
+            // extend(extensionSpeed);
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }
@@ -105,7 +111,7 @@ public class ArmSubsystem extends SubsystemBase {
     public static double[] getRotationExtensionFromSetPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
         double distanceToPoint = Math.sqrt((x*x)+(y*y));
-        double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
+        double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_TO_BASE_DISTANCE;
         double percentOfExtension = lengthOfExtension/Constants.ARM_EXTEND_LENGTH;
         // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees) 
         // Extension Boundaries: 0% to 100%
@@ -123,8 +129,8 @@ public class ArmSubsystem extends SubsystemBase {
      * @return (x,y) in meters where +x is forwards and +y is left.
      */
     public Translation2d getSetPointFromRotationAndExtension(Rotation2d rotation, double extension) {
-        double x = Math.cos(rotation.getRadians()) * (Constants.ARM_PIVOT_LENGTH + extension);
-        double y = Math.sin(rotation.getRadians()) * (Constants.ARM_PIVOT_LENGTH + extension);
+        double x = Math.cos(rotation.getRadians()) * (Constants.ARM_PIVOT_TO_BASE_DISTANCE + extension);
+        double y = Math.sin(rotation.getRadians()) * (Constants.ARM_PIVOT_TO_BASE_DISTANCE + extension);
         return new Translation2d(x, y);
     }
 

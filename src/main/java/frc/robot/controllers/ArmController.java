@@ -15,16 +15,19 @@ public class ArmController extends XboxController {
     public boolean armManualControl = true;
     public boolean extendArmMotorEnabled = true;
     public boolean rotateArmMotorEnabled = true;
-    public double intakeSpeed = 0.1;
-    public double yeetSpeed = 0.1;
+    public double intakeSpeed = 0.3;
+    public double yeetSpeed = 0.2;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
      */
     public ArmController(int port) {
         super(port);
         // These run the onLeftTrigger and onRightTrigger methods when the triggers are pressed more than 25% down.
-        leftTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onLeftTrigger);
-        rightTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onRightTrigger);
+        // if (Robot.map.muncher != null) {
+        //     leftTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onLeftTrigger);
+        //     rightTrigger(.25, CommandScheduler.getInstance().getDefaultButtonLoop()).ifHigh(this::onRightTrigger);
+    
+        // }
     }
 
     public void setIntakeSpeed(double speed)
@@ -42,8 +45,20 @@ public class ArmController extends XboxController {
      */
     public void teleopPeriodic() {
         if (Robot.map.muncher != null) {
-            if (getRightBumperButtonPressed()) {
+            if (getRightBumperButtonPressed() && !armManualControl) {
                 CommandScheduler.getInstance().schedule(YeetCommand.create());
+            }
+            if (armManualControl) {
+                if (getAButton()) {
+                    // This was in, positive yeet is IN
+                    Robot.map.muncher.yeet(intakeSpeed);
+                }
+                if (getBButton()) {
+                    Robot.map.muncher.yeet(-intakeSpeed);
+                }
+                if (!getAButton() && !getBButton()) {
+                    Robot.map.muncher.yeet(0);
+                }
             }
         }
         if(Robot.map.arm != null && armManualControl)
@@ -51,8 +66,10 @@ public class ArmController extends XboxController {
             Robot.map.arm.rotate(0.1*getLeftY());
             Robot.map.arm.extend(0.1*getRightY());
         }
-        Robot.map.muncher.intake(0.1*getLeftTriggerAxis());
-        Robot.map.muncher.yeet(0.1*getRightTriggerAxis());
+        if (Robot.map.muncher != null) {
+            Robot.map.muncher.intake(-intakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
+            // Robot.map.muncher.yeet(0.1*getRightTriggerAxis());
+        }
     }
 
 

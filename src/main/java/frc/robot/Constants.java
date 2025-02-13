@@ -12,9 +12,9 @@ public class Constants {
      * ARM
      */
     public static final int ARM_PIVOT_MOTOR_PORT = 18;      // CAN Port.
-    public static final int ARM_PIVOT_ENCODER_PORT = 30;    // DIO Port. (30 IS PLACEHOLDER)
-    public static final int ARM_EXTEND_MOTOR_PORT = 31;     // CAN Port. (31 IS PLACEHOLDER)
-    public static final int ARM_EXTEND_ENCODER_PORT = 31;   // DIO Port. (32 IS PLACEHOLDER)
+    public static final int ARM_PIVOT_ENCODER_PORT = 0;    // DIO Port. (30 IS PLACEHOLDER)
+    public static final int ARM_EXTEND_MOTOR_PORT = 21;     // CAN Port. (31 IS PLACEHOLDER)
+    public static final int ARM_EXTEND_ENCODER_PORT = 1;   // DIO Port. (32 IS PLACEHOLDER)
 
     public static final double ARM_EXTEND_LENGTH = Units.inchesToMeters(58); // Current temporary value, will be measured in meters
     public static final double ARM_PIVOT_TO_BASE_DISTANCE = Units.inchesToMeters(16.5); // Distance between the pivot point of the arm and the robot base.

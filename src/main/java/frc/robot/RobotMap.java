@@ -26,10 +26,10 @@ public class RobotMap {
     
     public RobotMap() {
         // COMMENT OUT SUBSYSTEMS BELOW TO DISABLE THEM
-        // arm = new ArmSubsystem();
+        arm = new ArmSubsystem();
         // leds = new LEDSubsystem();
-        // muncher = new MuncherSubsystem();
-        // swerve = new SwerveSubsystem();
+        muncher = new MuncherSubsystem();
+        swerve = new SwerveSubsystem();
         vision = new VisionSubsystem();
         // win = new WinSubsystem();
     }
