@@ -111,7 +111,7 @@ public class ArmSubsystem extends SubsystemBase {
     public static double[] getRotationExtensionFromSetPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
         double distanceToPoint = Math.sqrt((x*x)+(y*y));
-        double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_TO_BASE_DISTANCE;
+        double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
         double percentOfExtension = lengthOfExtension/Constants.ARM_EXTEND_LENGTH;
         // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees) 
         // Extension Boundaries: 0% to 100%
@@ -129,8 +129,8 @@ public class ArmSubsystem extends SubsystemBase {
      * @return (x,y) in meters where +x is forwards and +y is left.
      */
     public Translation2d getSetPointFromRotationAndExtension(Rotation2d rotation, double extension) {
-        double x = Math.cos(rotation.getRadians()) * (Constants.ARM_PIVOT_TO_BASE_DISTANCE + extension);
-        double y = Math.sin(rotation.getRadians()) * (Constants.ARM_PIVOT_TO_BASE_DISTANCE + extension);
+        double x = Math.cos(rotation.getRadians()) * (Constants.ARM_PIVOT_LENGTH + extension);
+        double y = Math.sin(rotation.getRadians()) * (Constants.ARM_PIVOT_LENGTH + extension);
         return new Translation2d(x, y);
     }
 

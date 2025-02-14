@@ -17,6 +17,7 @@ public class Constants {
     public static final int ARM_EXTEND_ENCODER_PORT = 1;   // DIO Port. (32 IS PLACEHOLDER)
 
     public static final double ARM_EXTEND_LENGTH = Units.inchesToMeters(58); // Current temporary value, will be measured in meters
+    public static final double ARM_PIVOT_LENGTH = Units.inchesToMeters(16); // TEMPORARY VALUE
     public static final double ARM_PIVOT_TO_BASE_DISTANCE = Units.inchesToMeters(16.5); // Distance between the pivot point of the arm and the robot base.
     public static final double ARM_MAX_ANGULAR_VELOCITY = 0.3; // Max angular velocity of the arm (percent where 1 is 100% speed)
     public static final double ARM_MAX_ANGULAR_ACCELERATION = 1.0; // Max angular acceleration of the arm (change in percent where 1 is 100% speed)

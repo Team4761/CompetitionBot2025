@@ -21,6 +21,7 @@ public class YeetForTimeAtSpeedCommand extends Command {
      * do not use this this constructor, use create instead
      */
     private YeetForTimeAtSpeedCommand(double speed) {
+        addRequirements(Robot.map.arm); //first come, first swerve (-Slim Jim from 2024 competition bot)
         this.speed = speed;
     }
 
