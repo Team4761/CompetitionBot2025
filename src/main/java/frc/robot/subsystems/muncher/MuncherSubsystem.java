@@ -15,7 +15,7 @@ public class MuncherSubsystem extends SubsystemBase {
     /** A NEO where positive speed represents (intake?) */
     private SparkMax intakeMotor = new SparkMax(Constants.MUNCHER_INTAKE_MOTOR_PORT, SparkMax.MotorType.kBrushless);
     /** A NEO Vortex where positive speed represents (yeeting/outtake?) */
-    private SparkFlex yeetMotor = new SparkFlex(Constants.MUNCHER_EJECT_MOTOR_PORT, SparkFlex.MotorType.kBrushless);
+    private SparkFlex yeetMotor = new SparkFlex(Constants.MUNCHER_YEET_MOTOR_PORT, SparkFlex.MotorType.kBrushless);
 
 
     /**

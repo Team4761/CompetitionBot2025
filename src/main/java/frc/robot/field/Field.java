@@ -25,9 +25,12 @@ public class Field {
     public static final double L4_INSET = Units.inchesToMeters(1.125);
 
     public static final double CORAL_STATION_TO_REEF_X_COMPONET = Units.inchesToMeters(144.0); 
-    public static final double CORAL_STATION_TO_REEF_Y_COMPONET = Units.inchesToMeters(109.13);   //this is 1/2 of DRIVE_WALL_Y_LENGTH
+    public static final double CORAL_STATION_TO_REEF_Y_COMPONET = Units.inchesToMeters(109.13); //this is 1/2 of DRIVE_WALL_Y_LENGTH
     public static final double CORAL_STATION_TO_REEF_DISTANCE = Units.inchesToMeters(142.24);
     public static final double CORAL_STATION_TO_STARTING_LINE_X = Units.inchesToMeters(231.66);
+    public static final double CORAL_STATION_HEIGHT_FROM_GROUND = Units.inchesToMeters(41.5);   // distance from carpet to to bottom of opening and 4 in to account for the diamater of the tube
+    public static final double CORAL_STATION_OPENING = Units.inchesToMeters(7);    // height of opening
+    public static final double WIDTH_OF_CORAL_OPENING = Units.inchesToMeters(66);
  
     public static final double DRIVE_WALL_Y_LENGTH = Units.inchesToMeters(217.25);
     //CORAL POSTIONS 
@@ -37,8 +40,8 @@ public class Field {
     public static final double DISTANCE_Y_OF_CORAL_1 = CORAL_STATION_TO_REEF_Y_COMPONET;
     public static final double DISTANCE_Y_OF_CORAL_0 = CORAL_STATION_TO_REEF_Y_COMPONET - Units.inchesToMeters(72.0);
     //CORAL PEICES
-    public static final double CORAL_DIAMETER =Units.inchesToMeters(4.0);
-    public static final double CORAL_LENGTH =Units.inchesToMeters(11.875);
+    public static final double CORAL_DIAMETER = Units.inchesToMeters(4.0);
+    public static final double CORAL_LENGTH = Units.inchesToMeters(11.875);
     //ALGEE PEICES
     public static final double ALGEE_RADIUS = Units.inchesToMeters(16.0);
     //PROCESSOR

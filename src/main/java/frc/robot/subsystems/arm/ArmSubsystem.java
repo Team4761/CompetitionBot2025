@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -57,6 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
     private DutyCycleEncoder extendEncoder = new DutyCycleEncoder(Constants.ARM_EXTEND_ENCODER_PORT);
 
     // PID controllers for the arm
+    FancyArmFeedForward ff = new FancyArmFeedForward();
     // TODO: Tune these controllers!
     private ProfiledPIDController pivotPID = new ProfiledPIDController(
         3,
@@ -78,7 +80,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        if(!Robot.armController.armManualControl){
+        if(!Robot.armController.armManualControl && isPivotEncoderConnected() && isExtensionEncoderConnected()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
             double[] setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
@@ -86,8 +88,12 @@ public class ArmSubsystem extends SubsystemBase {
             double pivotSpeed = pivotPID.calculate(pivotEncoder.get(), setPoint[0]);
             double extensionSpeed = extensionPID.calculate(extendEncoder.get(), setPoint[1]);
 
-            rotate(pivotSpeed);
-            extend(extensionSpeed);
+            SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
+            SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
+
+            SmartDashboard.putNumber("Arm FF", ff.calculate(new Rotation2d(setPoint[0]), setPoint[1]));
+            // rotate(pivotSpeed);
+            // extend(extensionSpeed);
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }

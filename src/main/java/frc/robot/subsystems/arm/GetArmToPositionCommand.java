@@ -23,12 +23,15 @@ public class GetArmToPositionCommand extends Command {
     /**
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
      */
-    private GetArmToPositionCommand() {}
+    private GetArmToPositionCommand() {
+        addRequirements(Robot.map.arm); // disarm the bomb if required
+    }
 
     /**
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
      */
     private GetArmToPositionCommand(double x, double y) {
+        this();
         this.targetX = x;
         this.targetY = y;
     }

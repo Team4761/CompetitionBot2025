@@ -28,7 +28,7 @@ public class RobotMap {
         // COMMENT OUT SUBSYSTEMS BELOW TO DISABLE THEM
         arm = new ArmSubsystem();
         // leds = new LEDSubsystem();
-        // muncher = new MuncherSubsystem();
+        muncher = new MuncherSubsystem();
         swerve = new SwerveSubsystem();
         vision = new VisionSubsystem();
         // win = new WinSubsystem();
