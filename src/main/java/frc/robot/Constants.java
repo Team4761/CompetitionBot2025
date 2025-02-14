@@ -40,7 +40,7 @@ public class Constants {
      * MUNCHER
      */
     public static final int MUNCHER_INTAKE_MOTOR_PORT = 19;        // CAN Port.
-    public static final int MUNCHER_EJECT_MOTOR_PORT = 20;      // CAN Port.
+    public static final int MUNCHER_YEET_MOTOR_PORT = 20;      // CAN Port.
    
 
 
