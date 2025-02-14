@@ -120,7 +120,7 @@ public class SwerveModuleKraken implements SwerveModuleIO {
                 final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
                 // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
-                SmartDashboard.putNumber("Drive Voltage", driveOutput+driveFF);
+                SmartDashboard.putNumber("Drive Voltage", (driveOutput+driveFF));
                 driveMotor.setVoltage((driveOutput + driveFF));
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
                 turnMotor.setVoltage(-(turnOutput + turnFF));

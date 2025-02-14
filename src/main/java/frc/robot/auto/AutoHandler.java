@@ -30,8 +30,9 @@ public class AutoHandler {
         autoChooser.addOption("Say Hi", new SayHiCommand());
         autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(1, 0, 0, 1));
         autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-1, 0, 0, 1));
-        autoChooser.addOption("Score L2", ScoreL2Command.create()); // command not finished
-        autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
+        autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
+        autoChooser.addOption("Knock Algae", AlgaeKnockerAuto.create()); // command not finished
+        // autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
  
         SmartDashboard.putData("Selected Auto", autoChooser);
     }   
