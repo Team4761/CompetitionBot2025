@@ -10,9 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.GetArmToPositionCommand;
 import frc.robot.subsystems.arm.ScoreL2Command;
 import frc.robot.subsystems.swerve.MoveForTimeAtSpeedCommand;
 
@@ -31,10 +29,13 @@ public class AutoHandler {
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi", new SayHiCommand());
-        autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(1, 0, 0, 1));
-        autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-1, 0, 0, 1));
+        autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 1));
+        autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-0.3, 0, 0, 1));
         autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
-        autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
+        // Only add the path planner stuff if swerve is initialized
+        if (Robot.map.swerve != null) {
+            autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
+        }
 
         // This is for choosing which spot we started in
         startingPositionChooser.addOption("LEFT", StartingPosition.LEFT);

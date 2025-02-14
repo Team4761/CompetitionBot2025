@@ -170,7 +170,7 @@ public class ArmSubsystem extends SubsystemBase {
     {
         if(Robot.armController.rotateArmMotorEnabled == true)
         {
-            pivotMotor.set(-rotationalVelocity);
+            pivotMotor.set(rotationalVelocity);
         }
     }   
 

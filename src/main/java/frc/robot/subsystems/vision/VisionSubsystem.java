@@ -52,19 +52,19 @@ public class VisionSubsystem extends SubsystemBase {
     // A tag Pose is the CENTER of the tag.
     // The rotation assumes that facing AWAY from the blue alliance wall is 0 degrees, rotating counter clockwise.
     // PLACEHOLDER FOR TESTING PURPOSES
-    private final AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(
-        List.of(
-            new AprilTag(2, new Pose3d(10, 10, 0, new Rotation3d(0, 0, Math.PI))),   // Should be facing towards the blue alliance... I think...
-            new AprilTag(4, new Pose3d(3, 3, 0, new Rotation3d(0, 0, Math.PI)))
-        ),
-        100,
-        100
-    );
+    // private final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = new AprilTagFieldLayout(
+    //     List.of(
+    //         new AprilTag(2, new Pose3d(10, 10, 0, new Rotation3d(0, 0, Math.PI))),   // Should be facing towards the blue alliance... I think...
+    //         new AprilTag(4, new Pose3d(3, 3, 0, new Rotation3d(0, 0, Math.PI)))
+    //     ),
+    //     100,
+    //     100
+    // );
 
     // Actual field layout for when testing is done.
     // If the following line is throwing an error message, you don't have the most up-to-date WPILib version.
     // This requires version 2025.2.1+ to work.
-    // AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
     /**
@@ -74,7 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
         camera = new PhotonCamera("Psebastian");
 
         // MULTI_TAG_PNP_ON_COPROCESSOR is best, but we're using CLOSEST_TO_LAST_POSE for now.
-        photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CAMERA_ON_ROBOT_POSE);
+        photonPoseEstimator = new PhotonPoseEstimator(APRIL_TAG_FIELD_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CAMERA_ON_ROBOT_POSE);
 
         // Maybe make this actually check for the robot's position once on startup?
         fieldPosition = new Pose3d();
@@ -94,26 +94,12 @@ public class VisionSubsystem extends SubsystemBase {
             if (result.hasTargets()) {
                 // List<PhotonTrackedTarget> targets = result.getTargets();
                 PhotonTrackedTarget target = result.getBestTarget();
-
-                // Get information from a generic target (not necessarily april tags)
-                // List<TargetCorner> corners = target.getDetectedCorners();
-                // double yaw = target.getYaw();
-                // double pitch = target.getPitch();
-                // double area = target.getArea();
-
-                // Skew is not available with April Tags sadly :(
-                // double skew = target.getSkew();
-
-                // April tag specific information
-                // Transform3d pose = target.getBestCameraToTarget();
-                // int targetID = target.getFiducialId();
-                // double poseAmbiguity = target.getPoseAmbiguity();
-
+                
                 // Calculate robot's field relative pose
-                if (aprilTagFieldLayout.getTagPose(target.getFiducialId()).isPresent()) {
+                if (APRIL_TAG_FIELD_LAYOUT.getTagPose(target.getFiducialId()).isPresent()) {
                     fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
                         target.getBestCameraToTarget(), // The position of the April Tag relative to the camera
-                        aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
+                        APRIL_TAG_FIELD_LAYOUT.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
                         CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
                     );
 
@@ -155,7 +141,6 @@ public class VisionSubsystem extends SubsystemBase {
                 }
             }
         }
-
         return null;
     }
 
