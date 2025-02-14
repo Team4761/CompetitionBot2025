@@ -66,10 +66,9 @@ public class ScoreOneCoralAuto {
      * @return
      */
     public Command create() {
-        return null;
-        // return create(
-        //     AutoHandler.getStartingPosition(), 
-        //     (DriverStation.getAlliance().isPresent()) ? (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) : (false)
-        // );
+        return create(
+            AutoHandler.getStartingPosition(), 
+            (DriverStation.getAlliance().isPresent()) ? (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) : (false)
+        );
     }
 }

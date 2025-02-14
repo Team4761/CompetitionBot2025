@@ -33,6 +33,6 @@ public class MuncherSubsystem extends SubsystemBase {
      */
     public void yeet(double yeetSpeed)
     {
-        yeetMotor.set(yeetSpeed);
+        yeetMotor.set(-yeetSpeed);
     }
 }

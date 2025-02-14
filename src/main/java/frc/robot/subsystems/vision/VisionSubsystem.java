@@ -14,11 +14,13 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 /**
  * This does NOT find April Tags, that is handled by the Orange Pi. Instead, this allows the robot to react to where the Orange Pi found april tags.
@@ -86,6 +88,15 @@ public class VisionSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
+        updateFrontCamera();
+    }
+
+
+    /**
+     * This will get the most up-to-date info from the camera on the front of the robot.
+     * This is called in the periodic method.
+     */
+    public void updateFrontCamera() {
         // Get the last processed frame (technically just results) from the camera.
         results = camera.getAllUnreadResults();
         
@@ -123,6 +134,22 @@ public class VisionSubsystem extends SubsystemBase {
                 SmartDashboard.putBoolean("Found April Tag", false);
             }
         }
+    }
+
+
+    /**
+     * This uses the most up to date vision information to overwrite the swerve drive position.
+     */
+    public void updateRobotPositionFromAprilTags() {
+        if (Robot.map.swerve == null) {
+            return;
+        }
+
+        Robot.map.swerve.resetPosition(new Pose2d(
+            fieldPosition.getX(),
+            fieldPosition.getY(),
+            fieldPosition.getRotation().toRotation2d()
+        ));
     }
 
 

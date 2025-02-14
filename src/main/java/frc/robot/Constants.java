@@ -13,7 +13,7 @@ public class Constants {
      */
     public static final int ARM_PIVOT_MOTOR_PORT = 18;      // CAN Port.
     public static final int ARM_PIVOT_ENCODER_PORT = 0;    // DIO Port. (30 IS PLACEHOLDER)
-    public static final int ARM_EXTEND_MOTOR_PORT = 21;     // CAN Port. (31 IS PLACEHOLDER)
+    public static final int ARM_EXTEND_MOTOR_PORT = 21;     // CAN Port.
     public static final int ARM_EXTEND_ENCODER_PORT = 1;   // DIO Port. (32 IS PLACEHOLDER)
 
     public static final double ARM_EXTEND_LENGTH = Units.inchesToMeters(58); // Current temporary value, will be measured in meters

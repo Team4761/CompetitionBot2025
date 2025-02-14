@@ -80,7 +80,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        if(!Robot.armController.armManualControl && isPivotEncoderConnected() && isExtensionEncoderConnected()){
+        if(!Robot.armController.isArmManualControl() && isPivotEncoderConnected() && isExtensionEncoderConnected()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
             double[] setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
@@ -174,7 +174,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void rotate(double rotationalVelocity)
     {
-        if(Robot.armController.rotateArmMotorEnabled == true)
+        if(Robot.armController.isPivotEnabled() == true)
         {
             pivotMotor.set(rotationalVelocity);
         }
@@ -186,7 +186,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void extend(double extensionVelocity)
     {
-        if(Robot.armController.extendArmMotorEnabled == true)
+        if(Robot.armController.isExtendEnabled() == true)
         {
             extendMotor.set(extensionVelocity);
         }

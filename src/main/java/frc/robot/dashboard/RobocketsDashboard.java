@@ -151,11 +151,19 @@ public class RobocketsDashboard {
 
     public void setupArmController() {
         if (Robot.driveController != null) {
-            new ReactiveBooleanEntry(Robot.armController::setRotateArmMotorEnabled, putBoolean("Arm Controller", "Rotate Motor Enabled", true));
-            new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Controller", "Extend Motor Enabled", true));
-            new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Controller", "Manual Control Enabled", true));
-            new ReactiveNumberEntry(Robot.armController::setIntakeSpeed, putNumber("Arm Controller", "Intake Speed", Robot.armController.intakeSpeed));
-            new ReactiveNumberEntry(Robot.armController::setYeetSpeed, putNumber("Arm Controller", "Yeet Speed", Robot.armController.yeetSpeed));
+            new ReactiveBooleanEntry(Robot.armController::setPivotArmMotorEnabled, putBoolean("Arm Controller", "Pivot Motor Enabled", Robot.armController.isPivotEnabled()));
+            new ReactiveBooleanEntry(Robot.armController::setExtendArmMotorEnabled, putBoolean("Arm Controller", "Extend Motor Enabled", Robot.armController.isExtendEnabled()));
+
+            new ReactiveBooleanEntry(Robot.armController::setPivotInverted, putBoolean("Arm Controller", "Is Pivot Inverted", Robot.armController.isPivotInverted()));
+            new ReactiveBooleanEntry(Robot.armController::setExtendInverted, putBoolean("Arm Controller", "Is Extend Inverted", Robot.armController.isExtendInverted()));
+
+            new ReactiveBooleanEntry(Robot.armController::setArmManualControl, putBoolean("Arm Controller", "Manual Control Enabled", Robot.armController.isArmManualControl()));
+
+            new ReactiveNumberEntry(Robot.armController::setIntakeSpeed, putNumber("Arm Controller", "Intake Speed", Robot.armController.getIntakeSpeed()));
+            new ReactiveNumberEntry(Robot.armController::setOuttakeSpeed, putNumber("Arm Controller", "Outtake Speed", Robot.armController.getOuttakeSpeed()));
+            new ReactiveNumberEntry(Robot.armController::setYeetSpeed, putNumber("Arm Controller", "Yeet Speed", Robot.armController.getYeetSpeed()));
+            new ReactiveNumberEntry(Robot.armController::setPivotSpeed, putNumber("Arm Controller", "Pivot Speed", Robot.armController.getPivotSpeed()));
+            new ReactiveNumberEntry(Robot.armController::setExtendSpeed, putNumber("Arm Controller", "Extend Speed", Robot.armController.getExtendSpeed()));
         }
     }
 

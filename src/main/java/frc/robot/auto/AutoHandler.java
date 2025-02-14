@@ -24,6 +24,7 @@ public class AutoHandler {
      */
     public static void setupAutoSelector() {
         autoChooser = new SendableChooser<Command>();
+        startingPositionChooser = new SendableChooser<StartingPosition>();
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi", new SayHiCommand());
@@ -36,11 +37,15 @@ public class AutoHandler {
         }
 
         // This is for choosing which spot we started in
-        startingPositionChooser.addOption("LEFT", StartingPosition.LEFT);
-        startingPositionChooser.addOption("CENTER", StartingPosition.CENTER);
-        startingPositionChooser.addOption("RIGHT", StartingPosition.RIGHT);
+        startingPositionChooser.addOption("Blue - LEFT", StartingPosition.BLUE_LEFT);
+        startingPositionChooser.addOption("Blue - CENTER", StartingPosition.BLUE_CENTER);
+        startingPositionChooser.addOption("Blue - RIGHT", StartingPosition.BLUE_RIGHT);
+        startingPositionChooser.addOption("Red - LEFT", StartingPosition.RED_LEFT);
+        startingPositionChooser.addOption("Red - CENTER", StartingPosition.RED_CENTER);
+        startingPositionChooser.addOption("Red - RIGHT", StartingPosition.RED_RIGHT);
  
-        SmartDashboard.putData("Selected Auto", autoChooser);
+        SmartDashboard.putData("Auto/Selected Auto", autoChooser);
+        SmartDashboard.putData("Auto/Starting Position", startingPositionChooser);
     }   
 
 
@@ -71,5 +76,14 @@ public class AutoHandler {
         if (autoChooser.getSelected() == null)
             return new PrintCommand("No Auto Selected");
         return autoChooser.getSelected(); // Default auto will be `Commands.none()`
+    }
+
+
+    public static StartingPosition getStartingPosition() {
+        if (autoChooser.getSelected() == null) {
+            System.out.println("Errrm there is no selected starting position, so I'm going to assume left.");
+            return StartingPosition.BLUE_LEFT;
+        }
+        return startingPositionChooser.getSelected(); // Default auto will be `Commands.none()`
     }
 }

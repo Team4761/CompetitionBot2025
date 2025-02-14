@@ -6,7 +6,10 @@ package frc.robot.auto;
  * CENTER is the same, except that the robot is centered in between the two barges.
  */
 public enum StartingPosition {
-    LEFT,   // Theoretically, this would be (7.5565, 6.03885)
-    CENTER, // Theoretically, this would be (7.5565, 4.02590)
-    RIGHT   // Theoretically, this would be (7.5565, 2.01295)
+    BLUE_LEFT,   // Theoretically, this would be (7.5565, 6.03885)
+    BLUE_CENTER, // Theoretically, this would be (7.5565, 4.02590)
+    BLUE_RIGHT,  // Theoretically, this would be (7.5565, 2.01295)
+    RED_LEFT,    // Theoretically, this would be (???, 6.03885)
+    RED_CENTER,  // Theoretically, this would be (???, 4.02590)
+    RED_RIGHT,   // Theoretically, this would be (???, 2.01295)
 }

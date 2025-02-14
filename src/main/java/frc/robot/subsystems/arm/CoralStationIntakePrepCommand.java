@@ -8,7 +8,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.arm.GetArmToPositionCommand;
 import frc.robot.subsystems.muncher.IntakeCommand;
 import frc.robot.field.Field;
 
