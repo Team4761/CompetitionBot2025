@@ -20,7 +20,7 @@ public class ScoreL2Command extends Command {
 
 
     /**
-     * DO NOT USE THE CONSTRUCTOR! Use ScoreL2Command.create() instead!
+     * DO NOT USE THE CONSTRUCTOR! Use ScoreL2Command.create() instead! HDHAS
      */
     private ScoreL2Command() {
         addRequirements(Robot.map.arm); // disarm the bomb if required
