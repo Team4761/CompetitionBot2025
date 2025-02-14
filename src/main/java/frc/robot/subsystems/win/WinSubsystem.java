@@ -29,12 +29,22 @@ public class WinSubsystem extends SubsystemBase {
     public void crash() {
         // System.exit(0);
         System.out.println("I CAN STOP WINNING!");
-    }
+    }  
+
     /**
-    * constatntly flips the robot if the command works
-    */
+     * constatntly flips the robot if the command works
+     */
     @SuppressWarnings("unused")
-    public void flip(boolean shouldWeFlip, boolean areWeSure, boolean areWeTrulySure, boolean areYouTrusted, int onAScaleFrom1To10HowReadyAreYou, boolean functionRunnable, boolean isFlippedAlready, boolean isThePersonWhoIsGoingToRunThisCommandReadyForTheConsequencesOfYourActionsDueToTheCommandCausingSevereDamagesToTheRobot, int stupidityScale){
+    public void flip(boolean shouldWeFlip, boolean areWeSure, boolean areWeTrulySure, boolean areYouTrusted, int onAScaleFrom1To10HowReadyAreYou, boolean functionRunnable, boolean isFlippedAlready, boolean isThePersonWhoIsGoingToRunThisCommandReadyForTheConsequencesOfYourActionsDueToTheCommandCausingSevereDamageToTheRobot, int stupidityScale){
         byte publicStaticVoidMainStringArgs;
     }
+
+    /**
+     * <p> Jamme, jamme, 'ncoppa, jamme jà! 
+     * <p> Jamme, jamme, 'ncoppa, jamme jà,
+     * <p> Funiculì, Funiculà,
+     * <p> Funiculì, Funiculà!
+     * <p> 'Ncoppa jamme jà, Funiculì, Funiculà!
+     */
+  public static void Italy() {}
 }

@@ -13,26 +13,21 @@ import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
 import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
+import frc.robot.subsystems.win.WinSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
+@SuppressWarnings("unused")
 public class Robot extends TimedRobot {
   /**
    * We're gonna win cause this is here!
    */
   public static final boolean win = true;
   
-  /**
-   * <p> Jamme, jamme, 'ncoppa, jamme jà! 
-   * <p> Jamme, jamme, 'ncoppa, jamme jà,
-   * <p> Funiculì, Funiculà,
-   * <p> Funiculì, Funiculà!
-   * <p> 'Ncoppa jamme jà, Funiculì, Funiculà!
-   */
-  public void Italy() {}
+  static void Italy() {} // check WinSubsystem
 
   public static final RobotMap map = new RobotMap();
 

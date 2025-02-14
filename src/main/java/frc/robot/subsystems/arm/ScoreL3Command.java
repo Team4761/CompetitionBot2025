@@ -13,7 +13,7 @@ import frc.robot.Constants;
 /** Add your docs here. */
 public class ScoreL3Command extends Command {
     public static Command create() {
-        return new SequentialCommandGroup(GetArmToPositionCommand.create(Constants.L3_X, Constants.L3_Y), 
+        return new SequentialCommandGroup(GetArmToPositionCommand.create(Constants.L3_X, (Constants.L3_Y + 6.5)), 
         YeetCommand.create());
     }
 }

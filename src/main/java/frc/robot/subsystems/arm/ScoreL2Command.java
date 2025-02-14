@@ -16,7 +16,7 @@ import frc.robot.Constants;
  */
 public class ScoreL2Command extends Command {
     public static Command create() {
-        return new SequentialCommandGroup(GetArmToPositionCommand.create(Constants.L2_X, Constants.L2_Y), 
+        return new SequentialCommandGroup(GetArmToPositionCommand.create(Constants.L2_X, Constants.L2_Y + 6.5), // 6.5 extra inches to account for robot arm height
         YeetCommand.create());
     }
 }   
