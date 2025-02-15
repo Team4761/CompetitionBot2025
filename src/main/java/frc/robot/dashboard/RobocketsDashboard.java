@@ -200,6 +200,7 @@ public class RobocketsDashboard {
      */
     public void update()
     {
+        if (Robot.map.swerve != null)
         field.setRobotPose(Robot.map.swerve.getPosition());
     }
 

@@ -73,7 +73,8 @@ public class VisionSubsystem extends SubsystemBase {
      * This will be in charge of setting up the cameras and pose estimator.
      */
     public VisionSubsystem() {
-        camera = new PhotonCamera("Psebastian");
+        camera = new PhotonCamera("Front Camera");
+        // Other camera is called "Right Camera"
 
         // MULTI_TAG_PNP_ON_COPROCESSOR is best, but we're using CLOSEST_TO_LAST_POSE for now.
         photonPoseEstimator = new PhotonPoseEstimator(APRIL_TAG_FIELD_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CAMERA_ON_ROBOT_POSE);

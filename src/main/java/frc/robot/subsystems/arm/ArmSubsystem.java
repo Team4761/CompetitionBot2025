@@ -27,7 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Sadly, there is no easy way to zero the encoders. Therefore, the best we can do is have an offset.
      */
     /** To determine this, move the arm into the (0,0) state which is being in front of the robot, parallel to the ground and record the value of the absolute encoder read in the dashboard. */
-    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(0);
+    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(127.50));
     /** Meters. To determine this, move the arm into the (0,0) state which is unextended and record the value of the absolute encoder read in the dashboard. */
     private static final double EXTENSION_ENCODER_OFFSET = 0.0;
 

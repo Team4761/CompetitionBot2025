@@ -49,7 +49,7 @@ public class DriveController extends XboxController {
                 this.orientForwardsControllingDirection();
             }
             if (getYButtonPressed()) {
-                map.swerve.resetPosition(new Pose2d());
+                // map.swerve.resetPosition(new Pose2d());
             }
 
             // Joystick control

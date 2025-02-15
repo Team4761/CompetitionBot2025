@@ -47,13 +47,13 @@ public class ArmController extends XboxController {
                 CommandScheduler.getInstance().schedule(YeetCommand.create());
             }
             if (armManualControl) {
-                if (getAButton()) {
+                if (getBButton()) {
                     Robot.map.muncher.yeet(-outtakeSpeed);
                 }
                 if (getXButton()) {
                     Robot.map.muncher.yeet(intakeSpeed);
                 }
-                if (!getAButton() && !getBButton()) {
+                if (!getXButton() && !getBButton()) {
                     Robot.map.muncher.yeet(0);
                 }
             }
