@@ -92,8 +92,12 @@ public class ArmSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
 
             SmartDashboard.putNumber("Arm FF", ff.calculate(new Rotation2d(setPoint[0]), setPoint[1]));
-            // rotate(pivotSpeed);
-            // extend(extensionSpeed);
+            if (isPivotEncoderConnected()) {
+                // rotate(pivotSpeed);
+            }
+            if (isExtensionEncoderConnected()) {
+                // extend(extensionSpeed);
+            }
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }
