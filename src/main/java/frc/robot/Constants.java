@@ -12,17 +12,17 @@ public class Constants {
      * ARM
      */
     public static final int ARM_PIVOT_MOTOR_PORT = 18;      // CAN Port.
-    public static final int ARM_PIVOT_ENCODER_PORT = 0;    // DIO Port. (30 IS PLACEHOLDER)
+    public static final int ARM_PIVOT_ENCODER_PORT = 0;    // DIO Port.
     public static final int ARM_EXTEND_MOTOR_PORT = 21;     // CAN Port.
-    public static final int ARM_EXTEND_ENCODER_PORT = 1;   // DIO Port. (32 IS PLACEHOLDER)
+    public static final int ARM_EXTEND_ENCODER_PORT = 1;   // DIO Port. (1 IS PLACEHOLDER)
 
     public static final double ARM_EXTEND_LENGTH = Units.inchesToMeters(58); // Current temporary value, will be measured in meters
     public static final double ARM_PIVOT_LENGTH = Units.inchesToMeters(16); // TEMPORARY VALUE
     public static final double ARM_PIVOT_TO_BASE_DISTANCE = Units.inchesToMeters(16.5); // Distance between the pivot point of the arm and the robot base.
-    public static final double ARM_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360); // Max angular velocity of the arm
-    public static final double ARM_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360); // Max angular acceleration of the arm
-    public static final double ARM_MAX_EXT_VELOCITY = 30; // (M/s) Max velocity of the arm extension
-    public static final double ARM_MAX_EXT_ACCELERATION = 30; // (M/s) Max acceleration of the arm extension
+    public static final double ARM_MAX_ANGULAR_VELOCITY = 0.15; // (speed as in percent) Max angular velocity of the arm
+    public static final double ARM_MAX_ANGULAR_ACCELERATION = 0.15; // (speed as in percent / second) Max angular acceleration of the arm
+    public static final double ARM_MAX_EXT_VELOCITY = 0.15; // (speed as in percent) Max velocity of the arm extension
+    public static final double ARM_MAX_EXT_ACCELERATION = 0.15; // (speed as in percent / second) Max acceleration of the arm extension
     public static final double L1_X = Units.inchesToMeters(15);     // arm x-coordinate for L1
     public static final double L1_Y = Units.inchesToMeters(-2.0);          // arm y-coordinate for L1
     public static final double L2_X = Units.inchesToMeters(16.625); // arm x-coordinate for L2
