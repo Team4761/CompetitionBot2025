@@ -61,14 +61,14 @@ public class ArmSubsystem extends SubsystemBase {
     FancyArmFeedForward ff = new FancyArmFeedForward();
     // TODO: Tune these controllers!
     private ProfiledPIDController pivotPID = new ProfiledPIDController(
-        3,
+        0.7,
         0,
         0,
         new TrapezoidProfile.Constraints(Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_ACCELERATION)
     );
 
     private ProfiledPIDController extensionPID = new ProfiledPIDController(
-        3,
+        0.7,
         0,
         0,
         new TrapezoidProfile.Constraints(Constants.ARM_MAX_EXT_VELOCITY, Constants.ARM_MAX_EXT_ACCELERATION)
@@ -91,7 +91,13 @@ public class ArmSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
 
-            SmartDashboard.putNumber("Arm FF", ff.calculate(new Rotation2d(setPoint[0]), setPoint[1]));
+            // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
+            // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
+            // The cos(angle) is used to make it take less force as it's more upright (think about how it should kinda balance when it's fully upright, therefore requiring no motor force)
+            // After "testing", I found that it should only take like 0.015 speed to keep the arm upright when it's not extended.
+            double pivotFeedForward = Math.cos(setPoint[0]) * 0.015 /* Need to account for extension... */;
+
+            SmartDashboard.putNumber("Arm FF", pivotFeedForward);
             // rotate(pivotSpeed);
             // extend(extensionSpeed);
         }

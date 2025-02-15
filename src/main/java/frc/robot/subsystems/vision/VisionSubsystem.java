@@ -34,19 +34,28 @@ import frc.robot.Robot;
 public class VisionSubsystem extends SubsystemBase {
 
     // +x = forwards. +y = left. +z = up. Rotation is AROUND those axises in a counterclockwise direction! So roll = rotation AROUND +x.
-    public static final Transform3d CAMERA_ON_ROBOT_POSE = new Transform3d(0.3, 0, 0, new Rotation3d(0, 0, 0));
+    public static final Transform3d FRONT_CAMERA_ON_ROBOT_POSE = new Transform3d(0.3, 0, 0, new Rotation3d(0, 0, 0));
+    public static final Transform3d SIDE_CAMERA_ON_ROBOT_POSE = new Transform3d(0.3, 0, 0, new Rotation3d(0, 0, 0));
 
     //  This is the last recorded pose by vision (which tries to update its pose in the periodic method)
     // (0,0) represents the left corner of the blue alliance-wall, looking towards the red alliance. Towards the red alliance is +x, towards the other side of the alliance wall is +y.
     private Pose3d fieldPosition;
     private int aprilTagID = -1;
     private double latency = 0;
+    private double lastTimestamp = 0;
     private boolean foundAprilTag = false;
+
+    private Pose3d sideFieldPosition;
+    private int sideAprilTagID = -1;
+    private double sideLatency = 0;
+    private double sideLastTimestamp = 0;
+    private boolean sideFoundAprilTag = false;
+
     private List<PhotonPipelineResult> results;
 
     // Default hostname is "photonvision", but we changed that to "CAMERA_NAME"
-    PhotonCamera camera;
-    double lastTimestamp = 0;
+    PhotonCamera frontCamera;
+    PhotonCamera sideCamera;
 
     // Used to calculate a pose over time
     PhotonPoseEstimator photonPoseEstimator;
@@ -73,11 +82,11 @@ public class VisionSubsystem extends SubsystemBase {
      * This will be in charge of setting up the cameras and pose estimator.
      */
     public VisionSubsystem() {
-        camera = new PhotonCamera("Front Camera");
+        frontCamera = new PhotonCamera("Front Camera");
         // Other camera is called "Right Camera"
 
         // MULTI_TAG_PNP_ON_COPROCESSOR is best, but we're using CLOSEST_TO_LAST_POSE for now.
-        photonPoseEstimator = new PhotonPoseEstimator(APRIL_TAG_FIELD_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CAMERA_ON_ROBOT_POSE);
+        photonPoseEstimator = new PhotonPoseEstimator(APRIL_TAG_FIELD_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, FRONT_CAMERA_ON_ROBOT_POSE);
 
         // Maybe make this actually check for the robot's position once on startup?
         fieldPosition = new Pose3d();
@@ -90,6 +99,7 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateFrontCamera();
+        updateRightCamera();
     }
 
 
@@ -99,7 +109,7 @@ public class VisionSubsystem extends SubsystemBase {
      */
     public void updateFrontCamera() {
         // Get the last processed frame (technically just results) from the camera.
-        results = camera.getAllUnreadResults();
+        results = frontCamera.getAllUnreadResults();
         
         // Check for if there are any April Tags in the result
         for (PhotonPipelineResult result : results) {
@@ -112,7 +122,7 @@ public class VisionSubsystem extends SubsystemBase {
                     fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
                         target.getBestCameraToTarget(), // The position of the April Tag relative to the camera
                         APRIL_TAG_FIELD_LAYOUT.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
-                        CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
+                        FRONT_CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
                     );
 
                     // This "should" do the same thing as above, but I want to compare the two for differences.
@@ -132,7 +142,38 @@ public class VisionSubsystem extends SubsystemBase {
                 }
             }
             else {
-                SmartDashboard.putBoolean("Found April Tag", false);
+                foundAprilTag = false;
+            }
+        }
+    }
+
+
+    public void updateRightCamera() {
+        // Get the last processed frame (technically just results) from the camera.
+        results = sideCamera.getAllUnreadResults();
+        
+        // Check for if there are any April Tags in the result
+        for (PhotonPipelineResult result : results) {
+            if (result.hasTargets()) {
+                // List<PhotonTrackedTarget> targets = result.getTargets();
+                PhotonTrackedTarget target = result.getBestTarget();
+                
+                // Calculate robot's field relative pose
+                if (APRIL_TAG_FIELD_LAYOUT.getTagPose(target.getFiducialId()).isPresent()) {
+                    fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
+                        target.getBestCameraToTarget(), // The position of the April Tag relative to the camera
+                        APRIL_TAG_FIELD_LAYOUT.getTagPose(target.getFiducialId()).get(),   // The position of the April Tag in the field
+                        SIDE_CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
+                    );
+
+                    sideAprilTagID = target.getFiducialId();
+                    sideLatency = result.getTimestampSeconds() - sideLastTimestamp;
+                    sideLastTimestamp = result.getTimestampSeconds();
+                    sideFoundAprilTag = true;
+                }
+            }
+            else {
+                sideFoundAprilTag = false;
             }
         }
     }
@@ -165,7 +206,7 @@ public class VisionSubsystem extends SubsystemBase {
             if (result.hasTargets()) {
                 PhotonTrackedTarget target = result.getBestTarget();
                 if (target.getFiducialId() == aprilTagID) {
-                    return target.getBestCameraToTarget().inverse().plus(CAMERA_ON_ROBOT_POSE);
+                    return target.getBestCameraToTarget().inverse().plus(FRONT_CAMERA_ON_ROBOT_POSE);
                 }
             }
         }
