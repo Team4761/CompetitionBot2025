@@ -163,7 +163,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // If not actively rotating, then we should be correcting the rotation to stop "drifting"
         // Math.signum(number) returns -1 if the number is negative and +1 if the number is positive (or 0 if it is 0)
         if (!isBeingRotated && Math.abs(lastRotation.getDegrees() - getGyroRotation().getDegrees()) > 3) {
-            this.desiredSpeedRotation = -Math.signum(lastRotation.getDegrees() - getGyroRotation().getDegrees());
+            this.desiredSpeedRotation = Math.signum(lastRotation.getDegrees() - getGyroRotation().getDegrees());
         }
 
         // Represents the desired speeds of the entire robot essentially

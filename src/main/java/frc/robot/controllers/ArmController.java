@@ -46,9 +46,9 @@ public class ArmController extends XboxController {
             if (getRightBumperButtonPressed() && !armManualControl) {
                 CommandScheduler.getInstance().schedule(YeetCommand.create());
             }
-            if (armManualControl) {
+            if (armManualControl && !getYButton()) {
                 if (getBButton()) {
-                    Robot.map.muncher.yeet(-outtakeSpeed);
+                    Robot.map.muncher.yeet(-0.1);
                 }
                 if (getXButton()) {
                     Robot.map.muncher.yeet(intakeSpeed);
@@ -64,8 +64,12 @@ public class ArmController extends XboxController {
             Robot.map.arm.extend(extendSpeed*getRightY());
         }
         if (Robot.map.muncher != null) {
-            Robot.map.muncher.intake(-intakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
+            Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
             // Robot.map.muncher.yeet(0.1*getRightTriggerAxis());
+
+            if (getYButtonPressed()) {
+                CommandScheduler.getInstance().schedule(YeetCommand.create());
+            }
         }
     }
 

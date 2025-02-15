@@ -27,9 +27,9 @@ public class AutoHandler {
         startingPositionChooser = new SendableChooser<StartingPosition>();
 
         // Add commands to the chooser by copying the line below and changing the name & command
-        autoChooser.addOption("Say Hi", new SayHiCommand());
-        autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 1));
-        autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-0.3, 0, 0, 1));
+        autoChooser.addOption("Say Hi (Do Nothing)", new SayHiCommand());
+        autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 2.5));
+        autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-0.3, 0, 0, 2.5));
         autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
         // Only add the path planner stuff if swerve is initialized
         if (Robot.map.swerve != null) {

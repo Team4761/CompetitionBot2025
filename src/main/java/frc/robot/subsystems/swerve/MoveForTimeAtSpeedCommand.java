@@ -69,7 +69,8 @@ public class MoveForTimeAtSpeedCommand extends Command {
     /**
      * <p> When the command ends, stop the bot.
      */
-    public void end() {
+    @Override
+    public void end(boolean isInterrupted) {
         Robot.map.swerve.setDesiredSpeeds(0, 0, 0);
     }
 }

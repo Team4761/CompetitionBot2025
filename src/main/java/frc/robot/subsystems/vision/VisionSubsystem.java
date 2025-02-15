@@ -7,6 +7,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.proto.Photon;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -34,8 +36,8 @@ import frc.robot.Robot;
 public class VisionSubsystem extends SubsystemBase {
 
     // +x = forwards. +y = left. +z = up. Rotation is AROUND those axises in a counterclockwise direction! So roll = rotation AROUND +x.
-    public static final Transform3d FRONT_CAMERA_ON_ROBOT_POSE = new Transform3d(0.3, 0, 0, new Rotation3d(0, 0, 0));
-    public static final Transform3d SIDE_CAMERA_ON_ROBOT_POSE = new Transform3d(0.3, 0, 0, new Rotation3d(0, 0, 0));
+    public static final Transform3d FRONT_CAMERA_ON_ROBOT_POSE = new Transform3d(Units.inchesToMeters(-8.5), Units.inchesToMeters(-13.5), Units.inchesToMeters(8), new Rotation3d(0, 0, 0));
+    public static final Transform3d SIDE_CAMERA_ON_ROBOT_POSE = new Transform3d(Units.inchesToMeters(-1), Units.inchesToMeters(4.5), (23), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
 
     //  This is the last recorded pose by vision (which tries to update its pose in the periodic method)
     // (0,0) represents the left corner of the blue alliance-wall, looking towards the red alliance. Towards the red alliance is +x, towards the other side of the alliance wall is +y.
@@ -83,6 +85,7 @@ public class VisionSubsystem extends SubsystemBase {
      */
     public VisionSubsystem() {
         frontCamera = new PhotonCamera("Front Camera");
+        sideCamera = new PhotonCamera("Right Camera");
         // Other camera is called "Right Camera"
 
         // MULTI_TAG_PNP_ON_COPROCESSOR is best, but we're using CLOSEST_TO_LAST_POSE for now.

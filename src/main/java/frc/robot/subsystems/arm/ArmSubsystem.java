@@ -91,12 +91,6 @@ public class ArmSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
 
-            if (isPivotEncoderConnected()) {
-                // rotate(pivotSpeed);
-            }
-            if (isExtensionEncoderConnected()) {
-                // extend(extensionSpeed);
-            }
             // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
             // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
             // The cos(angle) is used to make it take less force as it's more upright (think about how it should kinda balance when it's fully upright, therefore requiring no motor force)
@@ -104,6 +98,13 @@ public class ArmSubsystem extends SubsystemBase {
             double pivotFeedForward = Math.cos(setPoint[0]) * 0.015 /* Need to account for extension... */;
 
             SmartDashboard.putNumber("Arm FF", pivotFeedForward);
+
+            if (isPivotEncoderConnected()) {
+                // rotate(pivotSpeed);
+            }
+            if (isExtensionEncoderConnected()) {
+                // extend(extensionSpeed);
+            }
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }
@@ -186,6 +187,16 @@ public class ArmSubsystem extends SubsystemBase {
     {
         if(Robot.armController.isPivotEnabled() == true)
         {
+            // The arm shouldn't be able to rotate down too far
+            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity > 0) {
+                pivotMotor.set(0);
+                return;
+            }
+            // Shouldn't be able to go over the top
+            if (getPivotRotation().getDegrees() >= 95 && rotationalVelocity < 0) {
+                pivotMotor.set(0);
+                return;
+            }
             pivotMotor.set(rotationalVelocity);
         }
     }   

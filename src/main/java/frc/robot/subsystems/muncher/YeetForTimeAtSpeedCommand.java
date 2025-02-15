@@ -21,7 +21,6 @@ public class YeetForTimeAtSpeedCommand extends Command {
      * do not use this this constructor, use create instead
      */
     private YeetForTimeAtSpeedCommand(double speed) {
-        addRequirements(Robot.map.arm); //first come, first swerve (-Slim Jim from 2024 competition bot)
         this.speed = speed;
     }
 
@@ -37,12 +36,23 @@ public class YeetForTimeAtSpeedCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        Robot.map.muncher.yeet(speed);
+    }
+
+    @Override
     public void execute() {
         Robot.map.muncher.yeet(speed);
     }
 
     @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
     public void end(boolean interrupted) {
         Robot.map.muncher.yeet(0);
+        System.out.println("Ended Command At Time: " + System.currentTimeMillis());
     }
 }
