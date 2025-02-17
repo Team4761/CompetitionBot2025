@@ -26,41 +26,49 @@ public class AlignWithAprilTag extends Command {
      * DO NOT USE THE CONSTRUCTOR! Use AlignWithAprilTag.create() instead!
      * This will align our robot with the april tag on the side of the reef we're trying to score at.
      * @param aprilTagID The ID of the april tag on the side of the reef we want to score on.
-     * @param scoreRightOfAprilTag If we're trying to score on the rung to the right of the april tag, this should be true. If left, false.
+     * @param scoreStrategy 0 -> don't adjust aligment, 1 -> left rung adjustment for coral placement, 2 -> right rung adjustment for coral placement
      * @return
      */
-    private AlignWithAprilTag(int aprilTagID, boolean scoreRightOfAprilTag) {
+    private AlignWithAprilTag(int aprilTagID, int scoreStrategy) {
         this.aprilTagID = aprilTagID;
         // TODO: Make the scoreRightOfAprilTag do something. It should affect the x:0.0 to be something like x:0.14, x:-0.14
-        if (scoreRightOfAprilTag) {
-            this.desiredDistanceFromAprilTag = new Translation3d(0.0, 0.4, 0.0);
+        double xOffset = 0.0;
+        switch(scoreStrategy) {
+            case 0:
+                xOffset = 0.0;
+                break;
+            case 1:
+                xOffset = -0.14;
+                break;
+            case 2:
+                xOffset = 0.14;
+                break;
         }
-        else {
-            this.desiredDistanceFromAprilTag = new Translation3d(0.0, 0.4, 0.0);
-        }
+
+        this.desiredDistanceFromAprilTag = new Translation3d(xOffset, 0.4, 0.0);
     }
 
 
     /**
      * This will align our robot with the april tag on the side of the reef we're trying to score at.
      * @param aprilTagID The ID of the april tag on the side of the reef we want to score on.
-     * @param scoreRightOfAprilTag If we're trying to score on the rung to the right of the april tag, this should be true. If left, false.
+     * @param scoreStrategy 0 -> don't adjust aligment, 1 -> left rung adjustment for coral placement, 2 -> right rung adjustment for coral placement
      * @return
      */
-    public static Command create(int aprilTagID, boolean scoreRightOfAprilTag) {
-        return new AlignWithAprilTag(aprilTagID, scoreRightOfAprilTag).withTimeout(3.0);
+    public static Command create(int aprilTagID, int scoreStrategy) {
+        return new AlignWithAprilTag(aprilTagID, scoreStrategy).withTimeout(3.0);
     }
 
 
     /**
      * This will align our robot with the april tag on the side of the reef we're trying to score at.
      * @param aprilTagID The ID of the april tag on the side of the reef we want to score on.
-     * @param scoreRightOfAprilTag If we're trying to score on the rung to the right of the april tag, this should be true. If left, false.
+     * @param scoreStrategy 0 -> don't adjust aligment, 1 -> left rung adjustment for coral placement, 2 -> right rung adjustment for coral placement
      * @param duration The MAXIMUM length this command can run for in seconds!
      * @return
      */
-    public static Command create(int aprilTagID, boolean scoreRightOfAprilTag, double duration) {
-        return new AlignWithAprilTag(aprilTagID, scoreRightOfAprilTag).withTimeout(duration);
+    public static Command create(int aprilTagID, int scoreStrategy, double duration) {
+        return new AlignWithAprilTag(aprilTagID, scoreStrategy).withTimeout(duration);
     }
 
 

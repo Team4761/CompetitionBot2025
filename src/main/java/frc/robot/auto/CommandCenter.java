@@ -22,7 +22,7 @@ public class CommandCenter {
     
     public static Command coralPrep() { return CoralStationIntakePrepCommand.create(); } // Moves the arm to the coral station and prepares to intake coral
     public static Command scoreL1() { return ScoreL1Command.create(); } // Scores coral at level 1
-    public static Command scoreL2(boolean orientation, int aprilTagID) { return ScoreL2Command.create(orientation, aprilTagID); } // Scores coral at level 2
+    public static Command scoreL2(int scoreStrategy, int aprilTagID) { return ScoreL2Command.create(scoreStrategy, aprilTagID); } // Scores coral at level 2
     public static Command scoreL3() { return ScoreL3Command.create(); } // Scores coral at level 3
     public static Command scoreL4() { return ScoreL4Command.create(); } // Scores coral at level 4
 

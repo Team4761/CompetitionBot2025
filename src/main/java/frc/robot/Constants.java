@@ -99,4 +99,11 @@ public class Constants {
 
     public static int BARGE_RIGHT() { return ON_BLUE_ALLIANCE ? 14 : 5; }
     public static int BARGE_LEFT() { return ON_BLUE_ALLIANCE ? 15 : 4; }
+
+    // April tag aligment strategies
+    class AprilTagAlignment {
+      public static final int CENTER = 0;
+      public static final int LEFT = 1;
+      public static final int RIGHT = 2;
+    }
 }
