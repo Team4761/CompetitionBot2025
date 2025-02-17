@@ -1,5 +1,6 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
@@ -42,11 +43,10 @@ public class ArmController extends XboxController {
      * This should be called in Robot.java during teleopPeriodic with armController.teleopPeriodic()
      */
     public void teleopPeriodic() {
+        // Muncher
         if (Robot.map.muncher != null) {
-            if (getRightBumperButtonPressed() && !armManualControl) {
-                CommandScheduler.getInstance().schedule(YeetCommand.create());
-            }
-            if (armManualControl && !getYButton()) {
+            // Yeet
+            if (/*armManualControl && */!getYButton()) {
                 if (getBButton()) {
                     Robot.map.muncher.yeet(-0.1);
                 }
@@ -57,19 +57,26 @@ public class ArmController extends XboxController {
                     Robot.map.muncher.yeet(0);
                 }
             }
+            if (getYButtonPressed()) {
+                CommandScheduler.getInstance().schedule(YeetCommand.create());
+            }
+
+            Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
         }
+        // Arm
         if(Robot.map.arm != null && armManualControl)
         {
             Robot.map.arm.rotate(pivotSpeed*getLeftY());
             Robot.map.arm.extend(extendSpeed*getRightY());
         }
-        if (Robot.map.muncher != null) {
-            Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
-            // Robot.map.muncher.yeet(0.1*getRightTriggerAxis());
-
-            if (getYButtonPressed()) {
-                CommandScheduler.getInstance().schedule(YeetCommand.create());
-            }
+        else if (Robot.map.arm != null && !armManualControl && !Robot.map.arm.usingSetpointSystem())
+        {
+            Robot.map.arm.setForcedRotation(Robot.map.arm.getForcedRotation().plus(new Rotation2d(pivotSpeed*getLeftY())));
+            Robot.map.arm.setForcedExtension(Robot.map.arm.getForcedExtension() + extendSpeed*getRightY());
+        }
+        else if (Robot.map.arm != null && !armManualControl && Robot.map.arm.usingSetpointSystem())
+        {
+            Robot.map.arm.changeSetpoint(0.1*getLeftY(), 0.1*getLeftX());
         }
     }
 
