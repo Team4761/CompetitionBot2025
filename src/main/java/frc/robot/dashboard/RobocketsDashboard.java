@@ -1,6 +1,8 @@
 package frc.robot.dashboard;
 
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -145,6 +147,11 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.map.arm::setRotateP, putNumber("Arm", "Pivot P", Robot.map.arm.getPivotPID().getP()));
             new ReactiveNumberEntry(Robot.map.arm::setRotateI, putNumber("Arm", "Pivot I", Robot.map.arm.getPivotPID().getI()));
             new ReactiveNumberEntry(Robot.map.arm::setRotateD, putNumber("Arm", "Pivot D", Robot.map.arm.getPivotPID().getD()));
+
+            // Settings
+            new ReactiveBooleanEntry(Robot.map.arm::setUsingSetpointSystem, putBoolean("Arm", "Using Setpoint System", Robot.map.arm.usingSetpointSystem()));
+            new ReactiveNumberEntry((degrees) -> Robot.map.arm.setForcedRotation(new Rotation2d(Units.degreesToRadians(degrees))), putNumber("Arm", "Forced Rotation", Robot.map.arm.getForcedRotation().getDegrees()));
+            new ReactiveNumberEntry(Robot.map.arm::setForcedExtension, putNumber("Arm", "Forced Extension", Robot.map.arm.getForcedExtension()));
         }
     }
 

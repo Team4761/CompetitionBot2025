@@ -42,6 +42,11 @@ public class ArmSubsystem extends SubsystemBase {
     // The math for this is [...]
     private static final double EXTENSION_ENCODER_UNITS_TO_METERS = 1.000;
 
+    private boolean usingSetpointSystem = false;
+    // The forced stuff only matters if usingSetpointSystem is false.
+    private Rotation2d forcedRotation = new Rotation2d(0);
+    private double forcedExtension = 0; // Meters
+
 
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
@@ -83,7 +88,12 @@ public class ArmSubsystem extends SubsystemBase {
         if(!Robot.armController.isArmManualControl() && isPivotEncoderConnected() && isExtensionEncoderConnected()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
-            double[] setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
+            double[] setPoint;
+            if (usingSetpointSystem) {
+                setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
+            } else {
+                setPoint = new double[]{forcedRotation.getRadians(), forcedExtension};
+            }
 
             double pivotSpeed = pivotPID.calculate(pivotEncoder.get(), setPoint[0]);
             double extensionSpeed = extensionPID.calculate(extendEncoder.get(), setPoint[1]);
@@ -268,6 +278,24 @@ public class ArmSubsystem extends SubsystemBase {
         return getSetPointFromRotationAndExtension(getPivotRotation(), getExtensionLength());
     }
 
+    /**
+     * Technically all in meters...
+     * @param deltaX +x = forwards
+     * @param deltaY +y = up
+     */
+    public void changeSetpoint(double deltaX, double deltaY) {
+        setDesiredPosition(desiredPosition.getX() + deltaX, desiredPosition.getY() + deltaY);
+    }
+
+
+    public boolean usingSetpointSystem() {
+        return this.usingSetpointSystem;
+    }
+
+    public void setUsingSetpointSystem(boolean usingSetpointSystem) {
+        this.usingSetpointSystem = usingSetpointSystem;
+    }
+
 
     public void setExtendP(double p) { this.extensionPID.setP(p); }
     public void setExtendI(double i) { this.extensionPID.setI(i); }
@@ -278,4 +306,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ProfiledPIDController getExtensionPID() { return this.extensionPID; }
     public ProfiledPIDController getPivotPID() { return this.pivotPID; }
+
+    public void setForcedRotation(Rotation2d rotation) { this.forcedRotation = rotation; }
+    public Rotation2d getForcedRotation() { return this.forcedRotation; }
+    public void setForcedExtension(double extensionMeters) { this.forcedExtension = extensionMeters; }
+    public double getForcedExtension() { return this.forcedExtension; }
 }

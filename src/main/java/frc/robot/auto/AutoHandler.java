@@ -4,6 +4,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ScoreL2Command;
+import frc.robot.subsystems.swerve.MoveDistanceCommand;
 import frc.robot.subsystems.swerve.MoveForTimeAtSpeedCommand;
 
 public class AutoHandler {
@@ -28,6 +31,8 @@ public class AutoHandler {
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi (Do Nothing)", new SayHiCommand());
+        autoChooser.addOption("Move 2 Meters Backward", MoveDistanceCommand.create(-2, 0, new Rotation2d(0)));
+        autoChooser.addOption("Move 1m Back, 1m Left, and Rotate 180 degrees", MoveDistanceCommand.create(-1, 1, new Rotation2d(Units.degreesToRadians(180))));
         autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 2.5));
         autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-0.3, 0, 0, 2.5));
         autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
