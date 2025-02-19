@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.urcl.URCL;
+
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -13,21 +16,29 @@ import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
 import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
-import frc.robot.subsystems.win.WinSubsystem;
+import edu.wpi.first.wpilibj.Timer;
+
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-@SuppressWarnings("unused")
+
 public class Robot extends TimedRobot {
   /**
    * We're gonna win cause this is here!
    */
   public static final boolean win = true;
   
-  static void Italy() {} // check WinSubsystem
+  /**
+   * <p> Jamme, jamme, 'ncoppa, jamme jà! 
+   * <p> Jamme, jamme, 'ncoppa, jamme jà,
+   * <p> Funiculì, Funiculà,
+   * <p> Funiculì, Funiculà!
+   * <p> 'Ncoppa jamme jà, Funiculì, Funiculà!
+   */
+  public void Italy() {}
 
   public static final RobotMap map = new RobotMap();
 
@@ -55,9 +66,16 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     dashboard = new RobocketsDashboard();
     
+    // Setup logger
+    DataLogManager.start();
+    URCL.start();
+
     // Make sure our autos can be properly selected
     AutoHandler.setupAutoSelector();
     AutoHandler.setupPathPlanner();
+
+    // Start the URCL logger
+    URCL.start(DataLogManager.getLog());
 
     // Added so that you can copy the dashboard config put in the deploy folder.
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
@@ -119,13 +137,14 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    CommandScheduler.getInstance().run();
+
+    double currentTime = Timer.getFPGATimestamp();
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
