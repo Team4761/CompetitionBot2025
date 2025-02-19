@@ -14,13 +14,14 @@ import frc.robot.auto.AlignWithAprilTag;
 
 /** 
  * End goal is to have this make the arm get to the position (16.625, 11.875), rotate arm to correct position, yeet, then retract finger
- * <p> however, I am incompetent and can't figure this out (you are not, this is exactly what we wanted)
+ * <p> however, I am incompetent and can't figure this out (you are not, this is exactly what we wanted) [I may have figured this out, but I am still incompetent]
  */
 public class ScoreL2Command extends Command {
 
 
     /**
-     * DO NOT USE THE CONSTRUCTOR! Use ScoreL2Command.create() instead! HDHAS
+     * DO NOT USE THE CONSTRUCTOR! Use ScoreL2Command.create() instead!
+     * HDHAS  -Julian
      */
     private ScoreL2Command() {
         addRequirements(Robot.map.arm); // disarm the bomb if required
@@ -31,7 +32,7 @@ public class ScoreL2Command extends Command {
      * This will rotate the arm while aligning our robot with the april tag (assuming we have vision working) and then score.
      * @param aprilTagID The ID of the april tag we should align ourselves with.
      * @param scoreStrategy 0 -> don't adjust aligment, 1 -> left rung adjustment for coral placement, 2 -> right rung adjustment for coral placement
-     * @return
+     * @return 
      */
     public static Command create(int scoreStrategy, int aprilTagID) {
         return new ParallelCommandGroup(
