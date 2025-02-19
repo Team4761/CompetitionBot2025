@@ -58,4 +58,4 @@ public class ScoreL2Command extends Command {
             YeetCommand.create()
         );
     }
-}   
+}

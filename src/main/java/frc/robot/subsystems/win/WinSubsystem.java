@@ -27,13 +27,13 @@ public class WinSubsystem extends SubsystemBase {
      * Therefore, we must recognize that this is the ultimate win, and therefore we must win.
      */
     public void crash() {
-        // System.exit(0);  If we get 16 likes, we'll uncomment this before the next competition
+        // System.exit(0);  If we get 16 likes, we'll uncomment this before the next competition.
         System.out.println("I CAN STOP WINNING!");
     }  
 
     /**
-     * constatntly flips the robot if the command works
-     * @return [REDACTED] <p> Don't mind the fact that this is a void and shouldn't return anything
+     * constatntly flips the robot if the command works.
+     * @return [REDACTED] <p> Don't mind the fact that this is a void and shouldn't return anything.
      */
     @SuppressWarnings("unused")
     public void flip(boolean shouldWeFlip, boolean areWeSure, boolean areWeTrulySure, boolean areYouTrusted, int onAScaleFrom1To10HowReadyAreYou, boolean functionRunnable, boolean isFlippedAlready, boolean isThePersonWhoIsGoingToRunThisCommandReadyForTheConsequencesOfYourActionsDueToTheCommandCausingSevereDamageToTheRobot, int stupidityScale){
