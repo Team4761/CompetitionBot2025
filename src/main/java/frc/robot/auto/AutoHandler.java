@@ -35,7 +35,7 @@ public class AutoHandler {
         autoChooser.addOption("Move 1m Back, 1m Left, and Rotate 180 degrees", MoveDistanceCommand.create(-1, 1, new Rotation2d(Units.degreesToRadians(180))));
         autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 2.5));
         autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-0.3, 0, 0, 2.5));
-        autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
+        autoChooser.addOption("Score L2", ScoreL2Command.create(2)); // command not finished
         // Only add the path planner stuff if swerve is initialized
         if (Robot.map.swerve != null) {
             autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));

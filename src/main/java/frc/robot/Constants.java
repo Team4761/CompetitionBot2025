@@ -85,20 +85,20 @@ public class Constants {
     */
     // April codes: p. 4; https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf
     public static final boolean ON_BLUE_ALLIANCE = true; // true if blue (left), false if red (right)
-    public static int REEF_FRONT() { return ON_BLUE_ALLIANCE ? 21 : 10; }
-    public static int REEF_FRONT_LEFT() { return ON_BLUE_ALLIANCE ? 22 : 9; }
-    public static int REEF_FRONT_RIGHT() { return ON_BLUE_ALLIANCE ? 20 : 11; }
-    public static int REEF_BACK() { return ON_BLUE_ALLIANCE ? 18 : 7; }
-    public static int REEF_BACK_LEFT() { return ON_BLUE_ALLIANCE ? 17 : 8; }
-    public static int REEF_BACK_RIGHT() { return ON_BLUE_ALLIANCE ? 19 : 6; }
+    public static int REEF_BACK() { return ON_BLUE_ALLIANCE ? 21 : 10; }
+    public static int REEF_BACK_RIGHT() { return ON_BLUE_ALLIANCE ? 22 : 9; }
+    public static int REEF_BACK_LEFT() { return ON_BLUE_ALLIANCE ? 20 : 11; }
+    public static int REEF_FRONT() { return ON_BLUE_ALLIANCE ? 18 : 7; }
+    public static int REEF_FRONT_RIGHT() { return ON_BLUE_ALLIANCE ? 17 : 8; }
+    public static int REEF_FRONT_LEFT() { return ON_BLUE_ALLIANCE ? 19 : 6; }
 
-    public static int CORAL_STATION_LEFT() { return ON_BLUE_ALLIANCE ? 12 : 2; }
-    public static int CORAL_STATION_RIGHT() { return ON_BLUE_ALLIANCE ? 13 : 1; }
+    public static int CORAL_STATION_RIGHT() { return ON_BLUE_ALLIANCE ? 12 : 2; }
+    public static int CORAL_STATION_LEFT() { return ON_BLUE_ALLIANCE ? 13 : 1; }
 
     public static int CORAL_DROPOFF() { return ON_BLUE_ALLIANCE ? 16 : 3; }
 
-    public static int BARGE_RIGHT() { return ON_BLUE_ALLIANCE ? 14 : 5; }
-    public static int BARGE_LEFT() { return ON_BLUE_ALLIANCE ? 15 : 4; }
+    public static int BARGE_LEFT() { return ON_BLUE_ALLIANCE ? 14 : 5; }
+    public static int BARGE_RIGHT() { return ON_BLUE_ALLIANCE ? 15 : 4; }
 
     // April tag aligment strategies
     class AprilTagAlignment {
