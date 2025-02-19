@@ -21,7 +21,7 @@ public class ScoreL4Command extends Command {
 
 
     /**
-     * DO NOT USE THE CONSTRUCTOR! Use ScoreL2Command.create() instead!
+     * DO NOT USE THE CONSTRUCTOR! Use ScoreL4Command.create() instead!
      * HDHAS  -Julian
      */
     private ScoreL4Command() {
