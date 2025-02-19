@@ -31,7 +31,7 @@ public class RobotMap {
         muncher = new MuncherSubsystem();
         swerve = new SwerveSubsystem();
         vision = new VisionSubsystem();
-        // win = new WinSubsystem();
+        win = new WinSubsystem();
     }
 
 }

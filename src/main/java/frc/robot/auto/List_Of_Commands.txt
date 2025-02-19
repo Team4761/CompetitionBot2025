@@ -8,7 +8,7 @@ Fundamental Commands:
     - IntakeForTimeAtSpeed      (Status: FINISHED, UNTESTED)
     - GetArmToPosition          (Status: UNFINISHED, UNTESTED)
 
-"Very" Important Commands:
+Very Important Commands:
     - Win                       (Status: FINISHED, UNTESTED)
     - Flip                      (Status: FINISHED, TESTED)
 

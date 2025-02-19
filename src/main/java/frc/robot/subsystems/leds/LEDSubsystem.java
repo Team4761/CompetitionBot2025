@@ -15,7 +15,13 @@ public class LEDSubsystem extends SubsystemBase {
     private AddressableLED leds;
     private AddressableLEDBuffer buffer;
     
-       
+    /** what pattern should I use for LEDs?
+     * <p> nominate your LED pattern below (keep in mind, this is a one-dimesional strip) Current nomintaions are:
+     * <p> gradient
+     * <p> a signed 32-bit integer (in binary)
+     * <p> "Win" in morse code
+     * <p>
+     */
     public LEDSubsystem() {
         leds = new AddressableLED(Constants.LEDS_PORT); // the port is 0
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line

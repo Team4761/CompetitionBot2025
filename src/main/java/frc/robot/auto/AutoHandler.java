@@ -15,11 +15,14 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.ScoreL2Command;
 import frc.robot.subsystems.swerve.MoveDistanceCommand;
 import frc.robot.subsystems.swerve.MoveForTimeAtSpeedCommand;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class AutoHandler {
 
     private static SendableChooser<Command> autoChooser;
     private static SendableChooser<StartingPosition> startingPositionChooser;
+    private static SendableChooser<Command> testChooser;
     
 
     /**
@@ -28,6 +31,7 @@ public class AutoHandler {
     public static void setupAutoSelector() {
         autoChooser = new SendableChooser<Command>();
         startingPositionChooser = new SendableChooser<StartingPosition>();
+        testChooser = new SendableChooser<Command>();
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi (Do Nothing)", new SayHiCommand());
@@ -35,7 +39,7 @@ public class AutoHandler {
         autoChooser.addOption("Move 1m Back, 1m Left, and Rotate 180 degrees", MoveDistanceCommand.create(-1, 1, new Rotation2d(Units.degreesToRadians(180))));
         autoChooser.addOption("Move frowaards", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 2.5));
         autoChooser.addOption("Move Barckwaards", MoveForTimeAtSpeedCommand.create(-0.3, 0, 0, 2.5));
-        autoChooser.addOption("Score L2", ScoreL2Command.create(true)); // command not finished
+        autoChooser.addOption("Score L2", ScoreL2Command.create(2)); // command not finished
         // Only add the path planner stuff if swerve is initialized
         if (Robot.map.swerve != null) {
             autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("One Meter Forward"));
@@ -48,9 +52,16 @@ public class AutoHandler {
         startingPositionChooser.addOption("Red - LEFT", StartingPosition.RED_LEFT);
         startingPositionChooser.addOption("Red - CENTER", StartingPosition.RED_CENTER);
         startingPositionChooser.addOption("Red - RIGHT", StartingPosition.RED_RIGHT);
+
+        // Put the choosers on the dashboard
+        testChooser.addOption("Swerve: quasistatic - forward", Robot.map.swerve.sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward));
+        testChooser.addOption("Swerve: quasistatic - reverse", Robot.map.swerve.sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
+        testChooser.addOption("Swerve: dynamic - forward", Robot.map.swerve.sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward));
+        testChooser.addOption("Swerve: dynamic - reverse", Robot.map.swerve.sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse));
  
         SmartDashboard.putData("Auto/Selected Auto", autoChooser);
         SmartDashboard.putData("Auto/Starting Position", startingPositionChooser);
+        SmartDashboard.putData("Auto/Test Chooser", testChooser);
     }   
 
 
