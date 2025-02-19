@@ -49,24 +49,24 @@ public class Constants {
       * SWERVE
       */
     // FL = "front left", FR = "front right", BL = "back left", BR = "back right"
-    public static final int SWERVE_FL_DRIVE_MOTOR_PORT = 16;    // CAN Port.
-    public static final int SWERVE_FL_TURN_MOTOR_PORT = 8;      // CAN Port.
-    public static final int SWERVE_FL_ENCODER_PORT = 12;        // CAN Port.
+    public static final int SWERVE_FL_DRIVE_MOTOR_PORT = 14;    // CAN Port.
+    public static final int SWERVE_FL_TURN_MOTOR_PORT = 6;      // CAN Port.
+    public static final int SWERVE_FL_ENCODER_PORT = 10;        // CAN Port.
 
-    public static final int SWERVE_FR_DRIVE_MOTOR_PORT = 15;    // CAN Port.
-    public static final int SWERVE_FR_TURN_MOTOR_PORT = 7;      // CAN Port.
-    public static final int SWERVE_FR_ENCODER_PORT = 11;        // CAN Port.
+    public static final int SWERVE_FR_DRIVE_MOTOR_PORT = 17;    // CAN Port.
+    public static final int SWERVE_FR_TURN_MOTOR_PORT = 9;      // CAN Port.
+    public static final int SWERVE_FR_ENCODER_PORT = 13;        // CAN Port.
 
-    public static final int SWERVE_BL_DRIVE_MOTOR_PORT = 17;    // CAN Port.
-    public static final int SWERVE_BL_TURN_MOTOR_PORT = 9;      // CAN Port.
-    public static final int SWERVE_BL_ENCODER_PORT = 13;        // CAN Port.
+    public static final int SWERVE_BL_DRIVE_MOTOR_PORT = 15;    // CAN Port.
+    public static final int SWERVE_BL_TURN_MOTOR_PORT = 7;      // CAN Port.
+    public static final int SWERVE_BL_ENCODER_PORT = 11;        // CAN Port.
 
-    public static final int SWERVE_BR_DRIVE_MOTOR_PORT = 14;    // CAN Port.
-    public static final int SWERVE_BR_TURN_MOTOR_PORT = 6;      // CAN Port.
-    public static final int SWERVE_BR_ENCODER_PORT = 10;        // CAN Port.
+    public static final int SWERVE_BR_DRIVE_MOTOR_PORT = 16;    // CAN Port.
+    public static final int SWERVE_BR_TURN_MOTOR_PORT = 8;      // CAN Port.
+    public static final int SWERVE_BR_ENCODER_PORT = 12;        // CAN Port.
 
-    public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(180);           // Radians per second.
-    public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(360);       // Radians per second squared.
+    public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360);           // Radians per second.
+    public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(1080);       // Radians per second squared.
     public static final double SWERVE_MAX_DRIVE_SPEED = 3.0;                                                // Meters per second?
     public static final double SWERVE_MAX_ACCELERATION = 100.0;                                             // Meters per second?
     public static final double SWERVE_MAX_DRIVE_VOLTAGE = 4.0;                                              // In Volts

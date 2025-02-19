@@ -23,8 +23,8 @@ public class ArmController extends XboxController {
     private double extendSpeed = 0.1;
     private double pivotSpeed = 0.1;
 
-    private boolean invertPivot = false;
-    private boolean invertExtend = false;
+    private boolean invertPivot = true;
+    private boolean invertExtend = true;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
      */

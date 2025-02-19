@@ -27,7 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Sadly, there is no easy way to zero the encoders. Therefore, the best we can do is have an offset.
      */
     /** To determine this, move the arm into the (0,0) state which is being in front of the robot, parallel to the ground and record the value of the absolute encoder read in the dashboard. */
-    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(127.50));
+    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(37.50));
     /** Meters. To determine this, move the arm into the (0,0) state which is unextended and record the value of the absolute encoder read in the dashboard. */
     private static final double EXTENSION_ENCODER_OFFSET = 0.0;
 
@@ -85,7 +85,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        if(!Robot.armController.isArmManualControl() && isPivotEncoderConnected() && isExtensionEncoderConnected()){
+        if(!Robot.armController.isArmManualControl()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
             double[] setPoint;
@@ -95,11 +95,12 @@ public class ArmSubsystem extends SubsystemBase {
                 setPoint = new double[]{forcedRotation.getRadians(), forcedExtension};
             }
 
-            double pivotSpeed = pivotPID.calculate(pivotEncoder.get(), setPoint[0]);
-            double extensionSpeed = extensionPID.calculate(extendEncoder.get(), setPoint[1]);
+            double pivotSpeed = pivotPID.calculate(getPivotRotation().getRadians(), setPoint[0]);
+            double extensionSpeed = extensionPID.calculate(getExtensionLength(), setPoint[1]);
 
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
+            SmartDashboard.putNumber("Arm Target Angle", Units.degreesToRadians(setPoint[0]));
 
             // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
             // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
@@ -110,10 +111,10 @@ public class ArmSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Arm FF", pivotFeedForward);
 
             if (isPivotEncoderConnected()) {
-                // rotate(pivotSpeed);
+                rotate(pivotSpeed+pivotFeedForward);
             }
             if (isExtensionEncoderConnected()) {
-                // extend(extensionSpeed);
+                extend(extensionSpeed);
             }
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
@@ -198,16 +199,16 @@ public class ArmSubsystem extends SubsystemBase {
         if(Robot.armController.isPivotEnabled() == true)
         {
             // The arm shouldn't be able to rotate down too far
-            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity > 0) {
+            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity < 0) {
                 pivotMotor.set(0);
                 return;
             }
             // Shouldn't be able to go over the top
-            if (getPivotRotation().getDegrees() >= 95 && rotationalVelocity < 0) {
+            if (getPivotRotation().getDegrees() >= 95 && rotationalVelocity > 0) {
                 pivotMotor.set(0);
                 return;
             }
-            pivotMotor.set(rotationalVelocity);
+            pivotMotor.set(-rotationalVelocity);
         }
     }   
 

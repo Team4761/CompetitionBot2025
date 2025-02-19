@@ -74,6 +74,7 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.map.swerve::setDriveMultiplier, putNumber("Swerve", "Swerve Drive Speed", 0.5));
             new ReactiveNumberEntry(Robot.map.swerve::setTurnMultiplier, putNumber("Swerve", "Swerve Turn Speed", 0.5));
             new ReactiveBooleanEntry(Robot.map.swerve::setFieldOriented, putBoolean("Swerve", "Swerve Field Oriented", true));
+            new ReactiveBooleanEntry(Robot.map.swerve::setAlwaysAutoCorrectRotation, putBoolean("Swerve","Always Auto Correct Rotation", Robot.map.swerve.isAlwaysAutoCorrectingRotation()));
 
             // Module Specific Info
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getDrivePosition(), putNumber("Swerve", "FL: Distance Traveled", 0));
