@@ -20,16 +20,13 @@ public class ExtendArmForTimeAtSpeedCommand extends Command
     /**
      * DON'T USE THE CONSTUCTOR please use ExtendArmForTimeAtSpeedCommand.create() instead
      */
-    private ExtendArmForTimeAtSpeedCommand() {
-        addRequirements(Robot.map.arm); // disarm the bomb if required
-    }
+    private ExtendArmForTimeAtSpeedCommand() {}
 
     /**
      * DON'T USE THE CONSTUCTOR please use ExtendArmForTimeAtSpeedCommand.create() instead
      */
     private ExtendArmForTimeAtSpeedCommand(double extensionSpeed)
     {
-        this();
         this.extensionSpeed = extensionSpeed;
     }
 

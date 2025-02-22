@@ -24,9 +24,7 @@ public class ScoreL3Command extends Command {
      * DO NOT USE THE CONSTRUCTOR! Use ScoreL3Command.create() instead!
      * HDHAS  -Julian
      */
-    private ScoreL3Command() {
-        addRequirements(Robot.map.arm); // disarm the bomb if required
-    }
+    private ScoreL3Command() {}
 
 
     /**

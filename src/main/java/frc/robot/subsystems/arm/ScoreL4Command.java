@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.muncher.YeetCommand;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.auto.AlignWithAprilTag;
 
 /** 
@@ -24,9 +23,7 @@ public class ScoreL4Command extends Command {
      * DO NOT USE THE CONSTRUCTOR! Use ScoreL4Command.create() instead!
      * HDHAS  -Julian
      */
-    private ScoreL4Command() {
-        addRequirements(Robot.map.arm); // disarm the bomb if required
-    }
+    private ScoreL4Command() {}
 
 
     /**
