@@ -30,15 +30,7 @@ public class Robot extends TimedRobot {
    * We're gonna win cause this is here!
    */
   public static final boolean win = true;
-  
-  /**
-   * <p> Jamme, jamme, 'ncoppa, jamme jà! 
-   * <p> Jamme, jamme, 'ncoppa, jamme jà,
-   * <p> Funiculì, Funiculà,
-   * <p> Funiculì, Funiculà!
-   * <p> 'Ncoppa jamme jà, Funiculì, Funiculà!
-   */
-  public void Italy() {}
+  // Check winSubsystem
 
   public static final RobotMap map = new RobotMap();
 
