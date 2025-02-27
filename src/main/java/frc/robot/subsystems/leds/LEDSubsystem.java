@@ -20,6 +20,7 @@ public class LEDSubsystem extends SubsystemBase {
     private AddressableLED leds;
     private AddressableLEDBuffer buffer;
     
+    // LEDs will be a bit different (i'll send the announcement after robotics today (Feb 27)) -Alistair
     /** what pattern should I use for LEDs?
      * <p> nominate your LED pattern below (keep in mind, this is a one-dimesional strip) Current nomintaions are:
      * <p> gradient
