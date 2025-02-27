@@ -2,6 +2,7 @@ package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.arm.*;
 import frc.robot.subsystems.muncher.*;
 import frc.robot.subsystems.swerve.*;
@@ -21,10 +22,10 @@ public class CommandCenter {
     public static Command armExtendRaw(double duration, double extensionSpeed) { return ExtendArmForTimeAtSpeedCommand.create(duration, extensionSpeed); } // Extends the arm for a duration at a specific speed
     
     public static Command coralPrep() { return CoralStationIntakePrepCommand.create(); } // Moves the arm to the coral station and prepares to intake coral
-    public static Command scoreL1() { return ScoreL1Command.create(); } // Scores coral at level 1
+    public static Command scoreL1() { return ScoreL1Command.create(Constants.AprilTagAlignment.CENTER); } // Scores coral at level 1
     public static Command scoreL2(int scoreStrategy, int aprilTagID) { return ScoreL2Command.create(scoreStrategy, aprilTagID); } // Scores coral at level 2
-    public static Command scoreL3() { return ScoreL3Command.create(); } // Scores coral at level 3
-    public static Command scoreL4() { return ScoreL4Command.create(); } // Scores coral at level 4
+    public static Command scoreL3() { return ScoreL3Command.create(Constants.AprilTagAlignment.CENTER); } // Scores coral at level 3
+    public static Command scoreL4() { return ScoreL4Command.create(Constants.AprilTagAlignment.CENTER); } // Scores coral at level 4
 
     // Swerve Commands
     public static Command fieldGo(double x, double y, double angle) { return GetToFieldPositionCommand.create(x, y, angle); }
