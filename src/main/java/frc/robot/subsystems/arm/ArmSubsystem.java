@@ -27,7 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Sadly, there is no easy way to zero the encoders. Therefore, the best we can do is have an offset.
      */
     /** To determine this, move the arm into the (0,0) state which is being in front of the robot, parallel to the ground and record the value of the absolute encoder read in the dashboard. */
-    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(127.50));
+    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(154.50));
     /** Meters. To determine this, move the arm into the (0,0) state which is unextended and record the value of the absolute encoder read in the dashboard. */
     private static final double EXTENSION_ENCODER_OFFSET = 0.0;
 
@@ -50,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // +x represents forwards and +y represents up.
     // 0,0 is currently undecided (we need the design of the arm before we decide.)
-    private Translation2d desiredPosition = getSetPointFromRotationAndExtension(new Rotation2d(0), 0);
+    private ArmState targetState = new ArmState();
     
     // Both are Krakens
     private static TalonFX pivotMotor = new TalonFX(Constants.ARM_PIVOT_MOTOR_PORT);
@@ -85,35 +85,39 @@ public class ArmSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        if(!Robot.armController.isArmManualControl() && isPivotEncoderConnected() && isExtensionEncoderConnected()){
+        if(!Robot.armController.isArmManualControl()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
-            double[] setPoint;
+            ArmState state;
             if (usingSetpointSystem) {
-                setPoint = getRotationExtensionFromSetPoint(desiredPosition.getX(), desiredPosition.getY());
+                state = targetState;
             } else {
-                setPoint = new double[]{forcedRotation.getRadians(), forcedExtension};
+                state = new ArmState(new Rotation2d(forcedRotation.getRadians()), forcedExtension);
             }
 
-            double pivotSpeed = pivotPID.calculate(pivotEncoder.get(), setPoint[0]);
-            double extensionSpeed = extensionPID.calculate(extendEncoder.get(), setPoint[1]);
+            double pivotSpeed = pivotPID.calculate(getPivotRotation().getRadians(), state.getPivotRotation().getRadians());
+            double extensionSpeed = extensionPID.calculate(getExtensionLength(), state.getExtensionLength());
 
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
+            SmartDashboard.putNumber("Arm Target Angle", Units.degreesToRadians(state.getPivotRotation().getDegrees()));
+            SmartDashboard.putNumber("Arm Target Extension", Units.degreesToRadians(state.getExtensionLength()));
 
             // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
             // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
             // The cos(angle) is used to make it take less force as it's more upright (think about how it should kinda balance when it's fully upright, therefore requiring no motor force)
-            // After "testing", I found that it should only take like 0.015 speed to keep the arm upright when it's not extended.
-            double pivotFeedForward = Math.cos(setPoint[0]) * 0.015 /* Need to account for extension... */;
+            // After "testing", I found that it should only take like 0.015 speed to keep the arm upright when it's not extended and 0.32 when extended.
+            double pivotFeedForward = 
+                Math.cos(state.getPivotRotation().getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
+                (state.getExtensionLength()/ArmState.MAX_EXTENSION_LENGTH * 0.305 + 0.15);
 
             SmartDashboard.putNumber("Arm FF", pivotFeedForward);
 
             if (isPivotEncoderConnected()) {
-                // rotate(pivotSpeed);
+                rotate(pivotSpeed+pivotFeedForward);
             }
             if (isExtensionEncoderConnected()) {
-                // extend(extensionSpeed);
+                extend(extensionSpeed);
             }
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
@@ -129,7 +133,7 @@ public class ArmSubsystem extends SubsystemBase {
      *          <p> - pivotDirection = The direction of the pivot in radians where 0 radians represents parallel to the ground (pointing forwards) and the positive direction is upwards
      *          <p> - extensionLength = The length to extend the arm to reach the point in meters.
      */
-    public static double[] getRotationExtensionFromSetPoint(double x, double y) {
+    public static ArmState getRotationExtensionFromSetPoint(double x, double y) {
         double directionTowardsPoint = Math.atan2(y,x);
         double distanceToPoint = Math.sqrt((x*x)+(y*y));
         double lengthOfExtension = distanceToPoint - Constants.ARM_PIVOT_LENGTH;
@@ -137,9 +141,9 @@ public class ArmSubsystem extends SubsystemBase {
         // Angle Boundaries: 0 radians to PI radians (range of motion: 180 degrees) 
         // Extension Boundaries: 0% to 100%
         if ((0 < percentOfExtension && percentOfExtension < 1) && (0 < directionTowardsPoint && directionTowardsPoint < Math.PI)) {
-            return new double[]{directionTowardsPoint, lengthOfExtension};
+            return new ArmState(new Rotation2d(directionTowardsPoint), lengthOfExtension);
         }
-        return new double[]{-1,-1};
+        return null;
     }
 
 
@@ -166,9 +170,13 @@ public class ArmSubsystem extends SubsystemBase {
         // Check to see if the desired location is within the constraints
         double directionTowardsPoint = Math.atan2(y,x);
         double unsafeAngle = Math.atan2(-Constants.ARM_PIVOT_TO_BASE_DISTANCE, Constants.ROBOT_SIDE_LENGTH/2); //Angles past this point are deemed unsafe.
-        double[] parameters = getRotationExtensionFromSetPoint(x, y);
+        ArmState parameters = getRotationExtensionFromSetPoint(x, y);
 
-        if (directionTowardsPoint <= unsafeAngle) {
+        if (parameters == null) {
+            // System.out.println("POINT IS UNREACHABLE (MECHANICALLY IMPOSSIBLE)");
+            return;
+        }
+        else if (directionTowardsPoint <= unsafeAngle) {
             // System.out.println("POINT CLIPS ROBOT");
             return;
         }
@@ -180,12 +188,8 @@ public class ArmSubsystem extends SubsystemBase {
             // System.out.println("POINT CAUSES SIGNFICANT STRAIN (GOES OVER THE ROBOT)");
             return;
         }
-        else if (parameters[0] == -1) {
-            // System.out.println("POINT IS UNREACHABLE (MECHANICALLY IMPOSSIBLE)");
-            return;
-        }
 
-        desiredPosition = new Translation2d(x, y);
+        targetState = parameters;
     }
 
 
@@ -198,16 +202,16 @@ public class ArmSubsystem extends SubsystemBase {
         if(Robot.armController.isPivotEnabled() == true)
         {
             // The arm shouldn't be able to rotate down too far
-            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity > 0) {
+            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity < 0) {
                 pivotMotor.set(0);
                 return;
             }
             // Shouldn't be able to go over the top
-            if (getPivotRotation().getDegrees() >= 95 && rotationalVelocity < 0) {
+            if (getPivotRotation().getDegrees() >= 95 && rotationalVelocity > 0) {
                 pivotMotor.set(0);
                 return;
             }
-            pivotMotor.set(rotationalVelocity);
+            pivotMotor.set(-rotationalVelocity);
         }
     }   
 
@@ -270,7 +274,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public Translation2d getTargetPoint() {
-        return this.desiredPosition;
+        return getSetPointFromRotationAndExtension(targetState.getPivotRotation(), targetState.getExtensionLength());
     }
 
 
@@ -284,7 +288,20 @@ public class ArmSubsystem extends SubsystemBase {
      * @param deltaY +y = up
      */
     public void changeSetpoint(double deltaX, double deltaY) {
+        Translation2d desiredPosition = getTargetPoint();
         setDesiredPosition(desiredPosition.getX() + deltaX, desiredPosition.getY() + deltaY);
+    }
+
+    public void setSetpoint(double x, double y) {
+        setDesiredPosition(x, y);
+    }
+
+    public void setState(ArmState state) {
+        this.targetState = state;
+    }
+
+    public void setState(Rotation2d targetPivotRotation, double targetExtensionLengthMeters) {
+        this.targetState = new ArmState(targetPivotRotation, targetExtensionLengthMeters);
     }
 
 

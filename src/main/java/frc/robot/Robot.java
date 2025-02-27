@@ -55,6 +55,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // This prevents swerve from starting and trying to rotate
+    Robot.map.swerve.updateLastRotation();
     CommandScheduler.getInstance().cancelAll();
     dashboard = new RobocketsDashboard();
     

@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -36,6 +37,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // These get updated via shuffleboard
     // Drive for forward/backward/strafing speed
     // Turn for, well, turning speeds...
+    private boolean alwaysAutoCorrectRotation = false;
     public double speedDriveModifier = 0.5;
     public double speedTurnModifier = 0.5;
 
@@ -54,10 +56,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Translation2d backRightLocation = new Translation2d(-0.32, -0.32);
 
     // For Kraken swerve (competition bot)
-    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(115.444)));
-    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-61.988)));
-    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-28.151)));
-    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-118.562)));
+    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-119.387)));
+    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-26.600)));
+    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-67.674)));
+    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(116.800)));
     
     // For Neo swerve (test bot)
     // public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
@@ -174,15 +176,20 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // If not actively rotating, then we should be correcting the rotation to stop "drifting"
         // Math.signum(number) returns -1 if the number is negative and +1 if the number is positive (or 0 if it is 0)
-        if (!isBeingRotated && Math.abs(lastRotation.getDegrees() - getGyroRotation().getDegrees()) > 3) {
+        if (!isBeingRotated && Math.abs(lastRotation.getDegrees() - getGyroRotation().getDegrees()) > 5 && ((this.desiredSpeedX != 0 && this.desiredSpeedY != 0) || alwaysAutoCorrectRotation)) {
             this.desiredSpeedRotation = Math.signum(lastRotation.getDegrees() - getGyroRotation().getDegrees());
         }
+        SmartDashboard.putNumber("Swerve Desired X", desiredSpeedX);
+        SmartDashboard.putNumber("Swerve Desired Y", desiredSpeedY);
+        SmartDashboard.putNumber("Swerve Desired Rot", desiredSpeedRotation);
 
         // Represents the desired speeds of the entire robot essentially
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(this.desiredSpeedX, this.desiredSpeedY, this.desiredSpeedRotation);
         // Makes the speeds relative to the field if true
         if (isFieldOriented) {
-            chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, getGyroRotation());
+            // I'm pretty sure that the angle we need to get is CLOCKWISE (not counterclockwise).
+            // The wheel speeds need to be rotated CCW, so we need to tell it how far to rotate, and that's in CW rotation.
+            chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, getGyroRotation().times(-1));
         }
         // PathPlanner gives its own chassis speeds to use so...
         if (isPathPlannerRunning) {
@@ -238,6 +245,11 @@ public class SwerveSubsystem extends SubsystemBase {
         else {
             this.isBeingRotated = false;
         }
+    }
+
+
+    public void updateLastRotation() {
+        this.lastRotation = getGyroRotation();
     }
 
 
@@ -404,4 +416,11 @@ public class SwerveSubsystem extends SubsystemBase {
         backLeft.updateTurnFFv(kv);
         backRight.updateTurnFFv(kv);
     }
+
+    public boolean isAlwaysAutoCorrectingRotation() {
+        return alwaysAutoCorrectRotation;
+    }
+    public void setAlwaysAutoCorrectRotation(boolean autoCorrect) {
+        alwaysAutoCorrectRotation = autoCorrect;
+    } 
 }

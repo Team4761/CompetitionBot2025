@@ -18,8 +18,8 @@ public class SwerveCompetitionGyro implements SwerveGyroIO {
     }
     
     public Rotation2d getRotation() {
-        // Negative because gyro's are dumb.
-        return new Rotation2d(-(new Rotation2d(Units.degreesToRadians(gyro.getAngle())).minus(offset)).getRadians());
+        // Not negative because gyro's aren't dumb.
+        return new Rotation2d((new Rotation2d(Units.degreesToRadians(gyro.getAngle())).minus(offset)).getRadians());
     }
 
 

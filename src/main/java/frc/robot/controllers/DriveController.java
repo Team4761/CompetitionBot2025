@@ -16,6 +16,9 @@ public class DriveController extends XboxController {
     /** This stores which direction should be considered forwards. On robot initialization, this is towards the front of the robot. */
     private Rotation2d currentForwardsDirection = new Rotation2d();
 
+    private double driveModifier = 1.0;
+    private double turnModifier = 1.0;
+
     private boolean driveInverted = true;
     private boolean strafeInverted = true;
     private boolean turnInverted = true;
@@ -44,20 +47,28 @@ public class DriveController extends XboxController {
     public void teleopPeriodic() {
         // Swerve
         if (map.swerve != null) {
+            if (getRightBumperButton()) {
+                driveModifier = 0.4;
+                turnModifier = 0.4;
+            }
+            else {
+                driveModifier = 1.0;
+                turnModifier = 1.0;
+            }
             // Buttons
             if (getXButtonPressed()) {
                 this.orientForwardsControllingDirection();
             }
             if (getYButtonPressed()) {
-                // map.swerve.resetPosition(new Pose2d());
+                map.swerve.resetPosition(new Pose2d());
             }
 
             // Joystick control
             // Check out this desmos graph to see how the math works: https://www.desmos.com/calculator/6sio2uwvi1
             map.swerve.setDesiredSpeeds(
-                (driveInverted ? -1 : 1) * getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + (driveInverted ? -1 : 1) * getLeftY()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make up the positive direction
-                (strafeInverted ? 1 : -1) * getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + (strafeInverted ? -1 : 1) * getLeftX()*Math.cos(currentForwardsDirection.getRadians()),   // Negative to make left the positive direction
-                (turnInverted ? -1 : 1) * getRightX()   // Negative to make left (counterclockwise) the positive direction.
+                driveModifier * ((strafeInverted ? -1 : 1) * -getLeftX()*Math.sin(currentForwardsDirection.getRadians()) + (driveInverted ? -1 : 1) * getLeftY()*Math.cos(currentForwardsDirection.getRadians())),   // Negative to make up the positive direction
+                driveModifier * ((driveInverted ? -1 : 1) * getLeftY()*Math.sin(currentForwardsDirection.getRadians()) + (strafeInverted ? -1 : 1) * getLeftX()*Math.cos(currentForwardsDirection.getRadians())),   // Negative to make left the positive direction
+                turnModifier * ((turnInverted ? -1 : 1) * getRightX())   // Negative to make left (counterclockwise) the positive direction.
             );
         }
     }

@@ -97,7 +97,7 @@ public class SwerveModuleKraken implements SwerveModuleIO {
             // Just turn motors at desired speeds.
             if (this.isManualControl && manualSpeeds != null) {
                 driveMotor.setVoltage(manualSpeeds[0]);
-                turnMotor.setVoltage(manualSpeeds[1]);
+                turnMotor.setVoltage(-manualSpeeds[1]);
             }
             // Use PID control
             else {
@@ -109,19 +109,21 @@ public class SwerveModuleKraken implements SwerveModuleIO {
                 // Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
                 // direction of travel that can occur when modules change directions.
                 // This results in smoother driving because the wheel won't try to go at 100% speed WHILE also rotating itself.
-                desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians());
+                desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond * Math.abs(Math.cos(desiredState.angle.getRadians() - wheelRotation.getRadians()));
 
                 // Calculate the voltage sent to the driving motor using the drive PID controller.
                 final double driveOutput = drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
                 final double driveFF = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
                 // Calculate the turning motor output using the turning PID controller.
-                final double turnOutput = turningPIDController.calculate(getWheelRotation().getRadians(), desiredState.angle.getRadians());
+                final double turnOutput = turningPIDController.calculate(wheelRotation.getRadians(), desiredState.angle.getRadians());
                 final double turnFF = turnFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
                 // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
                 SmartDashboard.putNumber("Drive Voltage", (driveOutput+driveFF));
                 // driveMotor.setVoltage((driveOutput + driveFF));
+
+                // The /8.0 is a completely magic number. I'm pretty sure it came from the *8.0 in SwerveSubsystem.setDesiredSpeeds() tho
                 driveMotor.set(desiredState.speedMetersPerSecond/8.0);
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
                 turnMotor.setVoltage(-(turnOutput + turnFF));
