@@ -21,16 +21,13 @@ public class RotateArmForTimeAtSpeedCommand extends Command
     /**
     * DONT USE THE CONSTUCTOR! Please use RotateArmForTimeAtSpeedCommand.create() instead.
     */
-    private RotateArmForTimeAtSpeedCommand() {
-        addRequirements(Robot.map.arm); // disarm the bomb if required
-    }
+    private RotateArmForTimeAtSpeedCommand() {}
 
     /**
     * DONT USE THE CONSTUCTOR! Please use RotateArmForTimeAtSpeedCommand.create() instead.
     */
      private RotateArmForTimeAtSpeedCommand(double rotateSpeed)
      {
-        this();
         this.rotateSpeed = rotateSpeed;
      }
 
