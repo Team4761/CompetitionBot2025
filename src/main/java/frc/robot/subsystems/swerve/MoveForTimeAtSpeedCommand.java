@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.auto.CommandCenter;
 
 /**
  * <p> DOOMSDAY COMMAND!
@@ -55,7 +56,7 @@ public class MoveForTimeAtSpeedCommand extends Command {
      */
     @Override
     public void initialize() {
-        addRequirements(Robot.map.swerve);
+        CommandCenter.addRequirements(this, Robot.map.swerve);
     }
 
     /**

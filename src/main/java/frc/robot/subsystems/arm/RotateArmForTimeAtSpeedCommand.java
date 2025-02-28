@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.auto.CommandCenter;
 
 
 /**
@@ -17,24 +18,23 @@ public class RotateArmForTimeAtSpeedCommand extends Command
       * (Please make this slow so you dont break the robot).*/
     private double rotateSpeed;
 
-    
     /**
     * DONT USE THE CONSTUCTOR! Please use RotateArmForTimeAtSpeedCommand.create() instead.
     */
-    private RotateArmForTimeAtSpeedCommand() {}
-
-    /**
-    * DONT USE THE CONSTUCTOR! Please use RotateArmForTimeAtSpeedCommand.create() instead.
-    */
-     private RotateArmForTimeAtSpeedCommand(double rotateSpeed)
+    private RotateArmForTimeAtSpeedCommand(double rotateSpeed)
      {
         this.rotateSpeed = rotateSpeed;
      }
 
-     /**
+    @Override
+    public void initialize() {
+        CommandCenter.addRequirements(this, Robot.map.arm);
+    }
+
+    /**
       * Extends the arm for a duration at a specific speed.
       * @param duration The duration to extend for in seconds.
-      * @param extensionSpeed The speed to extend for. Between -1 and 1 where 1 represents full speed extension.
+      * @param rotateSpeed The speed to extend for. Between -1 and 1 where 1 represents full speed extension.
       */
      public static Command create(double duration, double rotateSpeed)
      {

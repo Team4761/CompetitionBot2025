@@ -2,10 +2,14 @@ package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.*;
 import frc.robot.subsystems.muncher.*;
 import frc.robot.subsystems.swerve.*;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 public class CommandCenter {
     // Muncher commands
@@ -31,4 +35,9 @@ public class CommandCenter {
     public static Command fieldGo(double x, double y, double angle) { return GetToFieldPositionCommand.create(x, y, angle); }
     public static Command fieldGoRaw(double speedx, double speedy, double turnSpeed, double duration) { return MoveForTimeAtSpeedCommand.create(speedx, speedy, turnSpeed, duration); }
     public static Command fieldMove(double deltax, double deltay, Rotation2d deltaRot) { return MoveDistanceCommand.create(deltax, deltay, deltaRot); }
+
+    // Utility function
+    public static void addRequirements(Command command, Subsystem... subsystem) {
+        command.addRequirements(Arrays.stream(subsystem).filter(Objects::nonNull).toList());
+    }
 }
