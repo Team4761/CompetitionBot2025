@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.auto.CommandCenter;
 
 
 /**
@@ -28,6 +29,11 @@ public class ExtendArmForTimeAtSpeedCommand extends Command
     private ExtendArmForTimeAtSpeedCommand(double extensionSpeed)
     {
         this.extensionSpeed = extensionSpeed;
+    }
+
+    @Override
+    public void initialize() {
+       CommandCenter.addRequirements(this, Robot.map.arm);
     }
 
     /**

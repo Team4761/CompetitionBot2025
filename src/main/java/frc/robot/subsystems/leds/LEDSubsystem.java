@@ -32,7 +32,7 @@ public class LEDSubsystem extends SubsystemBase {
         // Comment out patterns that aren't being used
 
         
-        // progress bar fills perportional to how much the move joystick is pushed (kinda)
+        // progress bar fills proportional to how much the move joystick is pushed (kinda)
         /**
         leds = new AddressableLED(Constants.LEDS_PORT);
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line
