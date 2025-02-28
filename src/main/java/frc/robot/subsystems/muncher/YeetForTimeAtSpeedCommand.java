@@ -26,9 +26,9 @@ public class YeetForTimeAtSpeedCommand extends Command {
 
     
     /**
-     * This runs the yeet device of the muncher at a set speed for a set duration.
+     * This runs the yeet motor of the muncher at a set speed for a set duration.
      * @param speed The speed as a percent between -1 and 1 where 1 represents full speed pushing outwards and -1 represents full speed pulling inwards.
-     * @param seconds The duration in seconds to run the yeet device.
+     * @param seconds The duration in seconds to run the yeet motor.
      * @return The YeetForTimeCommand that can be scheduled.
      */
     public static Command create(double speed, double seconds) {
