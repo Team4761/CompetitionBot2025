@@ -75,22 +75,26 @@ public class DriveController extends XboxController {
 
     
     // Applying slew limiters and deadzone (deadband) to every single axis.
-    // @Override
-    // public double getLeftX() {
-    //     return leftXLimiter.calculate(MathUtil.applyDeadband(super.getLeftX(), 0.02));
-    // }
-    // @Override
-    // public double getLeftY() {
-    //     return leftYLimiter.calculate(MathUtil.applyDeadband(super.getLeftY(), 0.02));
-    // }
-    // @Override
-    // public double getRightX() {
-    //     return rightXLimiter.calculate(MathUtil.applyDeadband(super.getRightX(), 0.02));
-    // }
-    // @Override
-    // public double getRightY() {
-    //     return rightYLimiter.calculate(MathUtil.applyDeadband(super.getRightY(), 0.02));
-    // }
+    @Override
+    public double getLeftX() {
+        // return leftXLimiter.calculate(MathUtil.applyDeadband(super.getLeftX(), 0.02));
+        return MathUtil.applyDeadband(super.getLeftX(), 0.08);
+    }
+    @Override
+    public double getLeftY() {
+        // return leftYLimiter.calculate(MathUtil.applyDeadband(super.getLeftY(), 0.02));
+        return MathUtil.applyDeadband(super.getLeftY(), 0.08);
+    }
+    @Override
+    public double getRightX() {
+        // return rightXLimiter.calculate(MathUtil.applyDeadband(super.getRightX(), 0.02));
+        return MathUtil.applyDeadband(super.getRightX(), 0.08);
+    }
+    @Override
+    public double getRightY() {
+        // return rightYLimiter.calculate(MathUtil.applyDeadband(super.getRightY(), 0.02));
+        return MathUtil.applyDeadband(super.getRightY(), 0.08);
+    }
 
 
     /**
