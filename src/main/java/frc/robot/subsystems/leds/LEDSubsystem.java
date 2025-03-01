@@ -26,7 +26,8 @@ public class LEDSubsystem extends SubsystemBase {
      * <p> gradient
      * <p> 4761 in binary
      * <p> "Win" in morse code
-     * <p>
+     * <p> lights that cross over eachother in the middle, then the colors xor
+     * <p> lights that blink blanched almond when the robot is perfectly aligned in teleop
      */
     public LEDSubsystem() {
         // Comment out patterns that aren't being used
@@ -111,7 +112,7 @@ public class LEDSubsystem extends SubsystemBase {
 
 
 
-        // Win in morse code (not finished)
+        // Win in morse code
         leds = new AddressableLED(Constants.LEDS_PORT);
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line
         leds.setLength(Constants.LEDS_NUMBER_OF_LEDS);
@@ -120,7 +121,24 @@ public class LEDSubsystem extends SubsystemBase {
         }
 
         public void periodic() {
- 
+            // red is unused LEDs
+            // 101101100101001101, 18 digits
+            LEDPattern base = LEDPattern.steps(Map.ofEntries(
+                Map.entry(0, Color.kRed),
+                Map.entry(0.4375, Color.kWhite),
+                Map.entry(0.46875, Color.kBlack),
+                Map.entry(0.5, Color.kWhite),
+                Map.entry(0.5625, Color.kBlack),
+                Map.entry(0.59375, Color.kWhite),
+                Map.entry(0.65625, Color.kBlack),
+                Map.entry(0.71875, Color.kWhite),
+                Map.entry(0.75, Color.kBlack),
+                Map.entry(0.78125, Color.kWhite),
+                Map.entry(0.8125, Color.kBlack)));
+//              Map.entry(1, Color.kBlanchedAlmond); OMG IT'S BLANCHED ALMOND, THE BEST COLOR
+            LEDPattern pattern = base.offsetBy(-7);
+            pattern.applyTo(buffer);
+            leds.setData(buffer);
         }
 
         public Command runPattern(LEDPattern pattern) {
