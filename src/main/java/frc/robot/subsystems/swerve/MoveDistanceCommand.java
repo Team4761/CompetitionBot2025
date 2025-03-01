@@ -7,6 +7,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.auto.CommandCenter;
 
 
 //Command to move a set distance.
@@ -44,11 +45,6 @@ public class MoveDistanceCommand extends Command{
 
     /**
      * DO NOT USE THE CONSTRUCTOR!!! USE MoveDistanceCommand.create()!!
-     */
-    private MoveDistanceCommand() {}
-
-    /**
-     * DO NOT USE THE CONSTRUCTOR!!! USE MoveDistanceCommand.create()!!
      * @param deltaX How far the x value is from where the robot is now in meters. Positive x is forward and negative is backward.
      * @param deltaY How far the y value is from where the robot is now in meters. Positive y is left and negative is right.
      * @param deltaRot How much the robot should rotate
@@ -74,7 +70,7 @@ public class MoveDistanceCommand extends Command{
 
     @Override
     public void initialize() {
-        addRequirements(Robot.map.swerve); //first come, first swerve (-Slim Jim from 2024 competition bot)
+        CommandCenter.addRequirements(this, Robot.map.swerve);
         Pose2d currentPosition = Robot.map.swerve.getPosition();
         targetPosition = new Pose2d(currentPosition.getX() + deltaX, currentPosition.getY() + deltaY, currentPosition.getRotation().plus(deltaRot));
     }

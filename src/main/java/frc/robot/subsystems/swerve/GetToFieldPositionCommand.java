@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
+import frc.robot.auto.CommandCenter;
 
 /**
  * TODO: Implement this.
@@ -21,8 +23,13 @@ public class GetToFieldPositionCommand extends Command {
         this.x = x;
         this.y = y;
         this.desiredRotation = desiredRotation;
-
     }
+
+    @Override
+    public void initialize() {
+        CommandCenter.addRequirements(this, Robot.map.swerve);
+    }
+
     public static Command create(double x, double y, double desiredRotation)
     {
         return new GetToFieldPositionCommand(x, y, desiredRotation);
