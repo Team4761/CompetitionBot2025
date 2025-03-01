@@ -21,7 +21,7 @@ public class ArmController extends XboxController {
     private double yeetSpeed = 0.2;
 
     private double extendSpeed = 0.1;
-    private double pivotSpeed = 0.1;
+    private double pivotSpeed = 0.25;
 
     private boolean invertPivot = true;
     private boolean invertExtend = true;

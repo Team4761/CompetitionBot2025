@@ -2,6 +2,7 @@ package frc.robot.subsystems.muncher;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.auto.CommandCenter;
 
 
 /**
@@ -18,14 +19,14 @@ public class IntakeForTimeAtSpeedCommand extends Command
     /**
      * DONT USE THE CONSTUCTOR please use IntakeForTimeAtSpeedCommand.create() instead
      */
-    private IntakeForTimeAtSpeedCommand() {}
-
-    /**
-     * DONT USE THE CONSTUCTOR please use IntakeForTimeAtSpeedCommand.create() instead
-     */
     private IntakeForTimeAtSpeedCommand(double intakeSpeed)
     {
         this.intakeSpeed = intakeSpeed;
+    }
+
+    @Override
+    public void initialize() {
+        CommandCenter.addRequirements(this, Robot.map.muncher);
     }
 
     /**

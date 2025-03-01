@@ -20,6 +20,7 @@ public class LEDSubsystem extends SubsystemBase {
     private AddressableLED leds;
     private AddressableLEDBuffer buffer;
     
+    // LEDs will be a bit different (i'll send the announcement after robotics today (Feb 27)) -Alistair
     /** what pattern should I use for LEDs?
      * <p> nominate your LED pattern below (keep in mind, this is a one-dimesional strip) Current nomintaions are:
      * <p> gradient
@@ -32,7 +33,7 @@ public class LEDSubsystem extends SubsystemBase {
         // Comment out patterns that aren't being used
 
         
-        // progress bar fills perportional to how much the move joystick is pushed (kinda)
+        // progress bar fills proportional to how much the move joystick is pushed (kinda)
         /**
         leds = new AddressableLED(Constants.LEDS_PORT);
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line

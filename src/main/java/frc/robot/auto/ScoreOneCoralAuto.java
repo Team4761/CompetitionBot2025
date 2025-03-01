@@ -1,9 +1,13 @@
 package frc.robot.auto;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.arm.ScoreL2Command;
+import frc.robot.subsystems.swerve.MoveDistanceCommand;
 
 /**
  * This is supposed to get to the reef, rotate the arm, and score the coral.
@@ -57,7 +61,11 @@ public class ScoreOneCoralAuto {
      * @return
      */
     public static Command create(StartingPosition startingPosition, boolean onRedAlliance) {
-        return new PrintCommand("WIP");
+        // TODO: Implement the starting position and alliance logic. Until then, we cooking without it lol.
+        return new SequentialCommandGroup(
+            new PrintCommand("Starting ScoreOneCoralAuto"),
+            MoveDistanceCommand.create(-2.6162, -1.5240, new Rotation2d(Units.degreesToRadians(60)))
+        );
     }
 
 

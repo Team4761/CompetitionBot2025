@@ -101,6 +101,11 @@ public class SwerveModuleKraken implements SwerveModuleIO {
             }
             // Use PID control
             else {
+                if (desiredState.speedMetersPerSecond == 0) {
+                    driveMotor.set(0);
+                    turnMotor.set(0);
+                    return; // Shouldn't bother turning if the speed is 0
+                }
                 Rotation2d wheelRotation = getWheelRotation();
 
                 // Optimize the desired state to avoid spinning further than 90 degrees
