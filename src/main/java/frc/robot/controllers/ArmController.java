@@ -1,9 +1,12 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import frc.robot.subsystems.arm.ArmState;
+import frc.robot.subsystems.arm.GetArmToPositionCommand;
 import frc.robot.subsystems.muncher.YeetCommand;
 
 /**
@@ -16,7 +19,7 @@ public class ArmController extends XboxController {
     private boolean extendArmMotorEnabled = true;
     private boolean pivotArmMotorEnabled = true;
 
-    private double intakeSpeed = 0.3;
+    private double intakeSpeed = 0.40;
     private double outtakeSpeed = 0.2;
     private double yeetSpeed = 0.2;
 
@@ -25,6 +28,8 @@ public class ArmController extends XboxController {
 
     private boolean invertPivot = true;
     private boolean invertExtend = true;
+
+    public boolean sendingRawInput = false;;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
      */
@@ -46,12 +51,12 @@ public class ArmController extends XboxController {
         // Muncher
         if (Robot.map.muncher != null) {
             // Yeet
-            if (/*armManualControl && */!getYButton()) {
+            if (/*armManualControl && */!YeetCommand.autoMunchMode) {
                 if (getBButton()) {
-                    Robot.map.muncher.yeet(-0.1);
+                    Robot.map.muncher.yeet(intakeSpeed);
                 }
                 if (getXButton()) {
-                    Robot.map.muncher.yeet(intakeSpeed);
+                    Robot.map.muncher.yeet(-0.1);
                 }
                 if (!getXButton() && !getBButton()) {
                     Robot.map.muncher.yeet(0);
@@ -64,20 +69,54 @@ public class ArmController extends XboxController {
             Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
         }
         // Arm
-        if(Robot.map.arm != null && armManualControl)
-        {
-            Robot.map.arm.rotate((invertPivot ? -1 : 1) * pivotSpeed*getLeftY());
-            Robot.map.arm.extend((invertExtend ? -1 : 1) * extendSpeed*getRightY());
+        // Operator control?
+        if (Robot.map.arm != null) {
+            if (getLeftY() != 0.0 || getRightY() != 0.0) {
+                Robot.map.arm.isOperatorMode = true;
+            }
+            if (getLeftY() != 0.0) {
+                Robot.map.arm.lastRotation = Robot.map.arm.getPivotRotation();
+                sendingRawInput = true;
+            }
+            else {
+                sendingRawInput = false;
+            }
+
+            // Manual control
+            if(armManualControl)
+            {
+                Robot.map.arm.rotate((invertPivot ? -1 : 1) * pivotSpeed*getLeftY());
+                Robot.map.arm.extend((invertExtend ? -1 : 1) * extendSpeed*getRightY());
+            }
+            // Feedforward and manual control essentially
+            else if (!armManualControl)
+            {
+                Robot.map.arm.setForcedRotation(new Rotation2d((invertPivot ? -1 : 1) * pivotSpeed*getLeftY()));
+                Robot.map.arm.setForcedExtension((invertPivot ? -1 : 1) * pivotSpeed*getRightY());
+            }
+
+            if (getAButtonPressed()) {
+                Robot.map.arm.setExtensionOffset(Robot.map.arm.getExtensionLength());
+            }
+
+            if (getLeftBumperButtonPressed()) {
+                CommandScheduler.getInstance().schedule(GetArmToPositionCommand.create(new ArmState(new Rotation2d(90), 0)));
+            }
         }
-        else if (Robot.map.arm != null && !armManualControl && !Robot.map.arm.usingSetpointSystem())
-        {
-            Robot.map.arm.setForcedRotation(Robot.map.arm.getForcedRotation().plus(new Rotation2d(pivotSpeed*getLeftY())));
-            Robot.map.arm.setForcedExtension(Robot.map.arm.getForcedExtension() + extendSpeed*getRightY());
-        }
-        else if (Robot.map.arm != null && !armManualControl && Robot.map.arm.usingSetpointSystem())
-        {
-            Robot.map.arm.changeSetpoint(0.1*getLeftY(), 0.1*getLeftX());
-        }
+    }
+
+
+    // Overrides to apply a deadband to axis
+    @Override
+    public double getLeftY() {
+        if (super.getLeftY() < 0) 
+            return MathUtil.applyDeadband(super.getLeftY(), 0.08);
+        else
+            return MathUtil.applyDeadband(super.getLeftY(), 0.08) * 0.5;
+    }
+    @Override
+    public double getRightY() {
+        return MathUtil.applyDeadband(super.getRightY(), 0.08);
     }
 
 

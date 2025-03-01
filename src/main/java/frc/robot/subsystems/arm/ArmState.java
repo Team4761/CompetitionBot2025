@@ -14,7 +14,7 @@ public class ArmState {
 
     public static final double MIN_ARM_LENGTH = Units.inchesToMeters(16);  // TODO: Set this number
     public static final double MAX_ARM_LENGTH = Units.inchesToMeters(58);  // TODO: Set this number
-    public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(MAX_ARM_LENGTH - MIN_ARM_LENGTH);  // TODO: Set this number
+    public static final double MAX_EXTENSION_LENGTH = MAX_ARM_LENGTH - MIN_ARM_LENGTH;  // TODO: Set this number
 
     /** This is the rotation of the arm assuming that 0 degrees is forwards, parallel to the ground and the positive direction is rotating upwards. */
     private Rotation2d pivotRotation;

@@ -13,13 +13,7 @@ import frc.robot.auto.CommandCenter;
  */
 public class GetArmToPositionCommand extends Command {
 
-    // This is in meters and is the acceptable margin of error for how far the current point can be from the set point to end this command.
-    private static final double ACCEPTABLE_MARGIN_OF_ERROR = 0.02;
-
-    // The target x position where +x is the forwards direction of the robot in meters
-    private double targetX;
-    // The target y position where +y is the up direction in meters
-    private double targetY;
+    private ArmState targetState;
     
     /**
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
@@ -30,9 +24,11 @@ public class GetArmToPositionCommand extends Command {
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
      */
     private GetArmToPositionCommand(double x, double y) {
-        this();
-        this.targetX = x;
-        this.targetY = y;
+        this(ArmSubsystem.getRotationExtensionFromSetPoint(x, y));
+    }
+
+    private GetArmToPositionCommand(ArmState state) {
+        targetState = state;
     }
 
 
@@ -44,6 +40,11 @@ public class GetArmToPositionCommand extends Command {
     public static Command create(double x, double y) {
         return new GetArmToPositionCommand(x, y);
     }
+    
+
+    public static Command create(ArmState desiredState) {
+        return new GetArmToPositionCommand(desiredState);
+    }
 
 
     /**
@@ -52,7 +53,7 @@ public class GetArmToPositionCommand extends Command {
     @Override
     public void initialize() {
         CommandCenter.addRequirements(this, Robot.map.arm);
-        Robot.map.arm.setDesiredPosition(targetX, targetY);
+        Robot.map.arm.setState(targetState);
     }
 
     /**
@@ -60,10 +61,12 @@ public class GetArmToPositionCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        Translation2d currentPosition = Robot.map.arm.getSetPointFromRotationAndExtension(Robot.map.arm.getPivotRotation(), Robot.map.arm.getExtensionLength());
-
-        // If within ACCEPTABLE_MARGIN_OF_ERROR meters of the target location, end the command.
-        if (Math.pow((currentPosition.getX() - targetX),2) + Math.pow((currentPosition.getX() - targetY),2) < Math.pow(ACCEPTABLE_MARGIN_OF_ERROR,2)) {
+        if (
+            // Rotation is within 3 degrees
+            Math.abs(targetState.getPivotRotation().getDegrees() - Robot.map.arm.getPivotRotation().getDegrees()) <= 3 &&
+            // Extension is within 3cm
+            Math.abs(targetState.getExtensionLength() - Robot.map.arm.getExtensionLength()) <= 0.03
+        ) {
             return true;
         }
         return false;
