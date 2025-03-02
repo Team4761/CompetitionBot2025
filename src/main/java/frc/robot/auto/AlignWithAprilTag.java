@@ -38,14 +38,14 @@ public class AlignWithAprilTag extends Command {
                 xOffset = 0.0;
                 break;
             case 1:
-                xOffset = -0.14;
+                xOffset = -0.16;
                 break;
             case 2:
-                xOffset = 0.14;
+                xOffset = 0.16;
                 break;
         }
 
-        this.desiredDistanceFromAprilTag = new Translation3d(xOffset, 0.4, 0.0);
+        this.desiredDistanceFromAprilTag = new Translation3d(xOffset, 0.46, 0.0);
     }
 
 
@@ -97,7 +97,7 @@ public class AlignWithAprilTag extends Command {
     @Override
     public boolean isFinished() {
         // Why would we schedule this if vision is null?...
-        if (Robot.map.vision == null) {
+        if (Robot.map.vision == null || Robot.map.swerve == null) {
             return true;
         }
         // TODO: Implement this

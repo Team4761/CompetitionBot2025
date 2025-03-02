@@ -21,10 +21,10 @@ public class OuttakeCommand extends Command
    }
 
    /**
-    * Runs the outtake for 5 seconds at 10% speed.
+    * Runs the outtake for 1 seconds at the speed on the dashboard speed.
     */
    public static Command create() 
    {
-      return IntakeForTimeAtSpeedCommand.create(5,-0.1);
+      return IntakeForTimeAtSpeedCommand.create(1.0,Robot.armController.getOuttakeSpeed());
    }
 }

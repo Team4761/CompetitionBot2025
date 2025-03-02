@@ -19,8 +19,8 @@ public class Constants {
     public static final double ARM_EXTEND_LENGTH = Units.inchesToMeters(58); // Current temporary value, will be measured in meters
     public static final double ARM_PIVOT_LENGTH = Units.inchesToMeters(16); // TEMPORARY VALUE
     public static final double ARM_PIVOT_TO_BASE_DISTANCE = Units.inchesToMeters(16.5); // Distance between the pivot point of the arm and the robot base.
-    public static final double ARM_MAX_ANGULAR_VELOCITY = 0.15; // (speed as in percent) Max angular velocity of the arm
-    public static final double ARM_MAX_ANGULAR_ACCELERATION = 0.15; // (speed as in percent / second) Max angular acceleration of the arm
+    public static final double ARM_MAX_ANGULAR_VELOCITY = 0.25; // (speed as in percent) Max angular velocity of the arm
+    public static final double ARM_MAX_ANGULAR_ACCELERATION = 0.25; // (speed as in percent / second) Max angular acceleration of the arm
     public static final double ARM_MAX_EXT_VELOCITY = 0.15; // (speed as in percent) Max velocity of the arm extension
     public static final double ARM_MAX_EXT_ACCELERATION = 0.15; // (speed as in percent / second) Max acceleration of the arm extension
     public static final double L1_X = Units.inchesToMeters(15);     // arm x-coordinate for L1

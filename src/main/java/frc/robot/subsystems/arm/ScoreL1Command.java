@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.muncher.OuttakeCommand;
 import frc.robot.subsystems.muncher.YeetCommand;
 import frc.robot.Constants;
 import frc.robot.auto.AlignWithAprilTag;
@@ -35,8 +38,9 @@ public class ScoreL1Command extends Command {
     public static Command create(int scoreStrategy, int aprilTagID) {
         return new ParallelCommandGroup(
             new SequentialCommandGroup(
-                GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
-                YeetCommand.create()
+                // GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
+                GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(10)), 0)),
+                OuttakeCommand.create()
             ),
             AlignWithAprilTag.create(aprilTagID, scoreStrategy)
         );

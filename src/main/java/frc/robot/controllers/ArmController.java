@@ -51,7 +51,8 @@ public class ArmController extends XboxController {
         // Muncher
         if (Robot.map.muncher != null) {
             // Yeet
-            if (/*armManualControl && */!YeetCommand.autoMunchMode) {
+            if (!YeetCommand.autoMunchMode) {
+                // Manual yeet (to be removed)
                 if (getBButton()) {
                     Robot.map.muncher.yeet(intakeSpeed);
                 }
@@ -62,14 +63,15 @@ public class ArmController extends XboxController {
                     Robot.map.muncher.yeet(0);
                 }
             }
+            // Schedule an auto yeet
             if (getYButtonPressed()) {
                 CommandScheduler.getInstance().schedule(YeetCommand.create());
             }
-
+            // Intake/outake
             Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
         }
         // Arm
-        // Operator control?
+        // Operator control (maintain pivot rotation)
         if (Robot.map.arm != null) {
             if (getLeftY() != 0.0 || getRightY() != 0.0) {
                 Robot.map.arm.isOperatorMode = true;

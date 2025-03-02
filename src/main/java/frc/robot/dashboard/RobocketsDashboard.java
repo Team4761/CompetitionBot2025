@@ -149,6 +149,7 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.map.arm::setRotateI, putNumber("Arm", "Pivot I", Robot.map.arm.getPivotPID().getI()));
             new ReactiveNumberEntry(Robot.map.arm::setRotateD, putNumber("Arm", "Pivot D", Robot.map.arm.getPivotPID().getD()));
             new ReactiveNumberEntry(Robot.map.arm::setMaxFeedForward, putNumber("Arm", "Max FF", Robot.map.arm.getMaxFeedForward()));
+            new ReactiveNumberEntry(Robot.map.arm::setAutoExtensionSpeed, putNumber("Arm", "Auto Extension Speed", Robot.map.arm.getAutoExtensionSpeed()));
 
             // Settings
             new ReactiveBooleanEntry(Robot.map.arm::setUsingSetpointSystem, putBoolean("Arm", "Using Setpoint System", Robot.map.arm.usingSetpointSystem()));
