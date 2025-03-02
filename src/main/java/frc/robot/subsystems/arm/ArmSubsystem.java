@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -43,9 +44,15 @@ public class ArmSubsystem extends SubsystemBase {
     private static final double EXTENSION_ENCODER_UNITS_TO_METERS = 1.000;
 
     private boolean usingSetpointSystem = false;
+    public Rotation2d lastRotation = new Rotation2d();
+
+    public boolean isOperatorMode = true;
     // The forced stuff only matters if usingSetpointSystem is false.
     private Rotation2d forcedRotation = new Rotation2d(0);
     private double forcedExtension = 0; // Meters
+
+    // Because of belt skipping, we need to give the operators the ability to tell the robot it's at an extension of 0.
+    private double extensionOffset = 0.0;
 
 
     // +x represents forwards and +y represents up.
@@ -66,18 +73,20 @@ public class ArmSubsystem extends SubsystemBase {
     FancyArmFeedForward ff = new FancyArmFeedForward();
     // TODO: Tune these controllers!
     private ProfiledPIDController pivotPID = new ProfiledPIDController(
-        0.7,
+        0.13,
         0,
         0,
         new TrapezoidProfile.Constraints(Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_ACCELERATION)
     );
 
     private ProfiledPIDController extensionPID = new ProfiledPIDController(
-        0.7,
+        0.2,
         0,
         0,
         new TrapezoidProfile.Constraints(Constants.ARM_MAX_EXT_VELOCITY, Constants.ARM_MAX_EXT_ACCELERATION)
     );
+
+    private double maxFeedForward = 0.31;
 
 
     /**
@@ -88,37 +97,42 @@ public class ArmSubsystem extends SubsystemBase {
         if(!Robot.armController.isArmManualControl()){
             // [pivotDirection, extensionLength]
             // Should we have made our own data type called ArmConfiguration? Maybe. But we didn't, and it's fine... for now...
-            ArmState state;
-            if (usingSetpointSystem) {
-                state = targetState;
-            } else {
-                state = new ArmState(new Rotation2d(forcedRotation.getRadians()), forcedExtension);
+            double pivotSpeed = 0.0;
+            double extensionSpeed = 0.0;
+            double pivotFeedForward = 0.0;
+            if (isOperatorMode) {
+                pivotSpeed = forcedRotation.getRadians();
+                extensionSpeed = forcedExtension;
+                // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
+                // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
+                // The cos(angle) is used to make it take less force as it's more upright (think about how it should kinda balance when it's fully upright, therefore requiring no motor force)
+                // After "testing", I found that it should only take like 0.015 speed to keep the arm upright when it's not extended and 0.32 when extended.
+                if (!Robot.armController.sendingRawInput && getPivotRotation().getDegrees() <= lastRotation.getDegrees()+2) {
+                    pivotFeedForward =
+                        Math.cos(lastRotation.getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
+                        (getExtensionLength()/ArmState.MAX_EXTENSION_LENGTH * maxFeedForward + 0.015);
+                }
             }
-
-            double pivotSpeed = pivotPID.calculate(getPivotRotation().getRadians(), state.getPivotRotation().getRadians());
-            double extensionSpeed = extensionPID.calculate(getExtensionLength(), state.getExtensionLength());
+            // If not in Operator Mode, we use PID control. 
+            else {
+                pivotSpeed = pivotPID.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians());
+                extensionSpeed = extensionPID.calculate(getExtensionLength(), targetState.getExtensionLength());
+                pivotFeedForward = 
+                    Math.cos(targetState.getPivotRotation().getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
+                    (targetState.getExtensionLength()/ArmState.MAX_EXTENSION_LENGTH * maxFeedForward + 0.015);
+            }
 
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
-            SmartDashboard.putNumber("Arm Target Angle", Units.degreesToRadians(state.getPivotRotation().getDegrees()));
-            SmartDashboard.putNumber("Arm Target Extension", Units.degreesToRadians(state.getExtensionLength()));
+            SmartDashboard.putNumber("Arm Target Angle", Units.degreesToRadians(targetState.getPivotRotation().getDegrees()));
+            SmartDashboard.putNumber("Arm Target Extension", Units.degreesToRadians(targetState.getExtensionLength()));
 
-            // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
-            // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
-            // The cos(angle) is used to make it take less force as it's more upright (think about how it should kinda balance when it's fully upright, therefore requiring no motor force)
-            // After "testing", I found that it should only take like 0.015 speed to keep the arm upright when it's not extended and 0.32 when extended.
-            double pivotFeedForward = 
-                Math.cos(state.getPivotRotation().getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
-                (state.getExtensionLength()/ArmState.MAX_EXTENSION_LENGTH * 0.305 + 0.15);
-
+            SmartDashboard.putNumber("Arm Extension Encoder Units", extendMotor.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Arm FF", pivotFeedForward);
-
             if (isPivotEncoderConnected()) {
-                rotate(pivotSpeed+pivotFeedForward);
+                rotate(MathUtil.clamp(pivotSpeed+pivotFeedForward,-0.5,0.5));
             }
-            if (isExtensionEncoderConnected()) {
-                extend(extensionSpeed);
-            }
+            extend(extensionSpeed);
         }
         // If we are in manual control, the armController in Robot.java will handle the motors.
     }
@@ -246,8 +260,12 @@ public class ArmSubsystem extends SubsystemBase {
      * @return The length of the arm's extension in meters where 0 represents no extension.
      */
     public double getExtensionLength() {
-        return extendEncoder.get() * EXTENSION_ENCODER_UNITS_TO_METERS - EXTENSION_ENCODER_OFFSET;
-        // TODO: Maybe implement encoder.isConnected() for doomsday code?
+        if (isExtensionEncoderConnected())
+            return extendEncoder.get() * EXTENSION_ENCODER_UNITS_TO_METERS - EXTENSION_ENCODER_OFFSET;
+        else {
+            // A full extension is 123.334 encoder units
+            return (extendMotor.getPosition().getValueAsDouble() / 123.334) * ArmState.MAX_EXTENSION_LENGTH - extensionOffset;
+        }
     }
 
 
@@ -328,4 +346,10 @@ public class ArmSubsystem extends SubsystemBase {
     public Rotation2d getForcedRotation() { return this.forcedRotation; }
     public void setForcedExtension(double extensionMeters) { this.forcedExtension = extensionMeters; }
     public double getForcedExtension() { return this.forcedExtension; }
+
+    public void setMaxFeedForward(double ff) { this.maxFeedForward = ff; }
+    public double getMaxFeedForward() { return this.maxFeedForward; }
+
+    public void setExtensionOffset(double extensionOffsetMeters) { this.extensionOffset = extensionOffsetMeters; }
+    public double getExtensionOffset() { return this.extensionOffset; }
 }

@@ -3,6 +3,7 @@ package frc.robot.subsystems.muncher;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -17,6 +18,11 @@ public class MuncherSubsystem extends SubsystemBase {
     /** A NEO Vortex where positive speed represents (yeeting/outtake?) */
     private SparkFlex yeetMotor = new SparkFlex(Constants.MUNCHER_YEET_MOTOR_PORT, SparkFlex.MotorType.kBrushless);
 
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Yeet Encoder Units", yeetMotor.getEncoder().getPosition());
+    }
 
     /**
      * Runs the intake/outtake at the given speed.
@@ -33,6 +39,11 @@ public class MuncherSubsystem extends SubsystemBase {
      */
     public void yeet(double yeetSpeed)
     {
-        yeetMotor.set(-yeetSpeed);
+        yeetMotor.set(yeetSpeed);
+    }
+
+    public double getPercentOfYeet() {
+        // I tested the motor, and 14.20 encoder units is a full yeet.
+        return yeetMotor.getEncoder().getPosition() / 14.0;
     }
 }
