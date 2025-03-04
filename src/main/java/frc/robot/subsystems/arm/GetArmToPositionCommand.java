@@ -1,15 +1,11 @@
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.auto.CommandCenter;
 
 /**
  * <p> This controls the arm to get to the setpoint and ends when it gets within (TBD) meters of the desired location.
- * <p> TODO: Determine what to do if we tell it to go to an impossible location
- * <p> TODO: Change (0,0) to a description of where the origin actually is.
- * <p> TODO: Actually implement this.
  */
 public class GetArmToPositionCommand extends Command {
 
@@ -53,6 +49,7 @@ public class GetArmToPositionCommand extends Command {
     @Override
     public void initialize() {
         CommandCenter.addRequirements(this, Robot.map.arm);
+        Robot.map.arm.isOperatorMode = false;
         Robot.map.arm.setState(targetState);
     }
 

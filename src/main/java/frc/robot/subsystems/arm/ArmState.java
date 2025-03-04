@@ -63,6 +63,13 @@ public class ArmState {
     }
 
     /**
+     * @return The percentage of the full extension. 0.0 = not extended; 1.0 = fully extended
+     */
+    public double getExtensionPercent() {
+        return getExtensionLength() / MAX_EXTENSION_LENGTH;
+    }
+
+    /**
      * Sets the extension length of this arm state to a new length.
      * @param extensionLength The new extension length in meters.
      */

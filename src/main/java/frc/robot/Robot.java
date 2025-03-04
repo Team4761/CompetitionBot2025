@@ -16,7 +16,7 @@ import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
 import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 
 
 /**
@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     CommandScheduler.getInstance().run();
 
-    double currentTime = Timer.getFPGATimestamp();
+    // double currentTime = Timer.getFPGATimestamp();
   }
 
   /** This function is called once when the robot is first started up. */

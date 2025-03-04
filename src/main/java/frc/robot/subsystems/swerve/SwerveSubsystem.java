@@ -270,6 +270,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     /**
+     * This function should really only be called by autos.
+     * It completely overwrites what direction is forwards.
+     */
+    public void zeroGyro() {
+        gyro.resetGyro();
+    }
+
+
+    /**
      * Converts the gyro's rotation into a Rotation2d after applying an offset.
      * @return The gyro's rotation after accounting for the offset.
      */

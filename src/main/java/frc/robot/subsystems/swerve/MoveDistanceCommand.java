@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -20,24 +21,26 @@ public class MoveDistanceCommand extends Command{
 
     private static final ProfiledPIDController DistanceXPID = new ProfiledPIDController(
         1,
-        0,
-        0,
+        0.05,
+        0.01,
         new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_DRIVE_SPEED, Constants.SWERVE_MAX_ACCELERATION)
     );
 
+
     private static final ProfiledPIDController DistanceYPID = new ProfiledPIDController(
         1,
-        0,
-        0,
+        0.01,
+        0.01,
         new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_DRIVE_SPEED, Constants.SWERVE_MAX_ACCELERATION)
     );
 
 
     private static final ProfiledPIDController RotationPID = new ProfiledPIDController(
-        3,
+        1,
         0,
         0,
-        new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_DRIVE_SPEED, Constants.SWERVE_MAX_ANGULAR_ACCELERATION)
+        // Radians per second, radians per second squared
+        new TrapezoidProfile.Constraints(Units.degreesToRadians(120), Units.degreesToRadians(360))
     );
 
     private Pose2d targetPosition = new Pose2d();

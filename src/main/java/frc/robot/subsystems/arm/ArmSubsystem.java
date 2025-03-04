@@ -53,6 +53,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Because of belt skipping, we need to give the operators the ability to tell the robot it's at an extension of 0.
     private double extensionOffset = 0.0;
+    private double autoExtensionSpeed = 0.2;
 
 
     // +x represents forwards and +y represents up.
@@ -110,16 +111,18 @@ public class ArmSubsystem extends SubsystemBase {
                 if (!Robot.armController.sendingRawInput && getPivotRotation().getDegrees() <= lastRotation.getDegrees()+2) {
                     pivotFeedForward =
                         Math.cos(lastRotation.getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
-                        (getExtensionLength()/ArmState.MAX_EXTENSION_LENGTH * maxFeedForward + 0.015);
+                        (getExtensionPercent() * maxFeedForward + 0.015);
                 }
             }
             // If not in Operator Mode, we use PID control. 
             else {
                 pivotSpeed = pivotPID.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians());
-                extensionSpeed = extensionPID.calculate(getExtensionLength(), targetState.getExtensionLength());
+                // The extension moves so smoothly that we don't even need fancy PID control
+                // extensionSpeed = extensionPID.calculate(getExtensionPercent(), targetState.getExtensionPercent());
+                extensionSpeed = Math.signum(MathUtil.applyDeadband(getExtensionPercent() - targetState.getExtensionPercent(), 0.02)) * autoExtensionSpeed;
                 pivotFeedForward = 
                     Math.cos(targetState.getPivotRotation().getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
-                    (targetState.getExtensionLength()/ArmState.MAX_EXTENSION_LENGTH * maxFeedForward + 0.015);
+                    (getExtensionPercent() * maxFeedForward + 0.015);
             }
 
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
@@ -269,6 +272,14 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
+    /**
+     * Gets the percentage of the extension as a value between 0.0 (not extended) -> 1.0 (full extension)
+     */
+    public double getExtensionPercent() {
+        return MathUtil.clamp(getExtensionLength() / ArmState.MAX_EXTENSION_LENGTH,0.0,1.0);
+    }
+
+
     public boolean isPivotEncoderConnected() {
         return pivotEncoder.isConnected();
     }
@@ -352,4 +363,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setExtensionOffset(double extensionOffsetMeters) { this.extensionOffset = extensionOffsetMeters; }
     public double getExtensionOffset() { return this.extensionOffset; }
+
+    public void setAutoExtensionSpeed(double speedPercent) { this.autoExtensionSpeed = speedPercent; }
+    public double getAutoExtensionSpeed() { return this.autoExtensionSpeed; }
 }
