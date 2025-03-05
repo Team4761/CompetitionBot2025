@@ -178,4 +178,46 @@ public class LEDSubsystem extends SubsystemBase {
     public Command runPattern(LEDPattern pattern) {
         return run(() -> setPattern(pattern));
     }
+
+    // // 2 solid colors that move towards the side opposite from where they started. every time the colors bounce off a wall, the colors change to a new random one. (super unfinished)
+    // // WARNING: I DO NOT KNOW HOW TO CODE WELL, AND THIS MAY BE COMPLETELY WRONG IN MULTIPLE WAYS. If this is wrong in a massive way, please yell at me for it next time you see me.
+    // // Filler
+    // // Currently it should create 2 groups of differnt colors, and have them move accross the strip and bounce off walls.
+    // // I hope you aren't afraid of unnecessary comments
+    // // Oh also I don't know how to blend the patterns, because the WPILib document contains jack-shit about it. So it doesnt actually make a pattern...
+    // // Here's another line just to make sure
+    // public int LEDOffset = 0;
+    // public void periodic() {
+    //     // colors always start as Red and White
+    //     LEDPattern leftBase = LEDPattern.steps(Map.of(0, Color.kRed, 0.125, Color.kBlack));
+    //     LEDPattern rightBaseBase = LEDPattern.steps(Map.of(0, Color.kWhite, 0.125, Color.kBlack));
+    //     LEDPattern rightBase = rightBaseBase.reversed();
+    //     LEDPattern left = leftBase.offsetBy(LEDOffset);
+    //     LEDPattern right = rightBase.offsetBy(LEDOffset);
+    //     LEDPattern pattern = null; //placeholder
+    //     pattern.applyTo(buffer);
+    //     leds.setData(buffer);
+    // }
+
+    // // this should constantly move the offset. I can't test this at the moment, so it will probably be wrong.
+    // public int LEDOffset1() {
+    //     int direction = 0;
+    //     if (LEDOffset < 28) {
+    //         if(direction == 0) {
+    //             LEDOffset = LEDOffset + 1;
+    //         }
+    //     }
+    //     else {
+    //         direction = 1;
+    //     }
+    //     if (LEDOffset > 0) {
+    //         if (direction == 1) {
+    //             LEDOffset = LEDOffset - 1;
+    //         }
+    //     }
+    //     else {
+    //         direction = 0;
+    //     }
+    //     return LEDOffset;
+    // }
 }
