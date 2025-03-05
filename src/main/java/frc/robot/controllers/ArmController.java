@@ -2,6 +2,7 @@ package frc.robot.controllers;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
@@ -64,11 +65,15 @@ public class ArmController extends XboxController {
                 }
             }
             // Schedule an auto yeet
-            if (getYButtonPressed()) {
-                CommandScheduler.getInstance().schedule(YeetCommand.create());
+            if (getYButtonPressed() && Robot.map.arm != null && Robot.map.arm.getExtensionLength() >= 0.12) {
+                CommandScheduler.getInstance().schedule(YeetCommand.create(true));
+            }
+            if (getAButtonPressed() && Robot.map.arm != null && Robot.map.arm.getExtensionLength() >= 0.12) {
+                CommandScheduler.getInstance().schedule(YeetCommand.create(false));
             }
             // Intake/outake
-            Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
+            if (!YeetCommand.autoMunchMode)
+                Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
         }
         // Arm
         // Operator control (maintain pivot rotation)
@@ -97,7 +102,7 @@ public class ArmController extends XboxController {
                 Robot.map.arm.setForcedExtension((invertPivot ? -1 : 1) * pivotSpeed*getRightY());
             }
 
-            if (getAButtonPressed()) {
+            if (getPOV() == 90) {
                 Robot.map.arm.setExtensionOffset(Robot.map.arm.getExtensionLength());
             }
 
@@ -114,7 +119,7 @@ public class ArmController extends XboxController {
         if (super.getLeftY() < 0) 
             return MathUtil.applyDeadband(super.getLeftY(), 0.08);
         else
-            return MathUtil.applyDeadband(super.getLeftY(), 0.08) * 0.5;
+            return MathUtil.applyDeadband(super.getLeftY(), 0.08);
     }
     @Override
     public double getRightY() {

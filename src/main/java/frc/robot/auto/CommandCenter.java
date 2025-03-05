@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class CommandCenter {
     // Muncher commands
-    public static Command yeet() { return YeetCommand.create(); } // Ejects coral at internal speed and time, then resets 
+    public static Command yeet() { return YeetCommand.create(false); } // Ejects coral at internal speed and time, then resets 
     public static Command yeetRaw(double speed, double seconds) { return YeetForTimeAtSpeedCommand.create(speed, seconds); } // Applies a raw speed to the yeet motor for a set time
     
     public static Command eat() { return IntakeCommand.create(); } // Intakes coral at internal speed and time

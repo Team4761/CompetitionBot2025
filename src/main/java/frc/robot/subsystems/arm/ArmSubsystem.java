@@ -87,7 +87,7 @@ public class ArmSubsystem extends SubsystemBase {
         new TrapezoidProfile.Constraints(Constants.ARM_MAX_EXT_VELOCITY, Constants.ARM_MAX_EXT_ACCELERATION)
     );
 
-    private double maxFeedForward = 0.31;
+    private double maxFeedForward = 0.28;
 
 
     /**
@@ -127,11 +127,18 @@ public class ArmSubsystem extends SubsystemBase {
 
             SmartDashboard.putNumber("Arm PID Pivot Speed", pivotSpeed);
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
-            SmartDashboard.putNumber("Arm Target Angle", Units.degreesToRadians(targetState.getPivotRotation().getDegrees()));
-            SmartDashboard.putNumber("Arm Target Extension", Units.degreesToRadians(targetState.getExtensionLength()));
+            SmartDashboard.putNumber("Arm Target Angle", targetState.getPivotRotation().getDegrees());
+            SmartDashboard.putNumber("Arm Target Extension", targetState.getExtensionLength());
 
             SmartDashboard.putNumber("Arm Extension Encoder Units", extendMotor.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Arm FF", pivotFeedForward);
+            // When moving down, we need less force, so less speed
+            if (pivotSpeed < 0 && getPivotRotation().getDegrees() < 90 && getPivotRotation().getDegrees() > -90) {
+                pivotSpeed *= 0.5;
+            }
+            else if (pivotSpeed > 0 && getPivotRotation().getDegrees() > 90 || getPivotRotation().getDegrees() < -90) {
+                pivotSpeed *= 0.5;
+            }
             if (isPivotEncoderConnected()) {
                 rotate(MathUtil.clamp(pivotSpeed+pivotFeedForward,-0.5,0.5));
             }
@@ -238,6 +245,12 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void extend(double extensionVelocity)
     {
+        if (getExtensionLength() > 1.15 && extensionVelocity > 0) {
+            return;
+        }
+        if (getExtensionLength() < 0.05 && extensionVelocity < 0) {
+            return;
+        }
         if(Robot.armController.isExtendEnabled() == true)
         {
             extendMotor.set(extensionVelocity);

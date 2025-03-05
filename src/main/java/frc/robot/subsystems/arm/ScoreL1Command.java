@@ -57,7 +57,7 @@ public class ScoreL1Command extends Command {
     public static Command create(int scoreStrategy) {
         return new SequentialCommandGroup(
             GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
-            YeetCommand.create()
+            YeetCommand.create(false)
         );
     }
 }   

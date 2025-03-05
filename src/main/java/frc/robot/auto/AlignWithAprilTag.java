@@ -1,14 +1,24 @@
 package frc.robot.auto;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import frc.robot.subsystems.leds.DisplayLEDPatternCommand;
+import frc.robot.subsystems.leds.StupidColor;
+import frc.robot.subsystems.vision.CameraState;
 
 /**
  * When we're at the reef, this command works with both vision and swerve to align our bot with the April Tag.
  */
 public class AlignWithAprilTag extends Command {
+
+    private LEDPattern initialPattern;
 
     private int aprilTagID;
 
@@ -60,6 +70,16 @@ public class AlignWithAprilTag extends Command {
     }
 
 
+    public static Command create(int scoreStrategy) {
+        if (Robot.map.vision.getCameraState() == CameraState.FRONT_REEF_TAG) {
+            return AlignWithAprilTag.create((int)Robot.map.vision.getLastAprilTagID(), scoreStrategy);
+        }
+        else {
+            return AlignWithAprilTag.create((int)Robot.map.vision.getLastSideAprilTagID(), scoreStrategy);
+        }
+    }
+
+
     /**
      * This will align our robot with the april tag on the side of the reef we're trying to score at.
      * @param aprilTagID The ID of the april tag on the side of the reef we want to score on.
@@ -69,6 +89,14 @@ public class AlignWithAprilTag extends Command {
      */
     public static Command create(int aprilTagID, int scoreStrategy, double duration) {
         return new AlignWithAprilTag(aprilTagID, scoreStrategy).withTimeout(duration);
+    }
+
+
+    @Override
+    public void initialize() {
+        if (Robot.map.leds != null) {
+            initialPattern = Robot.map.leds.getPreviousPattern();
+        }
     }
 
 
@@ -91,6 +119,10 @@ public class AlignWithAprilTag extends Command {
             Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY())*0.05, 
             0
         );
+
+        if (Robot.map.leds != null) {
+            Robot.map.leds.setPattern(LEDPattern.steps(Map.of(0.0, new StupidColor(Color.kRed), Math.max(desiredDistanceFromAprilTag.getDistance(positionRelativeToAprilTag.getTranslation())*70.0, 0), new StupidColor(Color.kYellow))));
+        }
     }
 
 
@@ -100,13 +132,22 @@ public class AlignWithAprilTag extends Command {
         if (Robot.map.vision == null || Robot.map.swerve == null) {
             return true;
         }
-        // TODO: Implement this
+        if (desiredDistanceFromAprilTag.getDistance(positionRelativeToAprilTag.getTranslation()) < 0.01) {
+            return true;
+        }
         return false;
     }
 
 
     @Override
     public void end(boolean isInterrupted) {
+        if (Robot.map.leds != null) {
+            CommandScheduler.getInstance().schedule(DisplayLEDPatternCommand.create(
+                LEDPattern.solid(new StupidColor(Color.kLightGreen)),
+                initialPattern,
+                3
+            ));
+        }
         Robot.map.swerve.setDesiredSpeeds(0, 0, 0);
     }
 }

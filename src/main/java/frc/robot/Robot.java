@@ -17,6 +17,7 @@ import frc.robot.controllers.DriveController;
 import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
 // import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.swerve.ZeroGyroCommand;
 
 
 /**
@@ -56,7 +57,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // This prevents swerve from starting and trying to rotate
-    Robot.map.swerve.updateLastRotation();
+    if (Robot.map.swerve != null)
+      Robot.map.swerve.updateLastRotation();
     CommandScheduler.getInstance().cancelAll();
     dashboard = new RobocketsDashboard();
     
@@ -101,6 +103,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    CommandScheduler.getInstance().cancelAll();
+    CommandScheduler.getInstance().schedule(ZeroGyroCommand.create());
     CommandScheduler.getInstance().schedule(AutoHandler.getSelectedAuto());
   }
 
@@ -112,7 +116,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -125,7 +131,19 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    CommandScheduler.getInstance().cancelAll();
+    if (Robot.map.leds != null) {
+      Robot.map.leds.stopLEDs();
+    }
+    if (Robot.map.swerve != null) {
+      Robot.map.swerve.setDesiredSpeeds(0, 0, 0);
+    }
+    if (Robot.map.arm != null) {
+      Robot.map.arm.extend(0);
+      Robot.map.arm.rotate(0);
+    }
+  }
 
   /** This function is called periodically when disabled. */
   @Override

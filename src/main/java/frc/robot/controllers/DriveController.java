@@ -5,13 +5,23 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.auto.AlignWithAprilTag;
+import frc.robot.subsystems.vision.CameraState;
 
 /**
  * This just controls swerve.
  */
 public class DriveController extends XboxController {
+
+    private Command currentAutoSwerveCommand = null;
+
+    /** This determines if commands are actively controlling swerve */
+    private boolean autoSwerveEnabled = false;
 
     /** This stores which direction should be considered forwards. On robot initialization, this is towards the front of the robot. */
     private Rotation2d currentForwardsDirection = new Rotation2d();
@@ -45,6 +55,14 @@ public class DriveController extends XboxController {
      * This involves both joysticks and buttons.
      */
     public void teleopPeriodic() {
+
+        // Criteria for canceling commands! Funsies
+        if (currentAutoSwerveCommand != null) {
+            if (getLeftX() != 0 || getLeftY() != 0 || getRightX() != 0) {
+                cancelCurrentAutoSwerveCommand();
+            }
+        }
+
         // Swerve
         if (map.swerve != null) {
             if (getRightBumperButton()) {
@@ -63,6 +81,27 @@ public class DriveController extends XboxController {
                 map.swerve.resetPosition(new Pose2d());
             }
 
+            // Swerve + Vision
+            if (Robot.map.vision != null) {
+                int visionState = Robot.map.vision.getCameraState();
+                if (visionState == CameraState.NO_APRIL_TAG || autoSwerveEnabled) {}
+                else if (getLeftTriggerAxis() > 0.4) {
+                    cancelCurrentAutoSwerveCommand();
+                    currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.LEFT);
+                    CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
+                }
+                else if (getRightTriggerAxis() > 0.4) {
+                    cancelCurrentAutoSwerveCommand();
+                    currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.RIGHT);
+                    CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
+                }
+                else if (getAButtonPressed()) {
+                    cancelCurrentAutoSwerveCommand();
+                    currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER);
+                    CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
+                }
+            }
+
             // Joystick control
             // Check out this desmos graph to see how the math works: https://www.desmos.com/calculator/6sio2uwvi1
             map.swerve.setDesiredSpeeds(
@@ -71,6 +110,13 @@ public class DriveController extends XboxController {
                 turnModifier * ((turnInverted ? -1 : 1) * getRightX())   // Negative to make left (counterclockwise) the positive direction.
             );
         }
+    }
+
+
+    private void cancelCurrentAutoSwerveCommand() {
+        if (currentAutoSwerveCommand != null)
+            CommandScheduler.getInstance().cancel(currentAutoSwerveCommand);
+        currentAutoSwerveCommand = null;
     }
 
     

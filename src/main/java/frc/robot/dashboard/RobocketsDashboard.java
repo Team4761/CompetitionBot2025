@@ -13,6 +13,7 @@ import frc.robot.dashboard.reactive.ReactiveBooleanEntry;
 import frc.robot.dashboard.reactive.ReactiveNumberEntry;
 import frc.robot.dashboard.telemetry.TelemetryBooleanEntry;
 import frc.robot.dashboard.telemetry.TelemetryNumberEntry;
+import frc.robot.subsystems.leds.StupidColor;
 
 /**
  * This is to have a nice and straightforward way of displaying data/settings on the dashboard during competition and debugging.
@@ -38,6 +39,7 @@ public class RobocketsDashboard {
         setupSwerve();
         setupArm();
         setupVision();
+        setupLEDs();
     }
 
 
@@ -200,6 +202,13 @@ public class RobocketsDashboard {
             new TelemetryNumberEntry(() -> Robot.map.vision.getLatency(), putNumber("Vision", "Latency", 0));
             new TelemetryBooleanEntry(() -> Robot.map.vision.isSeeingAprilTag(), putBoolean("Vision", "Is Seeing April Tag?", false));
             
+        }
+    }
+
+
+    public void setupLEDs() {
+        if (Robot.map.leds != null) {
+            new ReactiveNumberEntry(StupidColor::setLEDBrightness, putNumber("LEDs", "Brightness", StupidColor.getLEDBrightness()));
         }
     }
 

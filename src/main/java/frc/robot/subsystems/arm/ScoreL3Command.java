@@ -36,7 +36,7 @@ public class ScoreL3Command extends Command {
         return new ParallelCommandGroup(
             new SequentialCommandGroup(
                 GetArmToPositionCommand.create(Constants.L3_X, Constants.L3_Y), 
-                YeetCommand.create()
+                YeetCommand.create(false)
             ),
             AlignWithAprilTag.create(aprilTagID, scoreStrategy)
         );
@@ -53,7 +53,7 @@ public class ScoreL3Command extends Command {
     public static Command create(int scoreStrategy) {
         return new SequentialCommandGroup(
             GetArmToPositionCommand.create(Constants.L3_X, Constants.L3_Y), 
-            YeetCommand.create()
+            YeetCommand.create(false)
         );
     }
 }   
