@@ -10,6 +10,7 @@ import frc.robot.controllers.OrientControlsCommand;
 import frc.robot.subsystems.arm.ScoreL1Command;
 import frc.robot.subsystems.swerve.MoveDistanceCommand;
 import frc.robot.subsystems.swerve.ZeroGyroCommand;
+import frc.robot.field.Field;
 
 /**
  * This is supposed to get to the reef, rotate the arm, and score the coral.
@@ -66,7 +67,12 @@ public class ScoreOneCoralAuto {
         switch (startingPosition) {
             case BLUE_LEFT, RED_LEFT:
                 return new SequentialCommandGroup(
-
+                    new PrintCommand("Starting One Coral Auto from " + startingPosition),
+                    ZeroGyroCommand.create(),
+                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),
+                    MoveDistanceCommand.create((5.115-7.668), (5.376-6.184), new Rotation2d(Units.degreesToRadians(-150))).withTimeout(5.0),
+                    ScoreL1Command.create(1, 20),
+                    new PrintCommand("Finished One Coral Auto")
                 );
             case BLUE_CENTER, RED_CENTER:
                 return new SequentialCommandGroup(
@@ -79,7 +85,12 @@ public class ScoreOneCoralAuto {
                 );
             case BLUE_RIGHT, RED_RIGHT:
                 return new SequentialCommandGroup(
-
+                    new PrintCommand("Starting One Coral Auto from " + startingPosition),
+                    ZeroGyroCommand.create(),
+                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),
+                    MoveDistanceCommand.create((3.718-7.774), (2.714-2.013), new Rotation2d(Units.degreesToRadians(150))).withTimeout(5.0),
+                    ScoreL1Command.create(1, 22),
+                    new PrintCommand("Finished One Coral Auto")
                 );
             default:
                 return new PrintCommand("The starting position of " + startingPosition + " is not valid");
