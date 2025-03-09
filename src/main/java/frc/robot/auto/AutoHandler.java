@@ -28,6 +28,7 @@ public class AutoHandler {
     private static SendableChooser<Command> autoChooser;
     private static SendableChooser<StartingPosition> startingPositionChooser;
     private static SendableChooser<Command> testChooser;
+    private static SendableChooser<Rotation2d> orientationChooser;
     
 
     /**
@@ -37,17 +38,27 @@ public class AutoHandler {
         autoChooser = new SendableChooser<Command>();
         startingPositionChooser = new SendableChooser<StartingPosition>();
         testChooser = new SendableChooser<Command>();
+        orientationChooser = new SendableChooser<Rotation2d>();
 
         // Add commands to the chooser by copying the line below and changing the name & command
         autoChooser.addOption("Say Hi (Do Nothing)", new SayHiCommand());
+        autoChooser.addOption("Move 5 Meters Backward", MoveDistanceCommand.create(-5, 0, new Rotation2d(0)));
+        autoChooser.addOption("Move 4 Meters Backward", MoveDistanceCommand.create(-4, 0, new Rotation2d(0)));
+        autoChooser.addOption("Move 3 Meters Backward", MoveDistanceCommand.create(-3, 0, new Rotation2d(0)));
         autoChooser.addOption("Move 2 Meters Backward", MoveDistanceCommand.create(-2, 0, new Rotation2d(0)));
         autoChooser.addOption("Move 1.5 Meters Backward", MoveDistanceCommand.create(-1.5, 0, new Rotation2d(0)));
+        autoChooser.addOption("Move 1.5 Meters Forwards", MoveDistanceCommand.create(1.5, 0, new Rotation2d(0)));
+        autoChooser.addOption("Move 1.5 Meters Left", MoveDistanceCommand.create(0, 1.5, new Rotation2d(0)));
+        autoChooser.addOption("Move 1.5 Meters Right", MoveDistanceCommand.create(0, -1.5, new Rotation2d(0)));
         autoChooser.addOption("Wait 13s & Move 1.5 Meters Back", new SequentialCommandGroup(new WaitCommand(13), MoveDistanceCommand.create(-1.5, 0, new Rotation2d(0))));
+        autoChooser.addOption("Wait 13s & Move 1.5 Meters Forwards", new SequentialCommandGroup(new WaitCommand(13), MoveDistanceCommand.create(-1.5, 0, new Rotation2d(0))));
         autoChooser.addOption("Score One Coral from CENTER", ScoreOneCoralAuto.create(StartingPosition.BLUE_CENTER));
         // All of the below commands are for testing
         autoChooser.addOption("Score L1", ScoreL1Command.create(Constants.AprilTagAlignment.CENTER));
         autoChooser.addOption("Drop Arm to 0 Degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(0), 0)));
         autoChooser.addOption("Get Arm to 90 Degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(Math.PI/2), 0)));
+        autoChooser.addOption("Get Arm to 45 Degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(45)), 0)));
+        autoChooser.addOption("Extend to Half @ 90 degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(90)), 0.5)));
         autoChooser.addOption("Zero Gyro", ZeroGyroCommand.create());
         autoChooser.addOption("Move 1m Back, 1m Left, and Rotate 180 degrees", MoveDistanceCommand.create(-1, 1, new Rotation2d(Units.degreesToRadians(180))));
         autoChooser.addOption("Move frowaards for 2.5s", MoveForTimeAtSpeedCommand.create(0.3, 0, 0, 2.5));
@@ -55,6 +66,8 @@ public class AutoHandler {
         autoChooser.addOption("Move 1.5 Meter Left", MoveDistanceCommand.create(0, 1.5, new Rotation2d(0)));
         autoChooser.addOption("Rotate 90 Degrees CCW", MoveDistanceCommand.create(0,0,new Rotation2d(Units.degreesToRadians(90))));
         autoChooser.addOption("Move 1.5 Back & Rotate 90 Degrees CCW", MoveDistanceCommand.create(-1.5, 0, new Rotation2d(90)));
+        autoChooser.addOption("Align With April Tag Left", AlignWithAprilTag.create(Constants.AprilTagAlignment.LEFT));
+        autoChooser.addOption("Align to 21 CENTER Forever!", AlignWithAprilTag.create(21, Constants.AprilTagAlignment.CENTER, 1000));
         // Only add the path planner stuff if swerve is initialized
         if (Robot.map.swerve != null) {
             autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("1 Meter Forward Auto"));
@@ -67,6 +80,12 @@ public class AutoHandler {
         startingPositionChooser.addOption("Red - LEFT", StartingPosition.RED_LEFT);
         startingPositionChooser.addOption("Red - CENTER", StartingPosition.RED_CENTER);
         startingPositionChooser.addOption("Red - RIGHT", StartingPosition.RED_RIGHT);
+
+        // Orientation Chooser
+        orientationChooser.addOption("Facing Alliance Wall", new Rotation2d(Units.degreesToRadians(180)));
+        orientationChooser.addOption("Facing Barge", new Rotation2d(Units.degreesToRadians(0)));
+        orientationChooser.addOption("Facing Left Wall", new Rotation2d(Units.degreesToRadians(90)));
+        orientationChooser.addOption("Facing Right Wall", new Rotation2d(Units.degreesToRadians(-90)));
 
         // Put the choosers on the dashboard
         if (Robot.map.swerve != null) {

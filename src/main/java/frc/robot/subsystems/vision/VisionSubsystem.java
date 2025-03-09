@@ -223,11 +223,11 @@ public class VisionSubsystem extends SubsystemBase {
         // Only uses the data if the camera has seen a reef april tag in the last 1 second.
 
         // Side Camera
-        if (((sideAprilTagID >= 9 && sideAprilTagID <= 11) || (sideAprilTagID >= 20 && sideAprilTagID <= 22)) && timesSinceSeenTags[sideAprilTagID] >= System.currentTimeMillis()-1000) {
+        if (((sideAprilTagID >= 6 && sideAprilTagID <= 11) || (sideAprilTagID >= 17 && sideAprilTagID <= 22)) && timesSinceSeenTags[sideAprilTagID] >= System.currentTimeMillis()-1000) {
             return CameraState.SIDE_REEF_TAG;
         }
         // Front Camera
-        if (((aprilTagID >= 9 && aprilTagID <= 11) || (aprilTagID >= 20 && aprilTagID <= 22)) && timesSinceSeenTags[aprilTagID] >= System.currentTimeMillis()-1000) {
+        if (((aprilTagID >= 6 && aprilTagID <= 11) || (aprilTagID >= 17 && aprilTagID <= 22)) && timesSinceSeenTags[aprilTagID] >= System.currentTimeMillis()-1000) {
             return CameraState.FRONT_REEF_TAG;
         }
         return CameraState.NO_APRIL_TAG;
