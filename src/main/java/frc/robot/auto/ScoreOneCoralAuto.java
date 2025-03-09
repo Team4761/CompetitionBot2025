@@ -10,6 +10,7 @@ import frc.robot.controllers.OrientControlsCommand;
 import frc.robot.subsystems.arm.ScoreL1Command;
 import frc.robot.subsystems.swerve.MoveDistanceCommand;
 import frc.robot.subsystems.swerve.ZeroGyroCommand;
+import frc.robot.field.Field;
 
 /**
  * This is supposed to get to the reef, rotate the arm, and score the coral.
@@ -69,7 +70,7 @@ public class ScoreOneCoralAuto {
                     new PrintCommand("Starting One Coral Auto from " + startingPosition),
                     ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
                     OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),  // Make the operator controls facing the opposite alliance wall.
-                    MoveDistanceCommand.create(1.5, 0, new Rotation2d(30)).withTimeout(5.0),    // From the starting line to the reef
+                    MoveDistanceCommand.create((7.668-5.115), 0, new Rotation2d(30)).withTimeout(5.0),    // From the starting line to the reef
                     ScoreL1Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_LEFT) ? 20 : 11),    // Align with the proper april tag
                     new PrintCommand("Finished One Coral Auto")
                 );
@@ -87,7 +88,7 @@ public class ScoreOneCoralAuto {
                     new PrintCommand("Starting One Coral Auto from " + startingPosition),
                     ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
                     OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),  // Make the operator controls facing the opposite alliance wall.
-                    MoveDistanceCommand.create(1.5, 0, new Rotation2d(-30)).withTimeout(5.0),    // From the starting line to the reef
+                    MoveDistanceCommand.create((7.774-3.718), 0, new Rotation2d(-30)).withTimeout(5.0),    // From the starting line to the reef
                     ScoreL1Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_RIGHT) ? 22 : 9),    // Align with the proper april tag
                     new PrintCommand("Finished One Coral Auto")
                 );
