@@ -133,7 +133,7 @@ public class SwerveModuleKraken implements SwerveModuleIO {
                 this.desiredRotation = desiredState.angle;
 
                 // The /8.0 is a completely magic number. I'm pretty sure it came from the *8.0 in SwerveSubsystem.setDesiredSpeeds() tho
-                driveMotor.set(desiredState.speedMetersPerSecond/8.0);
+                driveMotor.set(desiredState.speedMetersPerSecond);
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
                 turnMotor.setVoltage(-(turnOutput + turnFF));
             }

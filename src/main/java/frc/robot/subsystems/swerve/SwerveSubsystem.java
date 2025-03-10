@@ -128,46 +128,31 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         try {
-        RobotConfig config = RobotConfig.fromGUISettings();
-            // RobotConfig config = new RobotConfig(
-            //     3, 
-            //     null, 
-            //     new ModuleConfig(
-            //         0.048, 
-            //         5.450, 
-            //         1.200, 
-            //         null, 
-            //         null, 
-            //         1
-            //     ), 
-            // 0.273
-            // );
+            RobotConfig config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                this::getPosition, 
+                this::resetPosition, 
+                this::getSpeeds, 
+                this::driveRobotRelativePathPlanner, 
+                new PPHolonomicDriveController(
+                    new PIDConstants(5.0, 0.0, 0.0),    // for driving
+                    new PIDConstants(5.0, 0.0, 0.0)     // for turning
+                ),
+                config,
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        // Configure AutoBuilder
-        AutoBuilder.configure(
-            this::getPosition, 
-            this::resetPosition, 
-            this::getSpeeds, 
-            this::driveRobotRelativePathPlanner, 
-            new PPHolonomicDriveController(
-                new PIDConstants(5.0, 0.0, 0.0),    // for driving
-                new PIDConstants(5.0, 0.0, 0.0)     // for turning
-            ),
-            config,
-            () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
-            },
-            this
-        );
-        }catch(Exception e){
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this
+            );
+        } catch(Exception e) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
         }
     }
@@ -208,7 +193,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // Converts the desired chassis speeds into speeds for each swerve module.
         SwerveModuleState[] swerveModuleStates = kinematics.toWheelSpeeds(chassisSpeeds);
         // Max the speeds
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SWERVE_MAX_DRIVE_SPEED);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, 1.0);
         // Is the below code ugly? Yes. However, it works. It's used mainly for testing.
         if (frontLeft.isManualControl()) { frontLeft.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
         else { frontLeft.getToDesiredState(swerveModuleStates[0]); }
@@ -241,10 +226,10 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void setDesiredSpeeds(double speedX, double speedY, double speedRotation) {
         // The actual speeds are in meters/second, not percentages. Currently, the max speed in 5 meters per second
-        this.desiredSpeedX = speedX * speedDriveModifier * 5;
-        this.desiredSpeedY = speedY * speedDriveModifier * 5;
+        this.desiredSpeedX = speedX * speedDriveModifier;
+        this.desiredSpeedY = speedY * speedDriveModifier;
         // Except this one. Rotation is radians/second.
-        this.desiredSpeedRotation = speedRotation * speedTurnModifier * 5;
+        this.desiredSpeedRotation = speedRotation * speedTurnModifier;
         setUsingPathPlanner(false);
 
         if (desiredSpeedRotation != 0) {

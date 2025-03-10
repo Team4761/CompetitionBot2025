@@ -20,6 +20,11 @@ import frc.robot.Robot;
  */
 public class ArmSubsystem extends SubsystemBase {
 
+    private static final double MAX_PIVOT_UPWARDS_VELOCITY = 0.25;      // Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_UPWARDS_ACCELERATION = 0.40;  // Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_DOWNWARDS_VELOCITY = 0.125;   // Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_DOWNWARDS_ACCELERATION = 0.25;// Percent (0 = no speed, 1 = full speed)
+
 
     /** This is the really funky gear ratio of the kraken motor we have hooked up to the pivot. 11 teeth turn 56 teeth, connected to 18 teeth turning 56 teeth... etc */
     private static final double ARM_PIVOT_KRAKEN_UNITS_TO_RADIANS = (2.0*Math.PI*(11.0/56.0)*(18.0/56.0)*(16.0/56.0));
@@ -73,13 +78,18 @@ public class ArmSubsystem extends SubsystemBase {
     private DutyCycleEncoder extendEncoder = new DutyCycleEncoder(Constants.ARM_EXTEND_ENCODER_PORT);
 
     // PID controllers for the arm
-    FancyArmFeedForward ff = new FancyArmFeedForward();
-    // TODO: Tune these controllers!
-    private ProfiledPIDController pivotPID = new ProfiledPIDController(
+    private ProfiledPIDController pivotPIDUp = new ProfiledPIDController(
         1.80,
         0,
         0.01,
-        new TrapezoidProfile.Constraints(Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_ACCELERATION)
+        new TrapezoidProfile.Constraints(MAX_PIVOT_UPWARDS_VELOCITY, MAX_PIVOT_UPWARDS_ACCELERATION) // Both are percents (0 = no speed, 1 = full speed)
+    );
+
+    private ProfiledPIDController pivotPIDDown = new ProfiledPIDController(
+        1.80,
+        0,
+        0.01,
+        new TrapezoidProfile.Constraints(MAX_PIVOT_DOWNWARDS_VELOCITY, MAX_PIVOT_DOWNWARDS_ACCELERATION) // Both are percents (0 = no speed, 1 = full speed)
     );
 
     private ProfiledPIDController extensionPID = new ProfiledPIDController(
@@ -122,7 +132,17 @@ public class ArmSubsystem extends SubsystemBase {
             }
             // If not in Operator Mode, we use PID control. 
             else {
-                pivotSpeed = MathUtil.clamp(pivotPID.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians()), -Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_VELOCITY);
+                // Two different controllers: one for moving "up" and one for moving "down"
+                // A positive radiansToTargetRotation means we need to move the arm in the positive direction.
+                double radiansToTargetRotation = targetState.getPivotRotation().getRadians() - getPivotRotation().getRadians();
+                // Going up
+                if ((getPivotRotation().getDegrees() <= 90 && radiansToTargetRotation > 0) || (getPivotRotation().getDegrees() > 90 && radiansToTargetRotation < 0)) {
+                    pivotSpeed = MathUtil.clamp(pivotPIDUp.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians()), -MAX_PIVOT_UPWARDS_VELOCITY, MAX_PIVOT_UPWARDS_VELOCITY);
+                }
+                // Going down
+                else {
+                    pivotSpeed = MathUtil.clamp(pivotPIDDown.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians()), -MAX_PIVOT_DOWNWARDS_VELOCITY, MAX_PIVOT_DOWNWARDS_VELOCITY);
+                }
                 // The extension moves so smoothly that we don't even need fancy PID control
                 extensionSpeed = MathUtil.clamp(extensionPID.calculate(getExtensionPercent(), targetState.getExtensionPercent()), -0.2, 0.2);
                 // extensionSpeed = Math.signum(MathUtil.applyDeadband(getExtensionPercent() - targetState.getExtensionPercent(), 0.02)) * autoExtensionSpeed;
@@ -231,18 +251,17 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void rotate(double rotationalVelocity)
     {
-        if(Robot.armController.isPivotEnabled() == true)
-        {
-            // The arm shouldn't be able to rotate down too far
-            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity < 0) {
-                pivotMotor.set(0);
-                return;
-            }
-            // Shouldn't be able to go over the top
-            if (getPivotRotation().getDegrees() >= 90 && rotationalVelocity > 0) {
-                pivotMotor.set(0);
-                return;
-            }
+        // The arm shouldn't be able to rotate down too far
+        if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity < 0) {
+            pivotMotor.set(0);
+            return;
+        }
+        // Shouldn't be able to go over the top
+        if (getPivotRotation().getDegrees() >= 90 && rotationalVelocity > 0) {
+            pivotMotor.set(0);
+            return;
+        }
+        if(Robot.armController.isPivotEnabled()) {
             pivotMotor.set(-rotationalVelocity);
         }
         else {
@@ -258,16 +277,18 @@ public class ArmSubsystem extends SubsystemBase {
     public void extend(double extensionVelocity)
     {
         if (usingExtensionHardLimits) {
+            // Can't extend too high
             if (getExtensionLength() > 1.00 && extensionVelocity > 0) {
                 extendMotor.set(0);
                 return;
             }
+            // Can't retract too far
             if (getExtensionLength() < 0.05 && extensionVelocity < 0) {
                 extendMotor.set(0);
                 return;
             }
         }
-        if(Robot.armController.isExtendEnabled() == true)
+        if(Robot.armController.isExtendEnabled())
         {
             extendMotor.set(extensionVelocity);
         }
@@ -279,7 +300,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     /**
      * <p> This gets the rotation determined by the pivot absolute encoder after applying the conversion factor.
-     * @return The rotation of the arm where 0 radians/degrees represents [...] <-- NEED TO DETERMINE THIS
+     * @return The rotation of the arm where 0 radians/degrees represents parallel to the ground facing forwards. (use a level to determine this if needed)
      */
     public Rotation2d getPivotRotation() {
         if (pivotEncoder.isConnected())
@@ -298,7 +319,7 @@ public class ArmSubsystem extends SubsystemBase {
         if (isExtensionEncoderConnected())
             return extendEncoder.get() * EXTENSION_ENCODER_UNITS_TO_METERS - EXTENSION_ENCODER_OFFSET;
         else {
-            // A full extension is 123.334 encoder units
+            // A full extension is 123.334 encoder units (measured it)
             return (extendMotor.getPosition().getValueAsDouble() / 123.334) * ArmState.MAX_EXTENSION_LENGTH - extensionOffset;
         }
     }
@@ -378,12 +399,12 @@ public class ArmSubsystem extends SubsystemBase {
     public void setExtendP(double p) { this.extensionPID.setP(p); }
     public void setExtendI(double i) { this.extensionPID.setI(i); }
     public void setExtendD(double d) { this.extensionPID.setD(d); }
-    public void setRotateP(double p) { this.pivotPID.setP(p); }
-    public void setRotateI(double i) { this.pivotPID.setI(i); }
-    public void setRotateD(double d) { this.pivotPID.setD(d); }
+    public void setRotateP(double p) { this.pivotPIDUp.setP(p); }
+    public void setRotateI(double i) { this.pivotPIDUp.setI(i); }
+    public void setRotateD(double d) { this.pivotPIDUp.setD(d); }
 
     public ProfiledPIDController getExtensionPID() { return this.extensionPID; }
-    public ProfiledPIDController getPivotPID() { return this.pivotPID; }
+    public ProfiledPIDController getPivotPID() { return this.pivotPIDUp; }
 
     public void setForcedRotation(Rotation2d rotation) { this.forcedRotation = rotation; }
     public Rotation2d getForcedRotation() { return this.forcedRotation; }

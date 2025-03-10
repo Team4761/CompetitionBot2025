@@ -61,4 +61,5 @@ public class Field {
 
     public static final double SHALLOW_HANG_HEIGHT= Units.inchesToMeters(29.375); //To the very bottom of the cage
     public static final double DEEP_HANG_HEIGHT= Units.inchesToMeters(3.5); //To the very bottom of the cage
+    public static final double FIELD_WIDTH = 7.668;
 }
