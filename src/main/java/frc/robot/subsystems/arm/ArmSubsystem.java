@@ -28,7 +28,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Sadly, there is no easy way to zero the encoders. Therefore, the best we can do is have an offset.
      */
     /** To determine this, move the arm into the (0,0) state which is being in front of the robot, parallel to the ground and record the value of the absolute encoder read in the dashboard. */
-    private static final Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(154.50));
+    private static Rotation2d PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(89.8));   //LAST: 154.50
     /** Meters. To determine this, move the arm into the (0,0) state which is unextended and record the value of the absolute encoder read in the dashboard. */
     private static final double EXTENSION_ENCODER_OFFSET = 0.0;
 
@@ -45,6 +45,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     private boolean usingSetpointSystem = false;
     public Rotation2d lastRotation = new Rotation2d();
+
+    private boolean usingExtensionHardLimits = true;
 
     public boolean isOperatorMode = true;
     // The forced stuff only matters if usingSetpointSystem is false.
@@ -74,20 +76,20 @@ public class ArmSubsystem extends SubsystemBase {
     FancyArmFeedForward ff = new FancyArmFeedForward();
     // TODO: Tune these controllers!
     private ProfiledPIDController pivotPID = new ProfiledPIDController(
-        0.13,
+        1.80,
         0,
-        0,
+        0.01,
         new TrapezoidProfile.Constraints(Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_ACCELERATION)
     );
 
     private ProfiledPIDController extensionPID = new ProfiledPIDController(
-        0.2,
+        4.0,
         0,
         0,
-        new TrapezoidProfile.Constraints(Constants.ARM_MAX_EXT_VELOCITY, Constants.ARM_MAX_EXT_ACCELERATION)
+        new TrapezoidProfile.Constraints(0.2, 0.5)
     );
 
-    private double maxFeedForward = 0.28;
+    private double maxFeedForward = 0.30;
 
 
     /**
@@ -104,6 +106,10 @@ public class ArmSubsystem extends SubsystemBase {
             if (isOperatorMode) {
                 pivotSpeed = forcedRotation.getRadians();
                 extensionSpeed = forcedExtension;
+                // If moving down and about to hit the the ground, start extending.
+                // if (getPivotRotation().getDegrees() < 5 && getPivotRotation().getDegrees() > -5 && pivotSpeed < 0.0 && getExtensionPercent() < 0.2) {
+                //     extend(0.15);
+                // }
                 // This is the MINUMUM speed required to keep the arm upright to the current target position (counteracting gravity)
                 // Currently, this does not take into account the arm going past 90 degrees (which is a no-no)
                 // The cos(angle) is used to make it take less force as it's more upright (think about how it should kinda balance when it's fully upright, therefore requiring no motor force)
@@ -116,10 +122,10 @@ public class ArmSubsystem extends SubsystemBase {
             }
             // If not in Operator Mode, we use PID control. 
             else {
-                pivotSpeed = pivotPID.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians());
+                pivotSpeed = MathUtil.clamp(pivotPID.calculate(getPivotRotation().getRadians(), targetState.getPivotRotation().getRadians()), -Constants.ARM_MAX_ANGULAR_VELOCITY, Constants.ARM_MAX_ANGULAR_VELOCITY);
                 // The extension moves so smoothly that we don't even need fancy PID control
-                // extensionSpeed = extensionPID.calculate(getExtensionPercent(), targetState.getExtensionPercent());
-                extensionSpeed = Math.signum(MathUtil.applyDeadband(getExtensionPercent() - targetState.getExtensionPercent(), 0.02)) * autoExtensionSpeed;
+                extensionSpeed = MathUtil.clamp(extensionPID.calculate(getExtensionPercent(), targetState.getExtensionPercent()), -0.2, 0.2);
+                // extensionSpeed = Math.signum(MathUtil.applyDeadband(getExtensionPercent() - targetState.getExtensionPercent(), 0.02)) * autoExtensionSpeed;
                 pivotFeedForward = 
                     Math.cos(targetState.getPivotRotation().getRadians()) * // This goes from 1.0 at 0 degrees to 0.0 at 90 degrees
                     (getExtensionPercent() * maxFeedForward + 0.015);
@@ -129,6 +135,8 @@ public class ArmSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Arm PID Extension Speed", extensionSpeed);
             SmartDashboard.putNumber("Arm Target Angle", targetState.getPivotRotation().getDegrees());
             SmartDashboard.putNumber("Arm Target Extension", targetState.getExtensionLength());
+
+            pivotFeedForward = pivotFeedForward * Math.abs(Math.cos(targetState.getPivotRotation().getRadians()-getPivotRotation().getRadians()));
 
             SmartDashboard.putNumber("Arm Extension Encoder Units", extendMotor.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Arm FF", pivotFeedForward);
@@ -140,7 +148,7 @@ public class ArmSubsystem extends SubsystemBase {
                 pivotSpeed *= 0.5;
             }
             if (isPivotEncoderConnected()) {
-                rotate(MathUtil.clamp(pivotSpeed+pivotFeedForward,-0.5,0.5));
+                rotate(MathUtil.clamp(pivotSpeed+pivotFeedForward,-0.25,0.25));
             }
             extend(extensionSpeed);
         }
@@ -231,11 +239,14 @@ public class ArmSubsystem extends SubsystemBase {
                 return;
             }
             // Shouldn't be able to go over the top
-            if (getPivotRotation().getDegrees() >= 95 && rotationalVelocity > 0) {
+            if (getPivotRotation().getDegrees() >= 90 && rotationalVelocity > 0) {
                 pivotMotor.set(0);
                 return;
             }
             pivotMotor.set(-rotationalVelocity);
+        }
+        else {
+            pivotMotor.set(0);
         }
     }   
 
@@ -243,17 +254,25 @@ public class ArmSubsystem extends SubsystemBase {
      * <p> Runs the extension motor for the arm at the specified speed.
      * @param extensionVelocity Power of the motor between -1 and 1 where +1 represents full extension and -1 represents full retraction.
      */
+     
     public void extend(double extensionVelocity)
     {
-        if (getExtensionLength() > 1.15 && extensionVelocity > 0) {
-            return;
-        }
-        if (getExtensionLength() < 0.05 && extensionVelocity < 0) {
-            return;
+        if (usingExtensionHardLimits) {
+            if (getExtensionLength() > 1.00 && extensionVelocity > 0) {
+                extendMotor.set(0);
+                return;
+            }
+            if (getExtensionLength() < 0.05 && extensionVelocity < 0) {
+                extendMotor.set(0);
+                return;
+            }
         }
         if(Robot.armController.isExtendEnabled() == true)
         {
             extendMotor.set(extensionVelocity);
+        }
+        else {
+            pivotMotor.set(0);
         }
     }
 
@@ -379,4 +398,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setAutoExtensionSpeed(double speedPercent) { this.autoExtensionSpeed = speedPercent; }
     public double getAutoExtensionSpeed() { return this.autoExtensionSpeed; }
+
+    public void setUsingExtensionHardLimits(boolean usingExtensionHardLimits) { this.usingExtensionHardLimits = usingExtensionHardLimits; }
+    public boolean usingExtensionHardLimits() { return this.usingExtensionHardLimits; }
+
+    public void setEncoderOffset(double newOffsetDegrees) { this.PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(newOffsetDegrees)); }
+    public Rotation2d getEncoderOffset() { return this.PIVOT_ENCODER_OFFSET; }
 }

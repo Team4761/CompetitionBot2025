@@ -313,4 +313,8 @@ public class SwerveModuleNeo implements SwerveModuleIO {
     public void updateTurnFFv(double kv) {
         turnFeedforward = new SimpleMotorFeedforward(turnFeedforward.getKs(), kv);
     }
+
+    public Rotation2d getDesiredRotation() {
+        return new Rotation2d(); //WIP
+    }
 }

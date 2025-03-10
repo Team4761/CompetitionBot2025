@@ -68,10 +68,10 @@ public class ScoreOneCoralAuto {
             case BLUE_LEFT, RED_LEFT:
                 return new SequentialCommandGroup(
                     new PrintCommand("Starting One Coral Auto from " + startingPosition),
-                    ZeroGyroCommand.create(),
-                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),
-                    MoveDistanceCommand.create((5.115-7.668), (5.376-6.184), new Rotation2d(Units.degreesToRadians(-150))).withTimeout(5.0),
-                    ScoreL1Command.create(1, 20),
+                    ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
+                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),  // Make the operator controls facing the opposite alliance wall.
+                    MoveDistanceCommand.create((7.668-5.115), 0, new Rotation2d(30)).withTimeout(5.0),    // From the starting line to the reef
+                    ScoreL1Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_LEFT) ? 20 : 11),    // Align with the proper april tag
                     new PrintCommand("Finished One Coral Auto")
                 );
             case BLUE_CENTER, RED_CENTER:
@@ -86,10 +86,10 @@ public class ScoreOneCoralAuto {
             case BLUE_RIGHT, RED_RIGHT:
                 return new SequentialCommandGroup(
                     new PrintCommand("Starting One Coral Auto from " + startingPosition),
-                    ZeroGyroCommand.create(),
-                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),
-                    MoveDistanceCommand.create((3.718-7.774), (2.714-2.013), new Rotation2d(Units.degreesToRadians(150))).withTimeout(5.0),
-                    ScoreL1Command.create(1, 22),
+                    ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
+                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),  // Make the operator controls facing the opposite alliance wall.
+                    MoveDistanceCommand.create((7.774-3.718), 0, new Rotation2d(-30)).withTimeout(5.0),    // From the starting line to the reef
+                    ScoreL1Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_RIGHT) ? 22 : 9),    // Align with the proper april tag
                     new PrintCommand("Finished One Coral Auto")
                 );
             default:

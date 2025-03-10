@@ -123,10 +123,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    CommandScheduler.getInstance().run();
-    
     driveController.teleopPeriodic();
     armController.teleopPeriodic();
+  
+    CommandScheduler.getInstance().run();
   }
 
   /** This function is called once when the robot is disabled. */

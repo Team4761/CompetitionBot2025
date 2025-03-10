@@ -8,7 +8,9 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -38,8 +40,10 @@ public class SwerveSubsystem extends SubsystemBase {
     // Drive for forward/backward/strafing speed
     // Turn for, well, turning speeds...
     private boolean alwaysAutoCorrectRotation = false;
-    public double speedDriveModifier = 0.5;
-    public double speedTurnModifier = 0.5;
+    public double speedDriveModifier = 0.7;
+    public double speedTurnModifier = 0.7;
+
+    private Transform2d lastOdometryChange = new Transform2d();
 
     /** This controls which direction is the forwards direction for joystick control. */
     public Rotation2d forwardsControllingRotation;
@@ -56,10 +60,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Translation2d backRightLocation = new Translation2d(-0.32, -0.32);
 
     // For Kraken swerve (competition bot)
-    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-119.387)));
-    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-26.600)));
-    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-67.674)));
-    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(116.800)));
+    public final SwerveModuleIO frontLeft = new SwerveModuleKraken(Constants.SWERVE_FL_DRIVE_MOTOR_PORT, Constants.SWERVE_FL_TURN_MOTOR_PORT, Constants.SWERVE_FL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-125.3))); //-119.387
+    public final SwerveModuleIO frontRight = new SwerveModuleKraken(Constants.SWERVE_FR_DRIVE_MOTOR_PORT, Constants.SWERVE_FR_TURN_MOTOR_PORT, Constants.SWERVE_FR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-25.3))); //-26.600
+    public final SwerveModuleIO backLeft = new SwerveModuleKraken(Constants.SWERVE_BL_DRIVE_MOTOR_PORT, Constants.SWERVE_BL_TURN_MOTOR_PORT, Constants.SWERVE_BL_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(-64.3))); //-67.674
+    public final SwerveModuleIO backRight = new SwerveModuleKraken(Constants.SWERVE_BR_DRIVE_MOTOR_PORT, Constants.SWERVE_BR_TURN_MOTOR_PORT, Constants.SWERVE_BR_ENCODER_PORT, new Rotation2d(Units.degreesToRadians(124.9))); //116.800
     
     // For Neo swerve (test bot)
     // public final SwerveModuleIO frontLeft = new SwerveModuleNeo(10, 6, 1, new Rotation2d(Units.degreesToRadians(-41.081)), false);
@@ -97,6 +101,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private boolean isBeingRotated = false;
     /** This stores the rotation of the robot the last time it was being rotated */
     private Rotation2d lastRotation = new Rotation2d();
+
+    private Pose2d lastPosition = null;
 
     /** Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation. */
     private boolean isFieldOriented = true;
@@ -173,6 +179,8 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometry();
+        if (lastPosition != null)
+            lastOdometryChange = odometry.getPoseMeters().minus(lastPosition);
 
         // If not actively rotating, then we should be correcting the rotation to stop "drifting"
         // Math.signum(number) returns -1 if the number is negative and +1 if the number is positive (or 0 if it is 0)
@@ -210,6 +218,7 @@ public class SwerveSubsystem extends SubsystemBase {
         else { backLeft.getToDesiredState(swerveModuleStates[2]); }
         if (backRight.isManualControl()) { backRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
         else { backRight.getToDesiredState(swerveModuleStates[3]); }
+        lastPosition = odometry.getPoseMeters();
     }
 
 
@@ -308,6 +317,11 @@ public class SwerveSubsystem extends SubsystemBase {
            backLeft.getState(),
            backRight.getState() 
         });
+    }
+
+
+    public Transform2d getLastPositionChange() {
+        return lastOdometryChange;
     }
 
 

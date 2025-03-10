@@ -46,6 +46,8 @@ public class SwerveModuleKraken implements SwerveModuleIO {
     // To find this value, set the offset to 0, manually rotate the wheel to face forwards, and then record the outputted rotation of the wheel from shuffleboard.
     private Rotation2d turnOffset;  // PLACEHOLDER! DO NOT CHANGE HERE, CHANGE IN SwerveSubsystem
 
+    private Rotation2d desiredRotation = new Rotation2d();
+
     
     // This determines the speed of the drive motor based on...
     // kP = proportional: This changes the speed based on how far away the motor is from its desired position.
@@ -127,6 +129,8 @@ public class SwerveModuleKraken implements SwerveModuleIO {
                 // Scale the drive voltage proportionally to the max voltage and speed value from shuffleboard.
                 SmartDashboard.putNumber("Drive Voltage", (driveOutput+driveFF));
                 // driveMotor.setVoltage((driveOutput + driveFF));
+
+                this.desiredRotation = desiredState.angle;
 
                 // The /8.0 is a completely magic number. I'm pretty sure it came from the *8.0 in SwerveSubsystem.setDesiredSpeeds() tho
                 driveMotor.set(desiredState.speedMetersPerSecond/8.0);
@@ -304,5 +308,9 @@ public class SwerveModuleKraken implements SwerveModuleIO {
     }
     public void updateTurnFFv(double kv) {
         turnFeedforward = new SimpleMotorFeedforward(turnFeedforward.getKs(), kv);
+    }
+
+    public Rotation2d getDesiredRotation() {
+        return this.desiredRotation;
     }
 }

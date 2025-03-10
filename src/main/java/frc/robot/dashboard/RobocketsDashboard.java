@@ -73,14 +73,15 @@ public class RobocketsDashboard {
             });
 
             // Settings
-            new ReactiveNumberEntry(Robot.map.swerve::setDriveMultiplier, putNumber("Swerve", "Swerve Drive Speed", 0.5));
-            new ReactiveNumberEntry(Robot.map.swerve::setTurnMultiplier, putNumber("Swerve", "Swerve Turn Speed", 0.5));
+            new ReactiveNumberEntry(Robot.map.swerve::setDriveMultiplier, putNumber("Swerve", "Swerve Drive Speed", 0.85));
+            new ReactiveNumberEntry(Robot.map.swerve::setTurnMultiplier, putNumber("Swerve", "Swerve Turn Speed", 0.7));
             new ReactiveBooleanEntry(Robot.map.swerve::setFieldOriented, putBoolean("Swerve", "Swerve Field Oriented", true));
             new ReactiveBooleanEntry(Robot.map.swerve::setAlwaysAutoCorrectRotation, putBoolean("Swerve","Always Auto Correct Rotation", Robot.map.swerve.isAlwaysAutoCorrectingRotation()));
 
             // Module Specific Info
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getDrivePosition(), putNumber("Swerve", "FL: Distance Traveled", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getWheelRotation().getDegrees(), putNumber("Swerve", "FL: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getDesiredRotation().getDegrees(), putNumber("Swerve", "FL: Desired Rotation", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getDriveVelocity(), putNumber("Swerve", "FL: Desired Drive Speed", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontLeft.getAngularVelocity().getDegrees(), putNumber("Swerve", "FL: Desired Turn Speed", 0));
             new ReactiveBooleanEntry(Robot.map.swerve.frontLeft::setEnabled, putBoolean("Swerve", "FL: Enabled?", true));
@@ -88,6 +89,7 @@ public class RobocketsDashboard {
 
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getDrivePosition(), putNumber("Swerve", "FR: Distance Traveled", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getWheelRotation().getDegrees(), putNumber("Swerve", "FR: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getDesiredRotation().getDegrees(), putNumber("Swerve", "FR: Desired Rotation", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getDriveVelocity(), putNumber("Swerve", "FR: Desired Drive Speed", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.frontRight.getAngularVelocity().getDegrees(), putNumber("Swerve", "FR: Desired Turn Speed", 0));
             new ReactiveBooleanEntry(Robot.map.swerve.frontRight::setEnabled, putBoolean("Swerve", "FR: Enabled?", true));
@@ -96,6 +98,7 @@ public class RobocketsDashboard {
 
             new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getDrivePosition(), putNumber("Swerve", "BL: Distance Traveled", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getWheelRotation().getDegrees(), putNumber("Swerve", "BL: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getDesiredRotation().getDegrees(), putNumber("Swerve", "BL: Desired Rotation", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getDriveVelocity(), putNumber("Swerve", "BL: Desired Drive Speed", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.backLeft.getAngularVelocity().getDegrees(), putNumber("Swerve", "BL: Desired Turn Speed", 0));
             new ReactiveBooleanEntry(Robot.map.swerve.backLeft::setEnabled, putBoolean("Swerve", "BL: Enabled?", true));
@@ -103,6 +106,7 @@ public class RobocketsDashboard {
 
             new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getDrivePosition(), putNumber("Swerve", "BR: Distance Traveled", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getWheelRotation().getDegrees(), putNumber("Swerve", "BR: Current Rotation", 0));
+            new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getDesiredRotation().getDegrees(), putNumber("Swerve", "BR: Desired Rotation", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getDriveVelocity(), putNumber("Swerve", "BR: Desired Drive Speed", 0));
             new TelemetryNumberEntry(() -> Robot.map.swerve.backRight.getAngularVelocity().getDegrees(), putNumber("Swerve", "BR: Desired Turn Speed", 0));
             new ReactiveBooleanEntry(Robot.map.swerve.backRight::setEnabled, putBoolean("Swerve", "BR: Enabled?", true));
@@ -152,11 +156,13 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.map.arm::setRotateD, putNumber("Arm", "Pivot D", Robot.map.arm.getPivotPID().getD()));
             new ReactiveNumberEntry(Robot.map.arm::setMaxFeedForward, putNumber("Arm", "Max FF", Robot.map.arm.getMaxFeedForward()));
             new ReactiveNumberEntry(Robot.map.arm::setAutoExtensionSpeed, putNumber("Arm", "Auto Extension Speed", Robot.map.arm.getAutoExtensionSpeed()));
+            new ReactiveNumberEntry(Robot.map.arm::setEncoderOffset, putNumber("Arm", "Pivot Encoder Offset", Robot.map.arm.getEncoderOffset().getDegrees()));
 
             // Settings
             new ReactiveBooleanEntry(Robot.map.arm::setUsingSetpointSystem, putBoolean("Arm", "Using Setpoint System", Robot.map.arm.usingSetpointSystem()));
             new ReactiveNumberEntry((degrees) -> Robot.map.arm.setForcedRotation(new Rotation2d(Units.degreesToRadians(degrees))), putNumber("Arm", "Forced Rotation", Robot.map.arm.getForcedRotation().getDegrees()));
             new ReactiveNumberEntry(Robot.map.arm::setForcedExtension, putNumber("Arm", "Forced Extension", Robot.map.arm.getForcedExtension()));
+            new ReactiveBooleanEntry(Robot.map.arm::setUsingExtensionHardLimits, putBoolean("Arm", "Using Extension Hard Limits", Robot.map.arm.usingExtensionHardLimits()));
         }
     }
 

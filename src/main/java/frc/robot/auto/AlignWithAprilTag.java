@@ -5,6 +5,8 @@ import java.util.Map;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -71,12 +73,13 @@ public class AlignWithAprilTag extends Command {
 
 
     public static Command create(int scoreStrategy) {
-        if (Robot.map.vision.getCameraState() == CameraState.FRONT_REEF_TAG) {
-            return AlignWithAprilTag.create((int)Robot.map.vision.getLastAprilTagID(), scoreStrategy);
-        }
-        else {
-            return AlignWithAprilTag.create((int)Robot.map.vision.getLastSideAprilTagID(), scoreStrategy);
-        }
+        return AlignWithAprilTag.create((int)Robot.map.vision.getLastSideAprilTagID(), scoreStrategy);
+        // if (Robot.map.vision.getCameraState() == CameraState.FRONT_REEF_TAG) {
+        //     return AlignWithAprilTag.create((int)Robot.map.vision.getLastAprilTagID(), scoreStrategy);
+        // }
+        // else {
+        //     return AlignWithAprilTag.create((int)Robot.map.vision.getLastSideAprilTagID(), scoreStrategy);
+        // }
     }
 
 
@@ -94,6 +97,9 @@ public class AlignWithAprilTag extends Command {
 
     @Override
     public void initialize() {
+        System.out.println(aprilTagID);
+
+        // Robot.driveController.setRumble(RumbleType.kLeftRumble, 0.3);
         if (Robot.map.leds != null) {
             initialPattern = Robot.map.leds.getPreviousPattern();
         }
@@ -105,6 +111,9 @@ public class AlignWithAprilTag extends Command {
      */
     @Override
     public void execute() {
+        if (aprilTagID == -1) {
+            aprilTagID = (int)Robot.map.vision.getLastSideAprilTagID();
+        }
         Transform3d currentPosition = Robot.map.vision.getRobotRelativeToAprilTag(aprilTagID);
 
         // We should only do stuff IF we can see the april tag...
@@ -113,12 +122,20 @@ public class AlignWithAprilTag extends Command {
         }
 
         // Should I use PID for this? Probably. Will I? Haha nope!
-        // All my homies HATE the z axis #XYSuperiority
-        Robot.map.swerve.setDesiredSpeeds(
-            Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getX())*0.05, 
-            Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY())*0.05, 
-            0
-        );
+        if (positionRelativeToAprilTag != null) {
+            // All my homies HATE the z axis #XYSuperiority
+            Robot.map.swerve.setFieldOriented(false);
+            Robot.map.swerve.setDesiredSpeeds( 
+                Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY())*0.1, 
+                -Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getX())*0.1,
+                0
+            );
+            SmartDashboard.putNumber("Testing/April Tag", aprilTagID);
+            SmartDashboard.putNumber("Testing/Pos X to April Tag", positionRelativeToAprilTag.getX());
+            SmartDashboard.putNumber("Testing/Pos Y to April Tag", positionRelativeToAprilTag.getY());
+
+            positionRelativeToAprilTag = positionRelativeToAprilTag.plus(new Transform3d(Robot.map.swerve.getLastPositionChange()));
+        }
 
         if (Robot.map.leds != null) {
             Robot.map.leds.setPattern(LEDPattern.steps(Map.of(0.0, new StupidColor(Color.kRed), Math.max(desiredDistanceFromAprilTag.getDistance(positionRelativeToAprilTag.getTranslation())*70.0, 0), new StupidColor(Color.kYellow))));
@@ -132,7 +149,7 @@ public class AlignWithAprilTag extends Command {
         if (Robot.map.vision == null || Robot.map.swerve == null) {
             return true;
         }
-        if (desiredDistanceFromAprilTag.getDistance(positionRelativeToAprilTag.getTranslation()) < 0.01) {
+        if (positionRelativeToAprilTag != null && desiredDistanceFromAprilTag.getDistance(positionRelativeToAprilTag.getTranslation()) < 0.01) {
             return true;
         }
         return false;
@@ -141,6 +158,8 @@ public class AlignWithAprilTag extends Command {
 
     @Override
     public void end(boolean isInterrupted) {
+        System.out.println("Alignment Complete!");
+        // Robot.driveController.setRumble(RumbleType.kLeftRumble, 0.3);
         if (Robot.map.leds != null) {
             CommandScheduler.getInstance().schedule(DisplayLEDPatternCommand.create(
                 LEDPattern.solid(new StupidColor(Color.kLightGreen)),

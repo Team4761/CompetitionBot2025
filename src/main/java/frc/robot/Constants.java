@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.arm.ArmState;
 
 /**
  * A port of 0 means that it is currently unknown/undecided.
@@ -31,6 +32,14 @@ public class Constants {
     public static final double L3_Y = Units.inchesToMeters(27.625); // arm y-coordinate for L3
     public static final double L4_X = Units.inchesToMeters(16.125); // arm x-coordinate for L4
     public static final double L4_Y = Units.inchesToMeters(52.0);   // arm y-coordinate for L4
+    
+    public static final ArmState L1_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(22)), 0.0);
+    public static final ArmState L2_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(47)), 0.14);
+    public static final ArmState L3_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 0.33);
+    public static final ArmState L4_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 1.0);
+    public static final ArmState CORAL_STATION_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(64)), 0.15);
+    public static final ArmState GROUND_INTAKE_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(-12)), 0.1);
+    public static final ArmState STARTING_CONFIGURATION = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 0.0);
     /*
      * LEDS
      */
@@ -67,9 +76,9 @@ public class Constants {
 
     public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360);           // Radians per second.
     public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(1080);       // Radians per second squared.
-    public static final double SWERVE_MAX_DRIVE_SPEED = 3.0;                                                // Meters per second?
+    public static final double SWERVE_MAX_DRIVE_SPEED = 10.0;                                                // Meters per second?
     public static final double SWERVE_MAX_ACCELERATION = 100.0;                                             // Meters per second?
-    public static final double SWERVE_MAX_DRIVE_VOLTAGE = 4.0;                                              // In Volts
+    public static final double SWERVE_MAX_DRIVE_VOLTAGE = 12.0;                                              // In Volts
 
     public static final Rotation2d SWERVE_GYRO_OFFSET = new Rotation2d(Units.degreesToRadians(0));  // To find this, set it to 0 and record the value you get on startup.
 
