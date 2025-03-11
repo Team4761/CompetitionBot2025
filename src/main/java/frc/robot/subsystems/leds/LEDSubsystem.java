@@ -34,7 +34,132 @@ public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystem() {
         // Comment out patterns that aren't being used
 
+        // Here's a bullshit list of colors that we can use for the LEDs
+        Color[] LEDColorList = {Color.kDenim,
+        Color.kFirstBlue,
+        Color.kFirstRed,
+        Color.kAliceBlue,
+        Color.kAqua,
+        Color.kAquamarine,
+        Color.kBeige,
+        Color.kBisque,
+        Color.kBlack,
+        Color.kBlanchedAlmond,
+        Color.kBlue,
+        Color.kBlueViolet,
+        Color.kBrown,
+        Color.kBurlywood,
+        Color.kCadetBlue,
+        Color.kChartreuse,
+        Color.kChocolate,
+        Color.kCoral,
+        Color.kCornflowerBlue,
+        Color.kCornsilk,
+        Color.kCrimson,
+        Color.kCyan,
+        Color.kDarkBlue,
+        Color.kDarkCyan,
+        Color.kDarkGoldenrod,
+        Color.kDarkGreen,
+        Color.kDarkKhaki,
+        Color.kDarkMagenta,
+        Color.kDarkOliveGreen,
+        Color.kDarkOrange,
+        Color.kDarkOrchid,
+        Color.kDarkRed,
+        Color.kDarkSalmon,
+        Color.kDarkSeaGreen,
+        Color.kDarkSlateBlue,
+        Color.kDarkTurquoise,
+        Color.kDarkViolet,
+        Color.kDeepPink,
+        Color.kDeepSkyBlue,
 
+        //0x696969
+        Color.kDimGray,
+        
+        Color.kDodgerBlue,
+        Color.kFirebrick,
+        Color.kForestGreen,
+        Color.kFuchsia,
+        Color.kGold,
+        Color.kGoldenrod,
+        Color.kGray,
+        Color.kGreen,
+        Color.kGreenYellow,
+        Color.kHotPink,
+        Color.kIndianRed,
+        Color.kIndigo,
+        Color.kKhaki,
+        Color.kLavender,
+        Color.kLavenderBlush,
+        Color.kLawnGreen,
+        Color.kLightBlue,
+        Color.kLightCoral,
+        Color.kLightGreen,
+        Color.kLightPink,
+        Color.kLightSalmon,
+        Color.kLightSeaGreen,
+        Color.kLightSkyBlue,
+        Color.kLightSteelBlue,
+        Color.kLime,
+        Color.kLimeGreen,
+        Color.kMagenta,
+        Color.kMaroon,
+        Color.kMediumAquamarine,
+        Color.kMediumBlue,
+        Color.kMediumOrchid,
+        Color.kMediumPurple,
+        Color.kMediumSeaGreen,
+        Color.kMediumSlateBlue,
+        Color.kMediumSpringGreen,
+        Color.kMediumTurquoise,
+        Color.kMediumVioletRed,
+        Color.kMidnightBlue,
+        Color.kMistyRose,
+        Color.kMoccasin,
+        Color.kNavajoWhite,
+        Color.kNavy,
+        Color.kOliveDrab,
+        Color.kOrange,
+        Color.kOrangeRed,
+        Color.kOrchid,
+        Color.kPaleGoldenrod,
+        Color.kPaleGreen,
+        Color.kPaleTurquoise,
+        Color.kPaleVioletRed,
+        Color.kPapayaWhip,
+        Color.kPeachPuff,
+        Color.kPeru,
+        Color.kPink,
+        Color.kPlum,
+        Color.kPowderBlue,
+        Color.kPurple,
+        Color.kRed,
+        Color.kRosyBrown,
+        Color.kRoyalBlue,
+        Color.kSaddleBrown,
+        Color.kSalmon,
+        Color.kSandyBrown,
+        Color.kSeaGreen,
+        Color.kSienna,
+        Color.kSkyBlue,
+        Color.kSlateBlue,
+        Color.kSpringGreen,
+        Color.kSteelBlue,
+        Color.kTan,
+        Color.kTeal,
+        Color.kTomato,
+        Color.kTurquoise,
+        Color.kViolet,
+        Color.kWheat,
+        Color.kWhite,
+        Color.kYellow,
+        Color.kYellowGreen};
+        int LEDColorIndex1 = (int)Math.random() * LEDColorList.length;
+        int LEDColorIndex2 = (int)Math.random() * LEDColorList.length;
+        Color LEDColor1 = LEDColorList[LEDColorIndex1];
+        Color LEDColor2 = LEDColorList[LEDColorIndex2];
         
         leds = new AddressableLED(Constants.LEDS_PORT);
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line
@@ -43,8 +168,20 @@ public class LEDSubsystem extends SubsystemBase {
         setDefaultCommand(runPattern(LEDPattern.solid(Color.kBlack)).withName("Off"));
         }
 
+
+
+        // a test pattern
         /**
+        public void periodic() {
+            LEDPattern pattern = LEDPattern.solid(Color.kBlanchedAlmond);
+            pattern.applyTo(buffer);
+            leds.setData(buffer); 
+        }
+
+
+        
         // progress bar fills proportional to how much the move joystick is pushed (kinda)
+        /**
         public void periodic() {
             LEDPattern pattern = LEDPattern.progressMaskLayer(Robot.map.leds::getProgress);
             pattern.applyTo(buffer);
@@ -112,7 +249,7 @@ public class LEDSubsystem extends SubsystemBase {
         }
         */
 
-
+        
         // 2 solid colors that move towards the side opposite from where they started. every time the colors bounce off a wall, the colors change to a new random one. (super unfinished)
         // WARNING: I DO NOT KNOW HOW TO CODE WELL, AND THIS MAY BE COMPLETELY WRONG IN MULTIPLE WAYS. If this is wrong in a massive way, please yell at me for it next time you see me.
         // Filler
@@ -120,25 +257,32 @@ public class LEDSubsystem extends SubsystemBase {
         // I hope you aren't afraid of unnecessary comments
         // Oh also I don't know how to blend the patterns, because the WPILib document contains jack-shit about it. So it doesnt actually make a pattern...
         // Here's another line just to make sure
+        
         public int LEDOffset = 0;
         public void periodic() {
-            // colors always start as Red and White
-            LEDPattern leftBase = LEDPattern.steps(Map.of(0, Color.kRed, 0.125, Color.kBlack));
-            LEDPattern rightBaseBase = LEDPattern.steps(Map.of(0, Color.kWhite, 0.125, Color.kBlack));
-            LEDPattern rightBase = rightBaseBase.reversed();
-            LEDPattern left = leftBase.offsetBy(LEDOffset);
-            LEDPattern right = rightBase.offsetBy(LEDOffset);
+            // colors always start as random
+            
+                LEDPattern leftBaseBase = LEDPattern.steps(Map.of(0, Color.kRed, 0.125, Color.kBlack));
+                LEDPattern rightBaseBaseBase = LEDPattern.steps(Map.of(0, Color.kWhite, 0.125, Color.kBlack)); 
+            LEDPattern rightBaseBase = rightBaseBaseBase.reversed();
+            LEDPattern leftBase = leftBaseBase.offsetBy(LEDOffset);
+            LEDPattern rightBase = rightBaseBase.offsetBy(LEDOffset);
+            LEDPattern left = leftBase;
+            LEDPattern Right = rightBase;
             LEDPattern pattern = null; //placeholder
             pattern.applyTo(buffer);
             leds.setData(buffer);
         }
+            
+         
 
         // this should constantly move the offset. I can't test this at the moment, so it will probably be wrong.
+        /**
         public int LEDOffset1() {
             int direction = 0;
             if (LEDOffset < 28) {
                 if(direction == 0) {
-                    LEDOffset = LEDOffset + 1;
+                    LEDOffset = LEDOffset++;
                 }
             }
             else {
@@ -146,7 +290,7 @@ public class LEDSubsystem extends SubsystemBase {
             }
             if (LEDOffset > 0) {
                 if (direction == 1) {
-                    LEDOffset = LEDOffset - 1;
+                    LEDOffset = LEDOffset--;
                 }
             }
             else {
@@ -154,7 +298,7 @@ public class LEDSubsystem extends SubsystemBase {
             }
             return LEDOffset;
         }
-
+        */
 
         // blinks Blanched Almond when the robot has successfully aligned with an april tag during teleop (unfinished)
         /**
