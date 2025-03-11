@@ -116,4 +116,5 @@ public interface SwerveModuleIO {
     public void updateDriveFFv(double kv);
     public void updateTurnFFs(double ks);
     public void updateTurnFFv(double kv);
+    public Rotation2d getDesiredRotation();
 }

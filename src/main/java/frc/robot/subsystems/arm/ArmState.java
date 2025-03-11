@@ -12,7 +12,7 @@ public class ArmState {
     public static final Rotation2d MAX_ROTATION = new Rotation2d(Units.degreesToRadians(95));
     public static final Rotation2d MIN_ROTATION = new Rotation2d(Units.degreesToRadians(-12));
 
-    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(16);  // TODO: Set this number
+    public static final double MIN_ARM_LENGTH = Units.inchesToMeters(20);  // TODO: Set this number
     public static final double MAX_ARM_LENGTH = Units.inchesToMeters(58);  // TODO: Set this number
     public static final double MAX_EXTENSION_LENGTH = MAX_ARM_LENGTH - MIN_ARM_LENGTH;  // TODO: Set this number
 

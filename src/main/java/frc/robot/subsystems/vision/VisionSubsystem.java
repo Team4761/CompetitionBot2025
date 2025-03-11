@@ -36,7 +36,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     // +x = forwards. +y = left. +z = up. Rotation is AROUND those axises in a counterclockwise direction! So roll = rotation AROUND +x.
     public static final Transform3d FRONT_CAMERA_ON_ROBOT_POSE = new Transform3d(Units.inchesToMeters(-8.5), Units.inchesToMeters(-13.5), Units.inchesToMeters(8), new Rotation3d(0, 0, 0));
-    public static final Transform3d SIDE_CAMERA_ON_ROBOT_POSE = new Transform3d(Units.inchesToMeters(-1), Units.inchesToMeters(4.5), (23), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
+    public static final Transform3d SIDE_CAMERA_ON_ROBOT_POSE = new Transform3d(Units.inchesToMeters(-11), Units.inchesToMeters(-14), Units.inchesToMeters(8), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
+
+    // Actual field layout for when testing is done.
+    // If the following line is throwing an error message, you don't have the most up-to-date WPILib version.
+    // This requires version 2025.2.1+ to work.
+    private static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+    /** This stores the time that when each april tag was seen (in ms from System.currentTimeMillis()). For example, to get the time that April Tag 12 was seen, you can do timesSinceSeenTags[12]. -1 If we haven't seen the tag.*/
+    private long[] timesSinceSeenTags = new long[25];
 
     //  This is the last recorded pose by vision (which tries to update its pose in the periodic method)
     // (0,0) represents the left corner of the blue alliance-wall, looking towards the red alliance. Towards the red alliance is +x, towards the other side of the alliance wall is +y.
@@ -55,8 +63,8 @@ public class VisionSubsystem extends SubsystemBase {
     private List<PhotonPipelineResult> results;
 
     // Default hostname is "photonvision", but we changed that to "CAMERA_NAME"
-    PhotonCamera frontCamera;
-    PhotonCamera sideCamera;
+    private PhotonCamera frontCamera;
+    private PhotonCamera sideCamera;
 
     // Used to calculate a pose over time
     PhotonPoseEstimator photonPoseEstimator;
@@ -73,11 +81,6 @@ public class VisionSubsystem extends SubsystemBase {
     //     100
     // );
 
-    // Actual field layout for when testing is done.
-    // If the following line is throwing an error message, you don't have the most up-to-date WPILib version.
-    // This requires version 2025.2.1+ to work.
-    AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
 
     /**
      * This will be in charge of setting up the cameras and pose estimator.
@@ -92,6 +95,10 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Maybe make this actually check for the robot's position once on startup?
         fieldPosition = new Pose3d();
+
+        for (int i = 0; i < timesSinceSeenTags.length; i++) {
+            timesSinceSeenTags[i] = -1;
+        }
     }
 
 
@@ -141,6 +148,10 @@ public class VisionSubsystem extends SubsystemBase {
                     latency = result.getTimestampSeconds() - lastTimestamp;
                     lastTimestamp = result.getTimestampSeconds();
                     foundAprilTag = true;
+
+                    if (aprilTagID > 0 && aprilTagID < timesSinceSeenTags.length) {
+                        timesSinceSeenTags[aprilTagID] = System.currentTimeMillis();
+                    }
                 }
             }
             else {
@@ -172,6 +183,10 @@ public class VisionSubsystem extends SubsystemBase {
                     sideLatency = result.getTimestampSeconds() - sideLastTimestamp;
                     sideLastTimestamp = result.getTimestampSeconds();
                     sideFoundAprilTag = true;
+
+                    if (aprilTagID > 0 && aprilTagID < timesSinceSeenTags.length) {
+                        timesSinceSeenTags[aprilTagID] = System.currentTimeMillis();
+                    }
                 }
             }
             else {
@@ -194,6 +209,28 @@ public class VisionSubsystem extends SubsystemBase {
             fieldPosition.getY(),
             fieldPosition.getRotation().toRotation2d()
         ));
+    }
+
+
+    /**
+     * Checks the cameras and the time since it last saw an april tag.
+     * @return The current CameraState.
+     */
+    public int getCameraState() {
+        // The following are the reef april tags:
+        // RED: 20, 21, 22
+        // BLUE: 9, 10, 11
+        // Only uses the data if the camera has seen a reef april tag in the last 1 second.
+
+        // Side Camera
+        if (((sideAprilTagID >= 6 && sideAprilTagID <= 11) || (sideAprilTagID >= 17 && sideAprilTagID <= 22)) && timesSinceSeenTags[sideAprilTagID] >= System.currentTimeMillis()-1000) {
+            return CameraState.SIDE_REEF_TAG;
+        }
+        // Front Camera
+        if (((aprilTagID >= 6 && aprilTagID <= 11) || (aprilTagID >= 17 && aprilTagID <= 22)) && timesSinceSeenTags[aprilTagID] >= System.currentTimeMillis()-1000) {
+            return CameraState.FRONT_REEF_TAG;
+        }
+        return CameraState.NO_APRIL_TAG;
     }
 
 
@@ -233,5 +270,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     public double getLatency() {
         return latency;
+    }
+
+    public double getLastSideAprilTagID() {
+        return sideAprilTagID;
     }
 }

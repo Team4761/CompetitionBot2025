@@ -25,6 +25,6 @@ public class OuttakeCommand extends Command
     */
    public static Command create() 
    {
-      return IntakeForTimeAtSpeedCommand.create(1.0,Robot.armController.getOuttakeSpeed());
+      return IntakeForTimeAtSpeedCommand.create(1.0,-Robot.armController.getOuttakeSpeed());
    }
 }

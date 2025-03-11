@@ -19,7 +19,7 @@ public class MoveDistanceCommand extends Command{
     private double deltaY;
     private Rotation2d deltaRot;
 
-    private static final ProfiledPIDController DistanceXPID = new ProfiledPIDController(
+    private final ProfiledPIDController DistanceXPID = new ProfiledPIDController(
         1,
         0.05,
         0.01,
@@ -27,18 +27,18 @@ public class MoveDistanceCommand extends Command{
     );
 
 
-    private static final ProfiledPIDController DistanceYPID = new ProfiledPIDController(
-        1,
-        0.01,
+    private final ProfiledPIDController DistanceYPID = new ProfiledPIDController(
+        1.4,
+        0.08,
         0.01,
         new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_DRIVE_SPEED, Constants.SWERVE_MAX_ACCELERATION)
     );
 
 
-    private static final ProfiledPIDController RotationPID = new ProfiledPIDController(
+    private final ProfiledPIDController RotationPID = new ProfiledPIDController(
         1,
-        0,
-        0,
+        0.05,
+        0.01,
         // Radians per second, radians per second squared
         new TrapezoidProfile.Constraints(Units.degreesToRadians(120), Units.degreesToRadians(360))
     );
@@ -75,7 +75,10 @@ public class MoveDistanceCommand extends Command{
     public void initialize() {
         CommandCenter.addRequirements(this, Robot.map.swerve);
         Pose2d currentPosition = Robot.map.swerve.getPosition();
-        targetPosition = new Pose2d(currentPosition.getX() + deltaX, currentPosition.getY() + deltaY, currentPosition.getRotation().plus(deltaRot));
+        targetPosition = new Pose2d(currentPosition.getX() + deltaX, currentPosition.getY() + deltaY, Robot.map.swerve.getGyroRotation().plus(deltaRot));
+        DistanceXPID.reset(currentPosition.getX());
+        DistanceYPID.reset(currentPosition.getY());
+        RotationPID.reset(Robot.map.swerve.getGyroRotation().getRadians());
     }
     
     @Override
@@ -84,7 +87,7 @@ public class MoveDistanceCommand extends Command{
         
         double driveSpeedX = DistanceXPID.calculate(currentPosition.getX(), targetPosition.getX());
         double driveSpeedY = DistanceYPID.calculate(currentPosition.getY(), targetPosition.getY());
-        double driveSpeedRot = RotationPID.calculate(currentPosition.getRotation().getRadians(), targetPosition.getRotation().getRadians());
+        double driveSpeedRot = RotationPID.calculate(Robot.map.swerve.getGyroRotation().getRadians(), targetPosition.getRotation().getRadians());
 
         Robot.map.swerve.setDesiredSpeeds(driveSpeedX, driveSpeedY, driveSpeedRot);
     }
@@ -94,9 +97,9 @@ public class MoveDistanceCommand extends Command{
         Pose2d currentPosition = Robot.map.swerve.getPosition();
         double differenceX = Math.abs(currentPosition.getX() - targetPosition.getX());
         double differenceY = Math.abs(currentPosition.getY() - targetPosition.getY());
-        double differenceRot = Math.abs(currentPosition.getRotation().getRadians() - targetPosition.getRotation().getRadians());
+        double differenceRot = Math.abs(Robot.map.swerve.getGyroRotation().getRadians() - targetPosition.getRotation().getRadians());
         // If within the acceptable margin of error (1cm & 5 degrees), then the command is finished.
-        if (differenceX + differenceY <= 0.01 && differenceRot <= Math.toRadians(5)) {
+        if (differenceX + differenceY <= 0.01 && differenceRot <= Math.toRadians(2)) {
             return true;
         } else {
             return false;

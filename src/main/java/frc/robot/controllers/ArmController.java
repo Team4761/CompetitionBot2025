@@ -2,8 +2,11 @@ package frc.robot.controllers;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmState;
 import frc.robot.subsystems.arm.GetArmToPositionCommand;
@@ -15,7 +18,9 @@ import frc.robot.subsystems.muncher.YeetCommand;
  * rightBumper().onTrue(YeetCommand.create())
  */
 public class ArmController extends XboxController {
-    private boolean armManualControl = true;
+    private Command currentCommand = null;
+
+    private boolean armManualControl = false;
     private boolean extendArmMotorEnabled = true;
     private boolean pivotArmMotorEnabled = true;
 
@@ -23,13 +28,16 @@ public class ArmController extends XboxController {
     private double outtakeSpeed = 0.2;
     private double yeetSpeed = 0.2;
 
-    private double extendSpeed = 0.1;
+    private double extendSpeed = 0.;
     private double pivotSpeed = 0.25;
 
     private boolean invertPivot = true;
     private boolean invertExtend = true;
 
-    public boolean sendingRawInput = false;;
+    public boolean sendingRawInput = false;
+
+    public boolean runningCommand = false;
+    private long cooldown = 0;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
      */
@@ -48,6 +56,10 @@ public class ArmController extends XboxController {
      * This should be called in Robot.java during teleopPeriodic with armController.teleopPeriodic()
      */
     public void teleopPeriodic() {
+        if (currentCommand != null) {
+            runningCommand = true;
+        }
+
         // Muncher
         if (Robot.map.muncher != null) {
             // Yeet
@@ -64,17 +76,22 @@ public class ArmController extends XboxController {
                 }
             }
             // Schedule an auto yeet
-            if (getYButtonPressed()) {
-                CommandScheduler.getInstance().schedule(YeetCommand.create());
+            if (getYButtonPressed() && Robot.map.arm != null && Robot.map.arm.getExtensionLength() >= 0.10) {
+                CommandScheduler.getInstance().schedule(YeetCommand.create(true));
+            }
+            if (getAButtonPressed() && Robot.map.arm != null && Robot.map.arm.getExtensionLength() >= 0.10) {
+                CommandScheduler.getInstance().schedule(YeetCommand.create(false));
             }
             // Intake/outake
-            Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
+            if (!YeetCommand.autoMunchMode)
+                Robot.map.muncher.intake(-outtakeSpeed*getLeftTriggerAxis() + intakeSpeed*getRightTriggerAxis());
         }
         // Arm
         // Operator control (maintain pivot rotation)
         if (Robot.map.arm != null) {
             if (getLeftY() != 0.0 || getRightY() != 0.0) {
                 Robot.map.arm.isOperatorMode = true;
+                cancelCurrentCommand();
             }
             if (getLeftY() != 0.0) {
                 Robot.map.arm.lastRotation = Robot.map.arm.getPivotRotation();
@@ -97,14 +114,47 @@ public class ArmController extends XboxController {
                 Robot.map.arm.setForcedExtension((invertPivot ? -1 : 1) * pivotSpeed*getRightY());
             }
 
-            if (getAButtonPressed()) {
+            if (getStartButtonPressed()) {
                 Robot.map.arm.setExtensionOffset(Robot.map.arm.getExtensionLength());
             }
 
             if (getLeftBumperButtonPressed()) {
-                CommandScheduler.getInstance().schedule(GetArmToPositionCommand.create(new ArmState(new Rotation2d(90), 0)));
+                scheduleCommand(GetArmToPositionCommand.create(Constants.CORAL_STATION_ARM_STATE));
+            }
+
+            if (getRightBumperPressed()) {
+                scheduleCommand(GetArmToPositionCommand.create(Constants.GROUND_INTAKE_ARM_STATE));
+            }
+            if (getPOV() == 0 && cooldown <= System.currentTimeMillis()) {
+                scheduleCommand(GetArmToPositionCommand.create(Constants.L3_ARM_STATE));
+            }
+            else if (getPOV() == 90 && cooldown <= System.currentTimeMillis()) {
+                scheduleCommand(GetArmToPositionCommand.create(Constants.L1_ARM_STATE));
+            }
+            // else if (getPOV() == 270 && currentCommand == null) {
+            //     scheduleCommand(GetArmToPositionCommand.create(Constants.L4_ARM_STATE));
+            // }
+            else if (getPOV() == 180 && cooldown <= System.currentTimeMillis()) {
+                scheduleCommand(GetArmToPositionCommand.create(Constants.L2_ARM_STATE));
             }
         }
+    }
+
+
+    public void cancelCurrentCommand() {
+        if (currentCommand != null) {
+            CommandScheduler.getInstance().cancel(currentCommand);
+            currentCommand = null;
+        }
+    }
+
+
+    public void scheduleCommand(Command command) {
+        cooldown = System.currentTimeMillis() + 1000;
+        runningCommand = false;
+        cancelCurrentCommand();
+        currentCommand = command;
+        CommandScheduler.getInstance().schedule(currentCommand);
     }
 
 
@@ -114,7 +164,7 @@ public class ArmController extends XboxController {
         if (super.getLeftY() < 0) 
             return MathUtil.applyDeadband(super.getLeftY(), 0.08);
         else
-            return MathUtil.applyDeadband(super.getLeftY(), 0.08) * 0.5;
+            return MathUtil.applyDeadband(super.getLeftY(), 0.08);
     }
     @Override
     public double getRightY() {
