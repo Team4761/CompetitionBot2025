@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     driveController.teleopPeriodic();
     armController.teleopPeriodic();
-  
+
     CommandScheduler.getInstance().run();
   }
 

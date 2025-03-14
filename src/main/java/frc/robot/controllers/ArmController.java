@@ -34,7 +34,7 @@ public class ArmController extends XboxController {
     private boolean invertPivot = true;
     private boolean invertExtend = true;
 
-    public boolean sendingRawInput = false;
+    public boolean sendingRawInput = true;
 
     public boolean runningCommand = false;
     private long cooldown = 0;
@@ -119,23 +119,28 @@ public class ArmController extends XboxController {
             }
 
             if (getLeftBumperButtonPressed()) {
-                scheduleCommand(GetArmToPositionCommand.create(Constants.CORAL_STATION_ARM_STATE));
+                // scheduleCommand(GetArmToPositionCommand.create(Constants.CORAL_STATION_ARM_STATE));
+                setArmState(Constants.CORAL_STATION_ARM_STATE);
             }
 
             if (getRightBumperPressed()) {
-                scheduleCommand(GetArmToPositionCommand.create(Constants.GROUND_INTAKE_ARM_STATE));
+                // scheduleCommand(GetArmToPositionCommand.create(Constants.GROUND_INTAKE_ARM_STATE));
+                setArmState(Constants.GROUND_INTAKE_ARM_STATE);
             }
             if (getPOV() == 0 && cooldown <= System.currentTimeMillis()) {
-                scheduleCommand(GetArmToPositionCommand.create(Constants.L3_ARM_STATE));
+                setArmState(Constants.L3_ARM_STATE);
+                // scheduleCommand(GetArmToPositionCommand.create(Constants.L3_ARM_STATE));
             }
             else if (getPOV() == 90 && cooldown <= System.currentTimeMillis()) {
-                scheduleCommand(GetArmToPositionCommand.create(Constants.L1_ARM_STATE));
+                setArmState(Constants.L1_ARM_STATE);
+                // scheduleCommand(GetArmToPositionCommand.create(Constants.L1_ARM_STATE));
             }
             // else if (getPOV() == 270 && currentCommand == null) {
             //     scheduleCommand(GetArmToPositionCommand.create(Constants.L4_ARM_STATE));
             // }
             else if (getPOV() == 180 && cooldown <= System.currentTimeMillis()) {
-                scheduleCommand(GetArmToPositionCommand.create(Constants.L2_ARM_STATE));
+                // scheduleCommand(GetArmToPositionCommand.create(Constants.L2_ARM_STATE));
+                setArmState(Constants.L2_ARM_STATE);
             }
         }
     }
@@ -155,6 +160,11 @@ public class ArmController extends XboxController {
         cancelCurrentCommand();
         currentCommand = command;
         CommandScheduler.getInstance().schedule(currentCommand);
+    }
+
+    public void setArmState(ArmState armState) {
+        Robot.map.arm.setState(armState);
+        Robot.map.arm.isOperatorMode = false;
     }
 
 

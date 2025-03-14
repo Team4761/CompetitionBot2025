@@ -1,6 +1,5 @@
 package frc.robot.dashboard;
 
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -14,6 +13,7 @@ import frc.robot.dashboard.reactive.ReactiveNumberEntry;
 import frc.robot.dashboard.telemetry.TelemetryBooleanEntry;
 import frc.robot.dashboard.telemetry.TelemetryNumberEntry;
 import frc.robot.subsystems.leds.StupidColor;
+import frc.robot.subsystems.swerve.io.SwerveModuleKraken;
 
 /**
  * This is to have a nice and straightforward way of displaying data/settings on the dashboard during competition and debugging.
@@ -129,6 +129,7 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.map.swerve::updateTurnD, putNumber("Swerve", "Turn D", Robot.map.swerve.frontRight.getTurningPIDController().getD()));
             new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFs, putNumber("Swerve", "Turn FFs", Robot.map.swerve.frontRight.getTurnFeedforward().getKs()));
             new ReactiveNumberEntry(Robot.map.swerve::updateTurnFFv, putNumber("Swerve", "Turn FFv", Robot.map.swerve.frontRight.getTurnFeedforward().getKv()));
+            new ReactiveNumberEntry(SwerveModuleKraken::setMaxAngularVelocity, putNumber("Swerve", "Max Module Angular Velocity", SwerveModuleKraken.getMaxAngularVelocity()));
         }
     }
 

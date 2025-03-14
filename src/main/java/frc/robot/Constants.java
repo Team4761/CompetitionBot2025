@@ -72,8 +72,8 @@ public class Constants {
     public static final int SWERVE_BR_TURN_MOTOR_PORT = 8;      // CAN Port.
     public static final int SWERVE_BR_ENCODER_PORT = 12;        // CAN Port.
 
-    public static final double SWERVE_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(360);           // Radians per second.
-    public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(1080);       // Radians per second squared.
+    public static final double SWERVE_MAX_ANGULAR_VELOCITY = 6.79;           // Radians per second.
+    public static final double SWERVE_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(108000);       // Radians per second squared.
     public static final double SWERVE_MAX_DRIVE_SPEED = 10.0;                                                // Meters per second?
     public static final double SWERVE_MAX_ACCELERATION = 100.0;                                             // Meters per second?
     public static final double SWERVE_MAX_DRIVE_VOLTAGE = 12.0;                                              // In Volts
