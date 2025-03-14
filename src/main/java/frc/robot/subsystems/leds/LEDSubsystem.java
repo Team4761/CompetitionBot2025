@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.Map;
-
+import frc.robot.subsystems.leds.StupidColor;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -24,7 +24,130 @@ public class LEDSubsystem extends SubsystemBase {
 
     private LEDPattern previousPattern;
     private LEDPattern currentPattern;
+        // Here's a bullshit list of colors that we can use for the LEDs
+        static StupidColor[] LEDColorList = {
+            new StupidColor(Color.kDenim),
+            new StupidColor(Color.kFirstBlue),
+            new StupidColor(Color.kFirstRed),
+            new StupidColor(Color.kAliceBlue),
+            new StupidColor(Color.kAqua),
+            new StupidColor(Color.kAquamarine),
+            new StupidColor(Color.kBeige),
+            new StupidColor(Color.kBisque),
+            new StupidColor(Color.kBlack),
+            new StupidColor(Color.kBlanchedAlmond),
+            new StupidColor(Color.kBlue),
+            new StupidColor(Color.kBlueViolet),
+            new StupidColor(Color.kBrown),
+            new StupidColor(Color.kBurlywood),
+            new StupidColor(Color.kCadetBlue),
+            new StupidColor(Color.kChartreuse),
+            new StupidColor(Color.kChocolate),
+            new StupidColor(Color.kCoral),
+            new StupidColor(Color.kCornflowerBlue),
+            new StupidColor(Color.kCornsilk),
+            new StupidColor(Color.kCrimson),
+            new StupidColor(Color.kCyan),
+            new StupidColor(Color.kDarkBlue),
+            new StupidColor(Color.kDarkCyan),
+            new StupidColor(Color.kDarkGoldenrod),
+            new StupidColor(Color.kDarkGreen),
+            new StupidColor(Color.kDarkKhaki),
+            new StupidColor(Color.kDarkMagenta),
+            new StupidColor(Color.kDarkOliveGreen),
+            new StupidColor(Color.kDarkOrange),
+            new StupidColor(Color.kDarkOrchid),
+            new StupidColor(Color.kDarkRed),
+            new StupidColor(Color.kDarkSalmon),
+            new StupidColor(Color.kDarkSeaGreen),
+            new StupidColor(Color.kDarkSlateBlue),
+            new StupidColor(Color.kDarkTurquoise),
+            new StupidColor(Color.kDarkViolet),
+            new StupidColor(Color.kDeepPink),
+            new StupidColor(Color.kDeepSkyBlue),
 
+            //0x696969
+            new StupidColor(Color.kDimGray),
+
+            new StupidColor(Color.kDodgerBlue),
+            new StupidColor(Color.kFirebrick),
+            new StupidColor(Color.kForestGreen),
+            new StupidColor(Color.kFuchsia),
+            new StupidColor(Color.kGold),
+            new StupidColor(Color.kGoldenrod),
+            new StupidColor(Color.kGray),
+            new StupidColor(Color.kGreen),
+            new StupidColor(Color.kGreenYellow),
+            new StupidColor(Color.kHotPink),
+            new StupidColor(Color.kIndianRed),
+            new StupidColor(Color.kIndigo),
+            new StupidColor(Color.kKhaki),
+            new StupidColor(Color.kLavender),
+            new StupidColor(Color.kLavenderBlush),
+            new StupidColor(Color.kLawnGreen),
+            new StupidColor(Color.kLightBlue),
+            new StupidColor(Color.kLightCoral),
+            new StupidColor(Color.kLightGreen),
+            new StupidColor(Color.kLightPink),
+            new StupidColor(Color.kLightSalmon),
+            new StupidColor(Color.kLightSeaGreen),
+            new StupidColor(Color.kLightSkyBlue),
+            new StupidColor(Color.kLightSteelBlue),
+            new StupidColor(Color.kLime),
+            new StupidColor(Color.kLimeGreen),
+            new StupidColor(Color.kMagenta),
+            new StupidColor(Color.kMaroon),
+            new StupidColor(Color.kMediumAquamarine),
+            new StupidColor(Color.kMediumBlue),
+            new StupidColor(Color.kMediumOrchid),
+            new StupidColor(Color.kMediumPurple),
+            new StupidColor(Color.kMediumSeaGreen),
+            new StupidColor(Color.kMediumSlateBlue),
+            new StupidColor(Color.kMediumSpringGreen),
+            new StupidColor(Color.kMediumTurquoise),
+            new StupidColor(Color.kMediumVioletRed),
+            new StupidColor(Color.kMidnightBlue),
+            new StupidColor(Color.kMistyRose),
+            new StupidColor(Color.kMoccasin),
+            new StupidColor(Color.kNavajoWhite),
+            new StupidColor(Color.kNavy),
+            new StupidColor(Color.kOliveDrab),
+            new StupidColor(Color.kOrange),
+            new StupidColor(Color.kOrangeRed),
+            new StupidColor(Color.kOrchid),
+            new StupidColor(Color.kPaleGoldenrod),
+            new StupidColor(Color.kPaleGreen),
+            new StupidColor(Color.kPaleTurquoise),
+            new StupidColor(Color.kPaleVioletRed),
+            new StupidColor(Color.kPapayaWhip),
+            new StupidColor(Color.kPeachPuff),
+            new StupidColor(Color.kPeru),
+            new StupidColor(Color.kPink),
+            new StupidColor(Color.kPlum),
+            new StupidColor(Color.kPowderBlue),
+            new StupidColor(Color.kPurple),
+            new StupidColor(Color.kRed),
+            new StupidColor(Color.kRosyBrown),
+            new StupidColor(Color.kRoyalBlue),
+            new StupidColor(Color.kSaddleBrown),
+            new StupidColor(Color.kSalmon),
+            new StupidColor(Color.kSandyBrown),
+            new StupidColor(Color.kSeaGreen),
+            new StupidColor(Color.kSienna),
+            new StupidColor(Color.kSkyBlue),
+            new StupidColor(Color.kSlateBlue),
+            new StupidColor(Color.kSpringGreen),
+            new StupidColor(Color.kSteelBlue),
+            new StupidColor(Color.kTan),
+            new StupidColor(Color.kTeal),
+            new StupidColor(Color.kTomato),
+            new StupidColor(Color.kTurquoise),
+            new StupidColor(Color.kViolet),
+            new StupidColor(Color.kWheat),
+            new StupidColor(Color.kWhite),
+            new StupidColor(Color.kYellow),
+            new StupidColor(Color.kYellowGreen)
+            };
     // Also, per LED strip, there are 150 LEDs.
     // Supposedly the LEDs function in GRB not RGB... We'll need to test this though.
     /** what pattern should I use for LEDs?
@@ -38,134 +161,13 @@ public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystem() {
         // Comment out patterns that aren't being used
 
-        // Here's a bullshit list of colors that we can use for the LEDs
-        Color[] LEDColorList = 
-       {Color.kDenim,
-        Color.kFirstBlue,
-        Color.kFirstRed,
-        Color.kAliceBlue,
-        Color.kAqua,
-        Color.kAquamarine,
-        Color.kBeige,
-        Color.kBisque,
-        Color.kBlack,
-        Color.kBlanchedAlmond,
-        Color.kBlue,
-        Color.kBlueViolet,
-        Color.kBrown,
-        Color.kBurlywood,
-        Color.kCadetBlue,
-        Color.kChartreuse,
-        Color.kChocolate,
-        Color.kCoral,
-        Color.kCornflowerBlue,
-        Color.kCornsilk,
-        Color.kCrimson,
-        Color.kCyan,
-        Color.kDarkBlue,
-        Color.kDarkCyan,
-        Color.kDarkGoldenrod,
-        Color.kDarkGreen,
-        Color.kDarkKhaki,
-        Color.kDarkMagenta,
-        Color.kDarkOliveGreen,
-        Color.kDarkOrange,
-        Color.kDarkOrchid,
-        Color.kDarkRed,
-        Color.kDarkSalmon,
-        Color.kDarkSeaGreen,
-        Color.kDarkSlateBlue,
-        Color.kDarkTurquoise,
-        Color.kDarkViolet,
-        Color.kDeepPink,
-        Color.kDeepSkyBlue,
 
-        //0x696969
-        Color.kDimGray,
-        
-        Color.kDodgerBlue,
-        Color.kFirebrick,
-        Color.kForestGreen,
-        Color.kFuchsia,
-        Color.kGold,
-        Color.kGoldenrod,
-        Color.kGray,
-        Color.kGreen,
-        Color.kGreenYellow,
-        Color.kHotPink,
-        Color.kIndianRed,
-        Color.kIndigo,
-        Color.kKhaki,
-        Color.kLavender,
-        Color.kLavenderBlush,
-        Color.kLawnGreen,
-        Color.kLightBlue,
-        Color.kLightCoral,
-        Color.kLightGreen,
-        Color.kLightPink,
-        Color.kLightSalmon,
-        Color.kLightSeaGreen,
-        Color.kLightSkyBlue,
-        Color.kLightSteelBlue,
-        Color.kLime,
-        Color.kLimeGreen,
-        Color.kMagenta,
-        Color.kMaroon,
-        Color.kMediumAquamarine,
-        Color.kMediumBlue,
-        Color.kMediumOrchid,
-        Color.kMediumPurple,
-        Color.kMediumSeaGreen,
-        Color.kMediumSlateBlue,
-        Color.kMediumSpringGreen,
-        Color.kMediumTurquoise,
-        Color.kMediumVioletRed,
-        Color.kMidnightBlue,
-        Color.kMistyRose,
-        Color.kMoccasin,
-        Color.kNavajoWhite,
-        Color.kNavy,
-        Color.kOliveDrab,
-        Color.kOrange,
-        Color.kOrangeRed,
-        Color.kOrchid,
-        Color.kPaleGoldenrod,
-        Color.kPaleGreen,
-        Color.kPaleTurquoise,
-        Color.kPaleVioletRed,
-        Color.kPapayaWhip,
-        Color.kPeachPuff,
-        Color.kPeru,
-        Color.kPink,
-        Color.kPlum,
-        Color.kPowderBlue,
-        Color.kPurple,
-        Color.kRed,
-        Color.kRosyBrown,
-        Color.kRoyalBlue,
-        Color.kSaddleBrown,
-        Color.kSalmon,
-        Color.kSandyBrown,
-        Color.kSeaGreen,
-        Color.kSienna,
-        Color.kSkyBlue,
-        Color.kSlateBlue,
-        Color.kSpringGreen,
-        Color.kSteelBlue,
-        Color.kTan,
-        Color.kTeal,
-        Color.kTomato,
-        Color.kTurquoise,
-        Color.kViolet,
-        Color.kWheat,
-        Color.kWhite,
-        Color.kYellow,
-        Color.kYellowGreen};
         int LEDColorIndex1 = (int)Math.random() * LEDColorList.length;
         int LEDColorIndex2 = (int)Math.random() * LEDColorList.length;
-        Color LEDColor1 = LEDColorList[LEDColorIndex1];
-        Color LEDColor2 = LEDColorList[LEDColorIndex2];
+        StupidColor LEDColor1 = LEDColorList[LEDColorIndex1];
+        StupidColor LEDColor2 = LEDColorList[LEDColorIndex2];
         
+
         leds = new AddressableLED(Constants.LEDS_PORT);
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line
         leds.setLength(Constants.LEDS_NUMBER_OF_LEDS);
@@ -173,6 +175,9 @@ public class LEDSubsystem extends SubsystemBase {
         
         currentPattern = RobocketsLEDPatterns.OFF;
         previousPattern = RobocketsLEDPatterns.OFF;
+    }
+    public static void main(String[] args) {
+        System.out.println(LEDColorList[0]);
     }
 
 
@@ -266,8 +271,8 @@ public class LEDSubsystem extends SubsystemBase {
         public int LEDOffset = 0;
         public void periodic() {
             // colors always start as random
-            
-                LEDPattern leftBaseBase = LEDPattern.steps(Map.of(0, Color.kRed, 0.125, Color.kBlack));
+            LEDPattern rightBaseBaseBase = LEDPattern.steps(Map.of(0, Color.kWhite, 0.125, Color.kBlack));
+            LEDPattern leftBaseBase = LEDPattern.steps(Map.of(0, Color.kRed, 0.125, Color.kBlack));
             LEDPattern rightBaseBase = rightBaseBaseBase.reversed();
             LEDPattern leftBase = leftBaseBase.offsetBy(LEDOffset);
             LEDPattern rightBase = rightBaseBase.offsetBy(LEDOffset);

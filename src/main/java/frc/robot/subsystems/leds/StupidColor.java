@@ -32,12 +32,15 @@ public class StupidColor extends Color {
         super(G*ledBrightness, R*ledBrightness, B*ledBrightness);
     }
 
-
+    public static StupidColor stupidifyColor(Color color) {
+        return new StupidColor(color);
+    }
     /**
      * Just use this like a normal Color, but when the code is sent off the to bot, the R & G channels will be switched.
      * RGB -> GRB
      * @param color
      */
+    
     public StupidColor(Color color) {
         this(color.red, color.green, color.blue);
     }
