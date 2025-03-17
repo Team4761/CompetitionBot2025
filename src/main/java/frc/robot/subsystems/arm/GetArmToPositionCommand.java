@@ -52,6 +52,7 @@ public class GetArmToPositionCommand extends Command {
         System.out.println("Trying to get to " + targetState.getPivotRotation().getDegrees() + " | " + targetState.getExtensionLength());
         CommandCenter.addRequirements(this, Robot.map.arm);
         Robot.map.arm.setState(targetState);
+        Robot.map.arm.isOperatorMode = false;
     }
 
     @Override

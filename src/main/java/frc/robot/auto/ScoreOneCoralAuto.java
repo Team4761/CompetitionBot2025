@@ -79,7 +79,7 @@ public class ScoreOneCoralAuto {
                     new PrintCommand("Starting One Coral Auto from " + startingPosition),
                     ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
                     OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),  // Make the operator controls facing the opposite alliance wall.
-                    MoveDistanceCommand.create(1.397, 0, new Rotation2d(0)).withTimeout(5.0),    // From the starting line to the reef
+                    MoveDistanceCommand.create(1.397, 0, new Rotation2d(0)).withTimeout(3.0),    // From the starting line to the reef
                     ScoreL1Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_CENTER) ? 21 : 10),    // Align with the proper april tag
                     new PrintCommand("Finished One Coral Auto")
                 );

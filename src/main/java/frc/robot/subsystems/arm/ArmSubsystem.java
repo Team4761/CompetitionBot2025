@@ -21,10 +21,10 @@ import frc.robot.Robot;
 public class ArmSubsystem extends SubsystemBase {
     boolean stable = true;  // BJ supported (maybe remove later?)
 
-    private static final double MAX_PIVOT_UPWARDS_VELOCITY = 0.25;      // Percent (0 = no speed, 1 = full speed)
-    private static final double MAX_PIVOT_UPWARDS_ACCELERATION = 0.32;  // Percent (0 = no speed, 1 = full speed)
-    private static final double MAX_PIVOT_DOWNWARDS_VELOCITY = 0.125;   // Percent (0 = no speed, 1 = full speed)
-    private static final double MAX_PIVOT_DOWNWARDS_ACCELERATION = 0.25;// Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_UPWARDS_VELOCITY = 0.30;      // Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_UPWARDS_ACCELERATION = 1.00;  // Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_DOWNWARDS_VELOCITY = 0.15;   // Percent (0 = no speed, 1 = full speed)
+    private static final double MAX_PIVOT_DOWNWARDS_ACCELERATION = 0.50;// Percent (0 = no speed, 1 = full speed)
 
 
     /** This is the really funky gear ratio of the kraken motor we have hooked up to the pivot. 11 teeth turn 56 teeth, connected to 18 teeth turning 56 teeth... etc */
@@ -253,7 +253,14 @@ public class ArmSubsystem extends SubsystemBase {
             return;
         }
 
+        resetPIDControllers();
         targetState = parameters;
+    }
+
+
+    public void resetPIDControllers() {
+        pivotPIDDown.reset(getPivotRotation().getRadians());
+        pivotPIDUp.reset(getPivotRotation().getRadians());
     }
 
 
@@ -391,6 +398,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setState(ArmState state) {
+        resetPIDControllers();
         this.targetState = state;
     }
 

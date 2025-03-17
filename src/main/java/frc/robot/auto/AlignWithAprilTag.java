@@ -2,8 +2,14 @@ package frc.robot.auto;
 
 import java.util.Map;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +20,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.leds.DisplayLEDPatternCommand;
 import frc.robot.subsystems.leds.StupidColor;
 import frc.robot.subsystems.vision.CameraState;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 /**
  * When we're at the reef, this command works with both vision and swerve to align our bot with the April Tag.
@@ -47,17 +54,17 @@ public class AlignWithAprilTag extends Command {
         double xOffset = 0.0;
         switch(scoreStrategy) {
             case 0:
-                xOffset = 0.0;
+                xOffset = 0.60;
                 break;
             case 1:
-                xOffset = -0.16;
+                xOffset = 0.44;
                 break;
             case 2:
-                xOffset = 0.16;
+                xOffset = 0.76;
                 break;
         }
 
-        this.desiredDistanceFromAprilTag = new Translation3d(xOffset, 0.46, 0.0);
+        this.desiredDistanceFromAprilTag = new Translation3d(0.40, xOffset, 0.0);
     }
 
 
@@ -120,21 +127,30 @@ public class AlignWithAprilTag extends Command {
         if (currentPosition != null) {
             positionRelativeToAprilTag = currentPosition;
         }
+        // Out of the april tag is positive x
+        // Looking at the april tag, positive y is to the right.
+        // This is pretty much the opposite of swerve xD
 
         // Should I use PID for this? Probably. Will I? Haha nope!
         if (positionRelativeToAprilTag != null) {
             // All my homies HATE the z axis #XYSuperiority
             Robot.map.swerve.setFieldOriented(false);
             Robot.map.swerve.setDesiredSpeeds( 
-                Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY())*0.1, 
-                -Math.signum(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getX())*0.1,
-                0
+                MathUtil.clamp(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY()*0.6,-0.2,0.2), 
+                -MathUtil.clamp(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getX()*0.6,-0.2,0.2),
+                -MathUtil.clamp(positionRelativeToAprilTag.getRotation().minus(new Rotation3d(new Rotation2d(Units.degreesToRadians(180)))).getZ()*0.3,-0.2,0.2)
             );
             SmartDashboard.putNumber("Testing/April Tag", aprilTagID);
             SmartDashboard.putNumber("Testing/Pos X to April Tag", positionRelativeToAprilTag.getX());
             SmartDashboard.putNumber("Testing/Pos Y to April Tag", positionRelativeToAprilTag.getY());
+            SmartDashboard.putNumber("Testing/Pos Rot to April Tag", Units.radiansToDegrees(positionRelativeToAprilTag.getRotation().getZ()));
+            SmartDashboard.putNumber("Testing/Target X", desiredDistanceFromAprilTag.getX());
+            SmartDashboard.putNumber("Testing/Target Y", desiredDistanceFromAprilTag.getY());
 
-            positionRelativeToAprilTag = positionRelativeToAprilTag.plus(new Transform3d(Robot.map.swerve.getLastPositionChange()));
+            Pose2d swerveOdometryChange = new Pose2d(Robot.map.swerve.getLastPositionChange().getTranslation(), new Rotation2d());
+            // Rotate the swerve changes by the camera's rotation offset by the current rotation of the robot.
+            swerveOdometryChange = swerveOdometryChange.rotateBy(new Rotation2d(VisionSubsystem.SIDE_CAMERA_ON_ROBOT_POSE.getRotation().getZ()).plus(new Rotation2d(positionRelativeToAprilTag.getRotation().getZ())));
+            positionRelativeToAprilTag = positionRelativeToAprilTag.plus(new Transform3d(swerveOdometryChange.getX(), swerveOdometryChange.getY(), 0, new Rotation3d(Robot.map.swerve.getLastRotationChange())));
         }
 
         if (Robot.map.leds != null) {

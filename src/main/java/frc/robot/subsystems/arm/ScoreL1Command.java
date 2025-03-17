@@ -39,7 +39,7 @@ public class ScoreL1Command extends Command {
         return new ParallelCommandGroup(
             new SequentialCommandGroup(
                 // GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
-                GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)),
+                GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)).withTimeout(5.0),
                 OuttakeCommand.create()
             ),
             AlignWithAprilTag.create(aprilTagID, scoreStrategy)
@@ -57,7 +57,7 @@ public class ScoreL1Command extends Command {
     public static Command create(int scoreStrategy) {
         return new SequentialCommandGroup(
             // GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
-            GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)).withTimeout(3),
+            GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)).withTimeout(5),
             OuttakeCommand.create()
         );
     }

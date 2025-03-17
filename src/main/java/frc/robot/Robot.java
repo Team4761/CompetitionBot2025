@@ -148,8 +148,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {}
-
-
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {

@@ -44,6 +44,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public double speedTurnModifier = 0.7;
 
     private Transform2d lastOdometryChange = new Transform2d();
+    private Rotation2d lastRotationChange = new Rotation2d();
 
     /** This controls which direction is the forwards direction for joystick control. */
     public Rotation2d forwardsControllingRotation;
@@ -103,6 +104,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private Rotation2d lastRotation = new Rotation2d();
 
     private Pose2d lastPosition = null;
+    private Rotation2d previousRotation = null;
 
     /** Determines if the forwards direction depends on the robot's rotation or not. If true, forwards is NOT dependent on the robot's rotation. If false, forwards IS dependent on the robot's rotation. */
     private boolean isFieldOriented = true;
@@ -166,11 +168,13 @@ public class SwerveSubsystem extends SubsystemBase {
         updateOdometry();
         if (lastPosition != null)
             lastOdometryChange = odometry.getPoseMeters().minus(lastPosition);
+        if (previousRotation != null)
+            lastRotationChange = getGyroRotation().minus(previousRotation);
 
         // If not actively rotating, then we should be correcting the rotation to stop "drifting"
         // Math.signum(number) returns -1 if the number is negative and +1 if the number is positive (or 0 if it is 0)
-        if (!isBeingRotated && Math.abs(lastRotation.getDegrees() - getGyroRotation().getDegrees()) > 5 && ((this.desiredSpeedX != 0 && this.desiredSpeedY != 0) || alwaysAutoCorrectRotation)) {
-            this.desiredSpeedRotation = Math.signum(lastRotation.getDegrees() - getGyroRotation().getDegrees());
+        if (!isBeingRotated && Math.abs(lastRotation.getDegrees() - getGyroRotation().getDegrees()) > 5 && ((this.desiredSpeedX != 0 || this.desiredSpeedY != 0) || alwaysAutoCorrectRotation)) {
+            this.desiredSpeedRotation = 0.3*Math.signum(lastRotation.getDegrees() - getGyroRotation().getDegrees());
         }
         SmartDashboard.putNumber("Swerve Desired X", desiredSpeedX);
         SmartDashboard.putNumber("Swerve Desired Y", desiredSpeedY);
@@ -203,7 +207,9 @@ public class SwerveSubsystem extends SubsystemBase {
         else { backLeft.getToDesiredState(swerveModuleStates[2]); }
         if (backRight.isManualControl()) { backRight.getToDesiredState(null, this.desiredSpeedX, this.desiredSpeedRotation); }
         else { backRight.getToDesiredState(swerveModuleStates[3]); }
+
         lastPosition = odometry.getPoseMeters();
+        previousRotation = getGyroRotation();
     }
 
 
@@ -269,6 +275,11 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void zeroGyro() {
         gyro.resetGyro();
+    }
+
+
+    public Rotation2d getLastRotationChange() {
+        return lastRotationChange;
     }
 
 
