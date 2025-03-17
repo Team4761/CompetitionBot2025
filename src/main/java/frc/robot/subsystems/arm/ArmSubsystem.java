@@ -53,7 +53,7 @@ public class ArmSubsystem extends SubsystemBase {
     public Rotation2d lastRotation = new Rotation2d();
 
     private boolean usingExtensionHardLimits = true;
-    private boolean usingPivotHardLimits = true;    // TODO: Implement!
+    private boolean usingPivotHardLimits = true;
 
     private Rotation2d actuallyLastRotation;    // I'm sorry
 
@@ -271,14 +271,16 @@ public class ArmSubsystem extends SubsystemBase {
     public void rotate(double rotationalVelocity)
     {
         // The arm shouldn't be able to rotate down too far
-        if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity < 0) {
-            pivotMotor.set(0);
-            return;
-        }
-        // Shouldn't be able to go over the top
-        if (getPivotRotation().getDegrees() >= 90 && rotationalVelocity > 0) {
-            pivotMotor.set(0);
-            return;
+        if (usingPivotHardLimits) {
+            if (getPivotRotation().getDegrees() <= -10 && rotationalVelocity < 0) {
+                pivotMotor.set(0);
+                return;
+            }
+            // Shouldn't be able to go over the top
+            if (getPivotRotation().getDegrees() >= 90 && rotationalVelocity > 0) {
+                pivotMotor.set(0);
+                return;
+            }
         }
         if(Robot.armController.isPivotEnabled()) {
             pivotMotor.set(-rotationalVelocity);
@@ -443,6 +445,6 @@ public class ArmSubsystem extends SubsystemBase {
     public void setUsingExtensionHardLimits(boolean usingExtensionHardLimits) { this.usingExtensionHardLimits = usingExtensionHardLimits; }
     public boolean usingExtensionHardLimits() { return this.usingExtensionHardLimits; }
 
-    public void setEncoderOffset(double newOffsetDegrees) { this.PIVOT_ENCODER_OFFSET = new Rotation2d(Units.degreesToRadians(newOffsetDegrees)); }
-    public Rotation2d getEncoderOffset() { return this.PIVOT_ENCODER_OFFSET; }
+    public void setUsingPivotHardLimits(boolean usingPivotHardLimits) { this.usingPivotHardLimits = usingPivotHardLimits; }
+    public boolean usingPivotHardLimits() { return this.usingPivotHardLimits; }
 }

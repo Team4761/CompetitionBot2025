@@ -10,7 +10,6 @@ import frc.robot.controllers.OrientControlsCommand;
 import frc.robot.subsystems.arm.ScoreL2Command;
 import frc.robot.subsystems.swerve.MoveDistanceCommand;
 import frc.robot.subsystems.swerve.ZeroGyroCommand;
-import frc.robot.field.Field;
 
 /**
  * This is supposed to get to the reef, rotate the arm, and score the coral.

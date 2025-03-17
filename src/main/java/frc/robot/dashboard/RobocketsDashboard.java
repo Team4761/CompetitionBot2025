@@ -157,13 +157,13 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.map.arm::setRotateD, putNumber("Arm", "Pivot D", Robot.map.arm.getPivotPID().getD()));
             new ReactiveNumberEntry(Robot.map.arm::setMaxFeedForward, putNumber("Arm", "Max FF", Robot.map.arm.getMaxFeedForward()));
             new ReactiveNumberEntry(Robot.map.arm::setAutoExtensionSpeed, putNumber("Arm", "Auto Extension Speed", Robot.map.arm.getAutoExtensionSpeed()));
-            new ReactiveNumberEntry(Robot.map.arm::setEncoderOffset, putNumber("Arm", "Pivot Encoder Offset", Robot.map.arm.getEncoderOffset().getDegrees()));
 
             // Settings
             new ReactiveBooleanEntry(Robot.map.arm::setUsingSetpointSystem, putBoolean("Arm", "Using Setpoint System", Robot.map.arm.usingSetpointSystem()));
             new ReactiveNumberEntry((degrees) -> Robot.map.arm.setForcedRotation(new Rotation2d(Units.degreesToRadians(degrees))), putNumber("Arm", "Forced Rotation", Robot.map.arm.getForcedRotation().getDegrees()));
             new ReactiveNumberEntry(Robot.map.arm::setForcedExtension, putNumber("Arm", "Forced Extension", Robot.map.arm.getForcedExtension()));
             new ReactiveBooleanEntry(Robot.map.arm::setUsingExtensionHardLimits, putBoolean("Arm", "Using Extension Hard Limits", Robot.map.arm.usingExtensionHardLimits()));
+            new ReactiveBooleanEntry(Robot.map.arm::setUsingPivotHardLimits, putBoolean("Arm", "Using Pivot Hard Limits", Robot.map.arm.usingPivotHardLimits()));
         }
     }
 

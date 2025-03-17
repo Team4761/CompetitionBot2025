@@ -8,7 +8,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,8 +27,6 @@ import frc.robot.subsystems.swerve.io.SwerveCompetitionGyro;
 import frc.robot.subsystems.swerve.io.SwerveGyroIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleKraken;
-import frc.robot.subsystems.swerve.io.SwerveModuleNeo;
-import frc.robot.subsystems.swerve.io.SwerveTestGyro;
 
 /**
  * For swerve, +x represents the forward direction and +y represents left.
