@@ -22,6 +22,9 @@ public class LEDSubsystem extends SubsystemBase {
     private AddressableLED leds;
     private AddressableLEDBuffer buffer;
 
+    // private AddressableLED rightSide;
+    // private AddressableLEDBuffer rightBuffer;
+
     private LEDPattern previousPattern;
     private LEDPattern currentPattern;
         // Here's a bullshit list of colors that we can use for the LEDs
@@ -161,6 +164,7 @@ public class LEDSubsystem extends SubsystemBase {
      * <p> lights that move across the strip, and change to a random color when bounce of the edge
      * <p> lights that blink blanched almond when the robot is perfectly aligned in teleop (the only one with a debugging function)
      */
+    
     public LEDSubsystem() {
         // Comment out patterns that aren't being used
         
@@ -169,6 +173,11 @@ public class LEDSubsystem extends SubsystemBase {
         buffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line
         leds.setLength(Constants.LEDS_NUMBER_OF_LEDS);
         leds.start();
+
+        // rightSide = new AddressableLED(1);
+        // rightBuffer = new AddressableLEDBuffer(Constants.LEDS_NUMBER_OF_LEDS); // 32 LEDs in a straight line
+        // rightSide.setLength(Constants.LEDS_NUMBER_OF_LEDS);
+        // rightSide.start();
         
         currentPattern = RobocketsLEDPatterns.OFF;
         previousPattern = RobocketsLEDPatterns.OFF;
@@ -236,7 +245,9 @@ public class LEDSubsystem extends SubsystemBase {
             LEDPattern right = rightBase;
             LEDPattern pattern = left.overlayOn(right);
             pattern.applyTo(buffer);
+            // pattern.applyTo(rightBuffer);
             leds.setData(buffer);
+            // rightSide.setData(rightBuffer);
 
             // should constantly update the offset of the LEDs
             if (LEDOffset < 132) {

@@ -42,7 +42,7 @@ public class Constants {
      * LEDS
      */
     public static final int LEDS_PORT = 0;                 // PWM Port.
-    public static final int LEDS_NUMBER_OF_LEDS = 150;      // 32x1
+    public static final int LEDS_NUMBER_OF_LEDS = 46;      // 32x1
 
     /*
      * MUNCHER

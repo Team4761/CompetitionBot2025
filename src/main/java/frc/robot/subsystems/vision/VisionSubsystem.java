@@ -178,7 +178,7 @@ public class VisionSubsystem extends SubsystemBase {
      */
     public void updatePosition() {
         // If we're actively seeing an april tag, use the position our robot gets from the vision system.
-        if (sideFoundAprilTag || foundAprilTag) {
+        if ((sideFoundAprilTag || foundAprilTag) && this.bestTarget != null) {
             fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
                 bestTarget.getBestCameraToTarget(), // The position of the April Tag relative to the camera
                 APRIL_TAG_FIELD_LAYOUT.getTagPose(bestTarget.getFiducialId()).get(),   // The position of the April Tag in the field
@@ -188,7 +188,7 @@ public class VisionSubsystem extends SubsystemBase {
         // If we're NOT seeing an april tag, update our position based on swerve odometry stuffs
         else {
             if (Robot.map.swerve != null) {
-                fieldPosition = fieldPosition.plus(new Transform3d(Robot.map.swerve.getLastPositionChange()));
+                fieldPosition = fieldPosition.plus(new Transform3d(Robot.map.swerve.getLastPositionChange().getX(),Robot.map.swerve.getLastPositionChange().getY(),0,new Rotation3d(Robot.map.swerve.getLastRotationChange())));
             }
         }
     }

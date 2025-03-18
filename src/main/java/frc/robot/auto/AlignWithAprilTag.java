@@ -150,7 +150,7 @@ public class AlignWithAprilTag extends Command {
             positionRelativeToAprilTag = positionRelativeToAprilTag.plus(new Transform3d(swerveOdometryChange.getX(), swerveOdometryChange.getY(), 0, new Rotation3d(Robot.map.swerve.getLastRotationChange())));
         }
 
-        if (Robot.map.leds != null) {
+        if (Robot.map.leds != null && positionRelativeToAprilTag != null) {
             Robot.map.leds.setPattern(LEDPattern.steps(Map.of(0.0, new StupidColor(Color.kRed), Math.max(desiredDistanceFromAprilTag.getDistance(positionRelativeToAprilTag.getTranslation())*70.0, 0), new StupidColor(Color.kYellow))));
         }
     }

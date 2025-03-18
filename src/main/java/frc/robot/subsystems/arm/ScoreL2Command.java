@@ -51,7 +51,7 @@ public class ScoreL2Command extends Command {
     // TODO: scoreStrategy currently doesn't do anything. Add functionality to it.
     public static Command create(int scoreStrategy) {
         return new SequentialCommandGroup(
-            GetArmToPositionCommand.create(Constants.L2_X, Constants.L2_Y), 
+            GetArmToPositionCommand.create(Constants.L2_ARM_STATE).withTimeout(3.5), 
             YeetCommand.create(false)
         );
     }

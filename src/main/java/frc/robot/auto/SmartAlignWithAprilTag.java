@@ -65,19 +65,20 @@ public class SmartAlignWithAprilTag extends Command {
         double xOffset = 0.0;
         switch(scoreStrategy) {
             case 0:
-                xOffset = 0.60;
+                xOffset = 0;
                 break;
             case 1:
-                xOffset = 0.44;
+                xOffset = -0.16;
                 break;
             case 2:
-                xOffset = 0.76;
+                xOffset = 0.16;
                 break;
         }
 
         // Apply the offset from the reef.
         Pose2d offset = new Pose2d(new Translation2d(-0.40, xOffset), new Rotation2d()).rotateBy(targetPosition.getRotation());
         targetPosition = targetPosition.plus(new Transform2d(offset.getX(), offset.getY(), new Rotation2d()));
+        System.out.println("Going to position " + targetPosition);
         return GetToFieldPositionCommand.create(targetPosition).withTimeout(duration);
     }
 

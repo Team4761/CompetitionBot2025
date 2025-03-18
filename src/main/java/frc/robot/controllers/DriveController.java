@@ -11,6 +11,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.auto.AlignWithAprilTag;
+import frc.robot.auto.SmartAlignWithAprilTag;
 
 /**
  * This just controls swerve.
@@ -95,6 +96,11 @@ public class DriveController extends XboxController {
                 else if (getAButtonPressed()) {
                     cancelCurrentAutoSwerveCommand();
                     currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER);
+                    CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
+                }
+                else if (getBButtonPressed()) {
+                    cancelCurrentAutoSwerveCommand();
+                    currentAutoSwerveCommand = SmartAlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER, true, 10);
                     CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
                 }
             }
