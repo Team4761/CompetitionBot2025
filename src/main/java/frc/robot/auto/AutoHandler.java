@@ -68,6 +68,7 @@ public class AutoHandler {
         autoChooser.addOption("Move 1.5 Back & Rotate 90 Degrees CCW", MoveDistanceCommand.create(-1.5, 0, new Rotation2d(90)));
         autoChooser.addOption("Align With April Tag Left", AlignWithAprilTag.create(Constants.AprilTagAlignment.LEFT));
         autoChooser.addOption("Align to 21 CENTER Forever!", AlignWithAprilTag.create(21, Constants.AprilTagAlignment.CENTER, 1000));
+        autoChooser.addOption("Score One Coral L2!", ScoreOneCoralL2Auto.create(StartingPosition.RED_LEFT));
         // Only add the path planner stuff if swerve is initialized
         if (Robot.map.swerve != null) {
             autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("1 Meter Forward Auto"));

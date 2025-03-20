@@ -11,7 +11,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.auto.AlignWithAprilTag;
-import frc.robot.subsystems.vision.CameraState;
+import frc.robot.auto.SmartAlignWithAprilTag;
 
 /**
  * This just controls swerve.
@@ -19,9 +19,6 @@ import frc.robot.subsystems.vision.CameraState;
 public class DriveController extends XboxController {
 
     private Command currentAutoSwerveCommand = null;
-
-    /** This determines if commands are actively controlling swerve */
-    private boolean autoSwerveEnabled = false;
 
     /** This stores which direction should be considered forwards. On robot initialization, this is towards the front of the robot. */
     private Rotation2d currentForwardsDirection = new Rotation2d();
@@ -86,8 +83,6 @@ public class DriveController extends XboxController {
 
             // Swerve + Vision
             if (Robot.map.vision != null) {
-                int visionState = Robot.map.vision.getCameraState();
-                // if (visionState == CameraState.NO_APRIL_TAG || autoSwerveEnabled) {}
                 if (getLeftTriggerAxis() > 0.4) {
                     cancelCurrentAutoSwerveCommand();
                     currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.LEFT);
@@ -101,6 +96,11 @@ public class DriveController extends XboxController {
                 else if (getAButtonPressed()) {
                     cancelCurrentAutoSwerveCommand();
                     currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER);
+                    CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
+                }
+                else if (getBButtonPressed()) {
+                    cancelCurrentAutoSwerveCommand();
+                    currentAutoSwerveCommand = SmartAlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER, true, 10);
                     CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
                 }
             }

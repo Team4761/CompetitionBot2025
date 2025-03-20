@@ -10,6 +10,7 @@ import frc.robot.auto.CommandCenter;
 public class GetArmToPositionCommand extends Command {
 
     private ArmState targetState;
+    private boolean setOperatorMode = false;
     
     /**
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
@@ -48,9 +49,18 @@ public class GetArmToPositionCommand extends Command {
      */
     @Override
     public void initialize() {
+        System.out.println("Trying to get to " + targetState.getPivotRotation().getDegrees() + " | " + targetState.getExtensionLength());
         CommandCenter.addRequirements(this, Robot.map.arm);
-        Robot.map.arm.isOperatorMode = false;
         Robot.map.arm.setState(targetState);
+        Robot.map.arm.isOperatorMode = false;
+    }
+
+    @Override
+    public void execute() {
+        if (!setOperatorMode) {
+            Robot.map.arm.isOperatorMode = false;
+            setOperatorMode = true;
+        }
     }
 
     /**
@@ -67,5 +77,10 @@ public class GetArmToPositionCommand extends Command {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println("Finished getting to " + targetState.getPivotRotation().getDegrees() + " | " + targetState.getExtensionLength());
     }
 }

@@ -32,7 +32,7 @@ public class CommandCenter {
     public static Command scoreL4() { return ScoreL4Command.create(Constants.AprilTagAlignment.CENTER); } // Scores coral at level 4
 
     // Swerve Commands
-    public static Command fieldGo(double x, double y, double angle) { return GetToFieldPositionCommand.create(x, y, angle); }
+    public static Command fieldGo(double x, double y, double angle) { return GetToFieldPositionCommand.create(x, y, new Rotation2d(angle)); }
     public static Command fieldGoRaw(double speedx, double speedy, double turnSpeed, double duration) { return MoveForTimeAtSpeedCommand.create(speedx, speedy, turnSpeed, duration); }
     public static Command fieldMove(double deltax, double deltay, Rotation2d deltaRot) { return MoveDistanceCommand.create(deltax, deltay, deltaRot); }
 

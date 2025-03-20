@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -22,6 +23,9 @@ import frc.robot.Constants;
  * - 1 CANcoder for reading which direction the wheel is pointed in.
  */
 public class SwerveModuleKraken implements SwerveModuleIO {
+
+
+    private static double maxAngularVelocity = Constants.SWERVE_MAX_ANGULAR_VELOCITY;
 
     // This would be 2pi in an ideal world, or 6.283185, but it's not because of physics :(
     // Instead, I manually spun the front right wheel 20 times and recorded the rotation of that, and then divided by 20. The more rotations, the more accurate.
@@ -58,10 +62,10 @@ public class SwerveModuleKraken implements SwerveModuleIO {
     // A ProfiledPIDController is the same as above but also includes a max speed and max acceleration.
     // The value from last year's code was 21 (but it was in rotations, not radians. So it would be 21/2PI = 3.34 for this code...)
     private final ProfiledPIDController turningPIDController = new ProfiledPIDController(
-        4,
+        6,
         0,
         0,
-        new TrapezoidProfile.Constraints(Constants.SWERVE_MAX_ANGULAR_VELOCITY, Constants.SWERVE_MAX_ANGULAR_ACCELERATION)
+        new TrapezoidProfile.Constraints(maxAngularVelocity, Constants.SWERVE_MAX_ANGULAR_ACCELERATION)
     );
 
     // Feed forward literally predicts the future and determines a MINIMUM speed to maintain the current position.
@@ -135,7 +139,7 @@ public class SwerveModuleKraken implements SwerveModuleIO {
                 // The /8.0 is a completely magic number. I'm pretty sure it came from the *8.0 in SwerveSubsystem.setDesiredSpeeds() tho
                 driveMotor.set(desiredState.speedMetersPerSecond);
                 // Turn motor reversed because of gears *dies inside more than is physically possible*
-                turnMotor.setVoltage(-(turnOutput + turnFF));
+                turnMotor.setVoltage(-MathUtil.clamp((turnOutput + turnFF), -maxAngularVelocity, maxAngularVelocity));
             }
         }
         // If not enabled
@@ -312,5 +316,12 @@ public class SwerveModuleKraken implements SwerveModuleIO {
 
     public Rotation2d getDesiredRotation() {
         return this.desiredRotation;
+    }
+
+    public static void setMaxAngularVelocity(double newAngularVelocity) {
+        maxAngularVelocity = newAngularVelocity;
+    }
+    public static double getMaxAngularVelocity() {
+        return maxAngularVelocity;
     }
 }

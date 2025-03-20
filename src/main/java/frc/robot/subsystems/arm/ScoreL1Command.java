@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.muncher.OuttakeCommand;
-import frc.robot.subsystems.muncher.YeetCommand;
-import frc.robot.Constants;
 import frc.robot.auto.AlignWithAprilTag;
 
 /** 
@@ -39,7 +37,7 @@ public class ScoreL1Command extends Command {
         return new ParallelCommandGroup(
             new SequentialCommandGroup(
                 // GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
-                GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)),
+                GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)).withTimeout(5.0),
                 OuttakeCommand.create()
             ),
             AlignWithAprilTag.create(aprilTagID, scoreStrategy)
@@ -57,7 +55,7 @@ public class ScoreL1Command extends Command {
     public static Command create(int scoreStrategy) {
         return new SequentialCommandGroup(
             // GetArmToPositionCommand.create(Constants.L1_X, Constants.L1_Y), 
-            GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)).withTimeout(3),
+            GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(30)), 0)).withTimeout(5),
             OuttakeCommand.create()
         );
     }
