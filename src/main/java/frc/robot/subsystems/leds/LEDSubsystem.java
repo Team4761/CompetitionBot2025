@@ -156,9 +156,10 @@ public class LEDSubsystem extends SubsystemBase {
 
     // Also, per LED strip, there are 150 LEDs.
     // Supposedly the LEDs function in GRB not RGB... We'll need to test this though.
-    /** Available LED patterns
-     * <p> gradient
+    /** Available LED patterns:
+     * <p> green-black discontinuous gradient
      * <p> lights that move across the strip, and change to a random color when bounce of the edge
+     * <p> LED patterns that aren't finished:
      * <p> lights that blink blanched almond when the robot is perfectly aligned in teleop (the only one with a debugging function)
      */
     public LEDSubsystem() {
@@ -214,31 +215,28 @@ public class LEDSubsystem extends SubsystemBase {
 
 
         
-        // 2 solid colors that move towards the side opposite from where they started. every time the colors bounce off a wall, the colors change to a new random one. (unfinished)
-        // WARNING: I DO NOT KNOW HOW TO CODE WELL, AND THIS MAY BE COMPLETELY WRONG IN MULTIPLE WAYS. If this is wrong in a massive way, please yell at me for it next time you see me.
+        // 2 solid colors that move towards the side opposite from where they started. every time the colors bounce off a wall, the colors change to a new random one.
         // Filler
-        // Currently it should create 2 groups of differnt colors, and have them move accross the strip and bounce off walls.
+        // Currently it should create 2 groups of differnt colors, and have them move accross the strip and bounce off walls. (it does)
         // I hope you aren't afraid of unnecessary comments
         // Oh also I don't know how to blend the patterns, because the WPILib document contains jack-shit about it. So it doesnt actually make a pattern...
         // Update: I figured out how to blend them, but we actually need to overlay them instead (which I also figured out)
         // Here's another line just to make sure
-        // ps: I will never delete any of these comments
         
         public static int LEDOffset = 0;
         public void periodic() {
             // colors always start as random
-            LEDPattern rightBaseBaseBase = LEDPattern.steps(Map.of(0, LEDColor1, 0.125, Color.kBlack));
-            LEDPattern leftBaseBase = LEDPattern.steps(Map.of( 0, LEDColor2, 0.125, Color.kBlack));
-            LEDPattern rightBaseBase = rightBaseBaseBase.reversed();
-            LEDPattern leftBase = leftBaseBase.offsetBy(LEDOffset);
-            LEDPattern rightBase = rightBaseBase.offsetBy(-LEDOffset);
-            LEDPattern left = leftBase;
-            LEDPattern right = rightBase;
+            LEDPattern rightBaseBase = LEDPattern.steps(Map.of(0, LEDColor1, 0.125, Color.kBlack));
+            LEDPattern leftBase = LEDPattern.steps(Map.of( 0, LEDColor2, 0.125, Color.kBlack));
+            LEDPattern rightBase = rightBaseBase.reversed();
+            LEDPattern left = leftBase.offsetBy(LEDOffset);
+            LEDPattern right = rightBase.offsetBy(-LEDOffset);
             LEDPattern pattern = left.overlayOn(right);
             pattern.applyTo(buffer);
             leds.setData(buffer);
 
-            // should constantly update the offset of the LEDs
+            // moves the LEDs at a speed of 1 LEDs/tick
+            // the strips doesn't actually "bounce" off the walls, they just return to their start positions. However, it looks like they are bouncing because of the color change.
             if (LEDOffset < 132) {
                 LEDOffset++;                
             }

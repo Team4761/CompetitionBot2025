@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.util.Color;
  */
 public class StupidColor extends Color {
 
-    private static double ledBrightness = 0.05;
+    private static double ledBrightness = 1.05;
 
     /**
      * Just use this like a normal Color, but when the code is sent off the to bot, the R & G channels will be switched.

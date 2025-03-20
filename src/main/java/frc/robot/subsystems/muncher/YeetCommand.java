@@ -13,7 +13,7 @@ public class YeetCommand extends Command
 
    public static boolean autoMunchMode = false;
    /**
-    * DONT USE THIS CONSTRUCTER, use YeetCommand.create() instead, please it aint worth it
+    * DONT USE THIS CONSTRUCTER, use YeetCommand.create() instead, please it ain'tn'tn't worth it
     */
    private YeetCommand(){}
 
