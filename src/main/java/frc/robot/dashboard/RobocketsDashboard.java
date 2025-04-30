@@ -183,6 +183,8 @@ public class RobocketsDashboard {
             new ReactiveNumberEntry(Robot.armController::setYeetSpeed, putNumber("Arm Controller", "Yeet Speed", Robot.armController.getYeetSpeed()));
             new ReactiveNumberEntry(Robot.armController::setPivotSpeed, putNumber("Arm Controller", "Pivot Speed", Robot.armController.getPivotSpeed()));
             new ReactiveNumberEntry(Robot.armController::setExtendSpeed, putNumber("Arm Controller", "Extend Speed", Robot.armController.getExtendSpeed()));
+        
+            new ReactiveNumberEntry(Robot.armController::setHardStopSpeed, putNumber("Arm Controller", "Hard Stop Speed", Robot.armController.getHardStopSpeed()));
         }
     }
 
@@ -216,6 +218,7 @@ public class RobocketsDashboard {
     public void setupLEDs() {
         if (Robot.map.leds != null) {
             new ReactiveNumberEntry(StupidColor::setLEDBrightness, putNumber("LEDs", "Brightness", StupidColor.getLEDBrightness()));
+            new ReactiveBooleanEntry(Robot.map.leds::setEnabled, putBoolean("LEDs", "Enabled", Robot.map.leds.isEnabled()));
         }
     }
 

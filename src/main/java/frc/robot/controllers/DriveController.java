@@ -95,14 +95,20 @@ public class DriveController extends XboxController {
                 }
                 else if (getAButtonPressed()) {
                     cancelCurrentAutoSwerveCommand();
-                    currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER);
+                    currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.LEFT);
                     CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
                 }
                 else if (getBButtonPressed()) {
                     cancelCurrentAutoSwerveCommand();
-                    currentAutoSwerveCommand = SmartAlignWithAprilTag.create(Constants.AprilTagAlignment.CENTER, true, 10);
+                    currentAutoSwerveCommand = AlignWithAprilTag.create(Constants.AprilTagAlignment.RIGHT);
                     CommandScheduler.getInstance().schedule(currentAutoSwerveCommand);
                 }
+                // if (Robot.map.vision.isSeeingReefTag() && Robot.map.vision.distanceFromReef() <= 1.0) {
+                //     setRumble(RumbleType.kBothRumble, 0.1);
+                // }
+                // else {
+                //     setRumble(RumbleType.kBothRumble,0.0);
+                // }
             }
 
             if (currentAutoSwerveCommand == null) {

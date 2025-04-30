@@ -31,18 +31,19 @@ public class Constants {
     public static final double L4_X = Units.inchesToMeters(16.125); // arm x-coordinate for L4
     public static final double L4_Y = Units.inchesToMeters(52.0);   // arm y-coordinate for L4
     
-    public static final ArmState L1_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(22)), 0.0);
+    public static final ArmState L1_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(33)), 0.05);
     public static final ArmState L2_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(47)), 0.14);
     public static final ArmState L3_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 0.33);
     public static final ArmState L4_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 1.0);
     public static final ArmState CORAL_STATION_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(64)), 0.15);
     public static final ArmState GROUND_INTAKE_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(-12)), 0.1);
     public static final ArmState STARTING_CONFIGURATION = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 0.0);
+    public static final ArmState ALGAE_REMOVE_ARM_STATE = new ArmState(new Rotation2d(Units.degreesToRadians(90)), 0.35);
     /*
      * LEDS
      */
     public static final int LEDS_PORT = 0;                 // PWM Port.
-    public static final int LEDS_NUMBER_OF_LEDS = 46;      // 32x1
+    public static final int LEDS_NUMBER_OF_LEDS = 199;      // 32x1
 
     /*
      * MUNCHER

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.leds.DisplayLEDPatternCommand;
 import frc.robot.subsystems.leds.StupidColor;
@@ -50,18 +51,19 @@ public class AlignWithAprilTag extends Command {
         // TODO: Make the scoreRightOfAprilTag do something. It should affect the x:0.0 to be something like x:0.14, x:-0.14
         double xOffset = 0.0;
         switch(scoreStrategy) {
-            case 0:
-                xOffset = 0.60;
+            case Constants.AprilTagAlignment.CENTER:
+                xOffset = 0.70;
                 break;
-            case 1:
-                xOffset = 0.44;
+            case Constants.AprilTagAlignment.LEFT:
+                xOffset = 0.57; // - 0.16
                 break;
-            case 2:
-                xOffset = 0.76;
+            case Constants.AprilTagAlignment.RIGHT:
+                xOffset = 0.82; // + 0.16
                 break;
+                // 0.70 is off by like 1 inch off from left L2
         }
 
-        this.desiredDistanceFromAprilTag = new Translation3d(0.40, xOffset, 0.0);
+        this.desiredDistanceFromAprilTag = new Translation3d(0.34, xOffset, 0.0);
     }
 
 
@@ -133,9 +135,9 @@ public class AlignWithAprilTag extends Command {
             // All my homies HATE the z axis #XYSuperiority
             Robot.map.swerve.setFieldOriented(false);
             Robot.map.swerve.setDesiredSpeeds( 
-                MathUtil.clamp(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY()*0.6,-0.2,0.2), 
-                -MathUtil.clamp(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getX()*0.6,-0.2,0.2),
-                -MathUtil.clamp(positionRelativeToAprilTag.getRotation().minus(new Rotation3d(new Rotation2d(Units.degreesToRadians(180)))).getZ()*0.3,-0.2,0.2)
+                MathUtil.clamp(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getY()*1.8,-0.35,0.35), 
+                -MathUtil.clamp(positionRelativeToAprilTag.getTranslation().minus(desiredDistanceFromAprilTag).getX()*1.8,-0.35,0.35),
+                -MathUtil.clamp(positionRelativeToAprilTag.getRotation().minus(new Rotation3d(new Rotation2d(Units.degreesToRadians(180)))).getZ()*1.2,-0.2,0.2)
             );
             SmartDashboard.putNumber("Testing/April Tag", aprilTagID);
             SmartDashboard.putNumber("Testing/Pos X to April Tag", positionRelativeToAprilTag.getX());

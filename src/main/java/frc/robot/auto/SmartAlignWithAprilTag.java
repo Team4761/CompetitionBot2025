@@ -62,21 +62,21 @@ public class SmartAlignWithAprilTag extends Command {
         Pose2d targetPosition = getNearestReefPosition();
 
         // The offset side-to-side of the reef (so we can do left rung, center algae, and right rung)
-        double xOffset = 0.0;
+        double yOffset = 0.0;
         switch(scoreStrategy) {
             case 0:
-                xOffset = 0;
+                yOffset = 0;
                 break;
             case 1:
-                xOffset = -0.16;
+                yOffset = -0.16;
                 break;
             case 2:
-                xOffset = 0.16;
+                yOffset = 0.16;
                 break;
         }
 
         // Apply the offset from the reef.
-        Pose2d offset = new Pose2d(new Translation2d(-0.40, xOffset), new Rotation2d()).rotateBy(targetPosition.getRotation());
+        Pose2d offset = new Pose2d(new Translation2d(-0.40, yOffset), new Rotation2d()).rotateBy(targetPosition.getRotation());
         targetPosition = targetPosition.plus(new Transform2d(offset.getX(), offset.getY(), new Rotation2d()));
         System.out.println("Going to position " + targetPosition);
         return GetToFieldPositionCommand.create(targetPosition).withTimeout(duration);
@@ -87,23 +87,35 @@ public class SmartAlignWithAprilTag extends Command {
         Pose2d currentPosition = Robot.map.vision.getFieldPose().toPose2d();
         Pose2d closestReefPosition = null;
         double closestDistance = Double.MAX_VALUE;
+        for (int i = 0; i < blueReefPositions.length; i++) {
+            if (currentPosition.getTranslation().getDistance(blueReefPositions[i].getTranslation()) < closestDistance) {
+                closestDistance = currentPosition.getTranslation().getDistance(blueReefPositions[i].getTranslation());
+                closestReefPosition = blueReefPositions[i];
+            }
+        }
+        for (int i = 0; i < redReefPositions.length; i++) {
+            if (currentPosition.getTranslation().getDistance(redReefPositions[i].getTranslation()) < closestDistance) {
+                closestDistance = currentPosition.getTranslation().getDistance(redReefPositions[i].getTranslation());
+                closestReefPosition = redReefPositions[i];
+            }
+        }
 
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            for (int i = 0; i < blueReefPositions.length; i++) {
-                if (currentPosition.getTranslation().getDistance(blueReefPositions[i].getTranslation()) < closestDistance) {
-                    closestDistance = currentPosition.getTranslation().getDistance(blueReefPositions[i].getTranslation());
-                    closestReefPosition = blueReefPositions[i];
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < redReefPositions.length; i++) {
-                if (currentPosition.getTranslation().getDistance(redReefPositions[i].getTranslation()) < closestDistance) {
-                    closestDistance = currentPosition.getTranslation().getDistance(redReefPositions[i].getTranslation());
-                    closestReefPosition = redReefPositions[i];
-                }
-            }
-        }
+        // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        //     for (int i = 0; i < blueReefPositions.length; i++) {
+        //         if (currentPosition.getTranslation().getDistance(blueReefPositions[i].getTranslation()) < closestDistance) {
+        //             closestDistance = currentPosition.getTranslation().getDistance(blueReefPositions[i].getTranslation());
+        //             closestReefPosition = blueReefPositions[i];
+        //         }
+        //     }
+        // }
+        // else {
+        //     for (int i = 0; i < redReefPositions.length; i++) {
+        //         if (currentPosition.getTranslation().getDistance(redReefPositions[i].getTranslation()) < closestDistance) {
+        //             closestDistance = currentPosition.getTranslation().getDistance(redReefPositions[i].getTranslation());
+        //             closestReefPosition = redReefPositions[i];
+        //         }
+        //     }
+        // }
 
         return closestReefPosition;
     }

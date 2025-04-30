@@ -52,9 +52,8 @@ public class AutoHandler {
         autoChooser.addOption("Move 1.5 Meters Right", MoveDistanceCommand.create(0, -1.5, new Rotation2d(0)));
         autoChooser.addOption("Wait 13s & Move 1.5 Meters Back", new SequentialCommandGroup(new WaitCommand(13), MoveDistanceCommand.create(-1.5, 0, new Rotation2d(0))));
         autoChooser.addOption("Wait 13s & Move 1.5 Meters Forwards", new SequentialCommandGroup(new WaitCommand(13), MoveDistanceCommand.create(-1.5, 0, new Rotation2d(0))));
-        autoChooser.addOption("Score One Coral from CENTER", ScoreOneCoralAuto.create(StartingPosition.BLUE_CENTER));
+        autoChooser.addOption("Score One Coral L1 from CENTER", ScoreOneCoralAuto.create(StartingPosition.BLUE_CENTER));
         // All of the below commands are for testing
-        autoChooser.addOption("Score L1", ScoreL1Command.create(Constants.AprilTagAlignment.CENTER));
         autoChooser.addOption("Drop Arm to 0 Degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(0), 0)));
         autoChooser.addOption("Get Arm to 90 Degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(Math.PI/2), 0)));
         autoChooser.addOption("Get Arm to 45 Degrees", GetArmToPositionCommand.create(new ArmState(new Rotation2d(Units.degreesToRadians(45)), 0)));
@@ -68,7 +67,12 @@ public class AutoHandler {
         autoChooser.addOption("Move 1.5 Back & Rotate 90 Degrees CCW", MoveDistanceCommand.create(-1.5, 0, new Rotation2d(90)));
         autoChooser.addOption("Align With April Tag Left", AlignWithAprilTag.create(Constants.AprilTagAlignment.LEFT));
         autoChooser.addOption("Align to 21 CENTER Forever!", AlignWithAprilTag.create(21, Constants.AprilTagAlignment.CENTER, 1000));
-        autoChooser.addOption("Score One Coral L2!", ScoreOneCoralL2Auto.create(StartingPosition.RED_LEFT));
+        autoChooser.addOption("Score L1 from CENTER", ScoreL1Command.create(Constants.AprilTagAlignment.CENTER));
+        autoChooser.addOption("Score L1 from LEFT", ScoreL1Command.create(Constants.AprilTagAlignment.LEFT));
+        autoChooser.addOption("Score L1 from RIGHT", ScoreL1Command.create(Constants.AprilTagAlignment.RIGHT));
+        autoChooser.addOption("Score One Coral L2 from LEFT", ScoreOneCoralL2Auto.create(StartingPosition.RED_LEFT));
+        autoChooser.addOption("Score One Coral L2 from RIGHT", ScoreOneCoralL2Auto.create(StartingPosition.RED_RIGHT));
+        autoChooser.addOption("Score One Coral L3 from CENTER", ScoreL3Auto.create(StartingPosition.RED_CENTER));
         // Only add the path planner stuff if swerve is initialized
         if (Robot.map.swerve != null) {
             autoChooser.addOption("PP: One Meter Forward", new PathPlannerAuto("1 Meter Forward Auto"));

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -98,11 +99,12 @@ public class GetToFieldPositionCommand extends Command {
     public void execute() {
         Pose2d currentPosition = Robot.map.vision.getFieldPose().toPose2d();
         
-        double driveSpeedX = xPID.calculate(currentPosition.getX(), targetPosition.getX());
-        double driveSpeedY = yPID.calculate(currentPosition.getY(), targetPosition.getY());
-        double driveSpeedRot = rotationPID.calculate(Robot.map.swerve.getGyroRotation().getRadians(), targetPosition.getRotation().getRadians());
+        double driveSpeedX = MathUtil.clamp(xPID.calculate(currentPosition.getX(), targetPosition.getX()),-0.1, 0.1);
+        double driveSpeedY = MathUtil.clamp(yPID.calculate(currentPosition.getY(), targetPosition.getY()),-0.1, 0.1);
+        double driveSpeedRot = -MathUtil.clamp(rotationPID.calculate(Robot.map.swerve.getGyroRotation().plus(Robot.map.vision.getOffsetFromRobotRelative()).getRadians(), targetPosition.getRotation().getRadians()),-0.2,0.2);
 
-        Robot.map.swerve.setDesiredSpeeds(driveSpeedX, driveSpeedY, driveSpeedRot);
+        Pose2d speeds = new Pose2d(driveSpeedX, driveSpeedY, new Rotation2d()).rotateBy(Robot.map.vision.getOffsetFromRobotRelative().times(-1));
+        Robot.map.swerve.setDesiredSpeeds(speeds.getX(), speeds.getY(), driveSpeedRot);
     }
 
     @Override
@@ -110,7 +112,7 @@ public class GetToFieldPositionCommand extends Command {
         Pose2d currentPosition = Robot.map.vision.getFieldPose().toPose2d();
         double differenceX = Math.abs(currentPosition.getX() - targetPosition.getX());
         double differenceY = Math.abs(currentPosition.getY() - targetPosition.getY());
-        double differenceRot = Math.abs(Robot.map.swerve.getGyroRotation().getRadians() - targetPosition.getRotation().getRadians());
+        double differenceRot = Math.abs(Robot.map.swerve.getGyroRotation().plus(Robot.map.vision.getOffsetFromRobotRelative()).getRadians() - targetPosition.getRotation().getRadians());
         // If within the acceptable margin of error (1cm & 5 degrees), then the command is finished.
         if (differenceX + differenceY <= 0.01 && differenceRot <= Math.toRadians(2)) {
             return true;

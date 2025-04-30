@@ -16,6 +16,8 @@ import frc.robot.controllers.ArmController;
 import frc.robot.controllers.DriveController;
 import frc.robot.dashboard.DashboardHandler;
 import frc.robot.dashboard.RobocketsDashboard;
+import frc.robot.subsystems.arm.ArmState;
+import frc.robot.subsystems.leds.LEDState;
 // import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.swerve.ZeroGyroCommand;
 
@@ -33,6 +35,7 @@ public class Robot extends TimedRobot {
   public static final boolean win = true;
   // Check winSubsystem
 
+  public static LEDState ledState = LEDState.IDLE;
   public static final RobotMap map = new RobotMap();
 
   public static final DriveController driveController = new DriveController(0);
@@ -118,6 +121,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
+    if (Robot.map.arm != null) {
+      Robot.map.arm.setState(new ArmState(Robot.map.arm.getPivotRotation(), Robot.map.arm.getExtensionLength()));
+      Robot.map.arm.setOperatorMode(true);
+    }
   }
 
   /** This function is called periodically during operator control. */
@@ -132,6 +139,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+    ledState = LEDState.IDLE;
     CommandScheduler.getInstance().cancelAll();
     if (Robot.map.leds != null) {
       Robot.map.leds.stopLEDs();
@@ -140,6 +148,7 @@ public class Robot extends TimedRobot {
       Robot.map.swerve.setDesiredSpeeds(0, 0, 0);
     }
     if (Robot.map.arm != null) {
+      Robot.map.arm.runHardStopMotor(0);
       Robot.map.arm.extend(0);
       Robot.map.arm.rotate(0);
     }
@@ -147,7 +156,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    if (Robot.map.leds != null && Robot.map.leds.isEnabled()) {
+      Robot.map.leds.periodic();
+    }
+  }
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {

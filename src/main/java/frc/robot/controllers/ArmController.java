@@ -35,6 +35,11 @@ public class ArmController extends XboxController {
     public boolean sendingRawInput = true;
 
     public boolean runningCommand = false;
+
+    private boolean turboMode = false;
+    private double oldPivotSpeed = pivotSpeed;
+
+    private double hardStopSpeed = -0.25;
     private long cooldown = 0;
     /**
      * @param port The port that Driverstation has the controller set to. (you can change this in Driverstation)
@@ -57,6 +62,16 @@ public class ArmController extends XboxController {
         if (currentCommand != null) {
             runningCommand = true;
         }
+        if (getYButtonPressed()) {
+            turboMode = !turboMode;
+            if (turboMode) {
+                oldPivotSpeed = pivotSpeed;
+                pivotSpeed = 0.95;
+            }
+            else {
+                pivotSpeed = oldPivotSpeed;
+            }
+        }
 
         // Muncher
         if (Robot.map.muncher != null) {
@@ -74,9 +89,6 @@ public class ArmController extends XboxController {
                 }
             }
             // Schedule an auto yeet
-            if (getYButtonPressed() && Robot.map.arm != null && Robot.map.arm.getExtensionLength() >= 0.10) {
-                CommandScheduler.getInstance().schedule(YeetCommand.create(true));
-            }
             if (getAButtonPressed() && Robot.map.arm != null && Robot.map.arm.getExtensionLength() >= 0.10) {
                 CommandScheduler.getInstance().schedule(YeetCommand.create(false));
             }
@@ -87,8 +99,14 @@ public class ArmController extends XboxController {
         // Arm
         // Operator control (maintain pivot rotation)
         if (Robot.map.arm != null) {
+            if (getBackButton()) {
+                Robot.map.arm.runHardStopMotor(hardStopSpeed);
+            }
+            else {
+                Robot.map.arm.runHardStopMotor(0);
+            }
             if (getLeftY() != 0.0 || getRightY() != 0.0) {
-                Robot.map.arm.isOperatorMode = true;
+                Robot.map.arm.setOperatorMode(true);
                 cancelCurrentCommand();
             }
             if (getLeftY() != 0.0) {
@@ -129,10 +147,10 @@ public class ArmController extends XboxController {
                 setArmState(Constants.L3_ARM_STATE);
                 // scheduleCommand(GetArmToPositionCommand.create(Constants.L3_ARM_STATE));
             }
-            else if (getPOV() == 90 && cooldown <= System.currentTimeMillis()) {
-                setArmState(Constants.L1_ARM_STATE);
-                // scheduleCommand(GetArmToPositionCommand.create(Constants.L1_ARM_STATE));
-            }
+            // else if (getPOV() == 90 && cooldown <= System.currentTimeMillis()) {
+            //     setArmState(Constants.L1_ARM_STATE);
+            //     // scheduleCommand(GetArmToPositionCommand.create(Constants.L1_ARM_STATE));
+            // }
             // else if (getPOV() == 270 && currentCommand == null) {
             //     scheduleCommand(GetArmToPositionCommand.create(Constants.L4_ARM_STATE));
             // }
@@ -162,7 +180,7 @@ public class ArmController extends XboxController {
 
     public void setArmState(ArmState armState) {
         Robot.map.arm.setState(armState);
-        Robot.map.arm.isOperatorMode = false;
+        Robot.map.arm.setOperatorMode(false);
     }
 
 
@@ -244,4 +262,7 @@ public class ArmController extends XboxController {
     public boolean isArmManualControl() { return this.armManualControl; }
     public boolean isPivotEnabled() { return this.pivotArmMotorEnabled; }
     public boolean isExtendEnabled() { return this.extendArmMotorEnabled; }
+
+    public void setHardStopSpeed(double speed) { this.hardStopSpeed = speed; }
+    public double getHardStopSpeed() { return this.hardStopSpeed; }
 }

@@ -22,7 +22,8 @@ public class ScoreOneCoralL2Auto {
                     new PrintCommand("Starting One Coral Auto from " + startingPosition),
                     ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
                     OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(180))),  // Make the operator controls facing the opposite alliance wall.
-                    MoveDistanceCommand.create((7.668-5.115), 0, new Rotation2d(30)).withTimeout(5.0),    // From the starting line to the reef
+                    MoveDistanceCommand.create(-1, 0, new Rotation2d(Units.degreesToRadians(-30))).withTimeout(2.5),
+                    MoveDistanceCommand.create((-0.9), 0, new Rotation2d()).withTimeout(2.0),    // From the starting line to the reef
                     ScoreL2Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_LEFT) ? 20 : 11),    // Align with the proper april tag
                     new PrintCommand("Finished One Coral Auto")
                 );
@@ -31,14 +32,15 @@ public class ScoreOneCoralL2Auto {
                 return new PrintCommand("You can't score L2 from the center! :p");
             }
             case BLUE_RIGHT, RED_RIGHT: {
-                return new SequentialCommandGroup(
-                    new PrintCommand("Starting One Coral Auto from " + startingPosition),
-                    ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
-                    OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(-180))),  // Make the operator controls facing the opposite alliance wall.
-                    MoveDistanceCommand.create((7.668-5.115), 0, new Rotation2d(-30)).withTimeout(5.0),    // From the starting line to the reef
-                    ScoreL2Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_LEFT) ? 20 : 11),    // Align with the proper april tag
-                    new PrintCommand("Finished One Coral Auto")
-                );
+                return new PrintCommand("Nothing for RIGHT yet!");
+                // return new SequentialCommandGroup(
+                //     new PrintCommand("Starting One Coral Auto from " + startingPosition),
+                //     ZeroGyroCommand.create(),   // Mainly for testing. Whatever direction is forwards is the 0.0degrees direction.
+                //     OrientControlsCommand.create(new Rotation2d(Units.degreesToRadians(-180))),  // Make the operator controls facing the opposite alliance wall.
+                //     MoveDistanceCommand.create((1.9), 0, new Rotation2d(Units.degreesToRadians(30))).withTimeout(5.0),    // From the starting line to the reef
+                //     ScoreL2Command.create(Constants.AprilTagAlignment.CENTER, (startingPosition == StartingPosition.BLUE_LEFT) ? 20 : 11),    // Align with the proper april tag
+                //     new PrintCommand("Finished One Coral Auto")
+                // );
             }
         }
         return new PrintCommand("How did you get here? This can't be reached...");

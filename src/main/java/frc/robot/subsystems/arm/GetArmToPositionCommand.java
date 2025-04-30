@@ -11,6 +11,7 @@ public class GetArmToPositionCommand extends Command {
 
     private ArmState targetState;
     private boolean setOperatorMode = false;
+    private boolean doingExtension = true;
     
     /**
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
@@ -20,12 +21,13 @@ public class GetArmToPositionCommand extends Command {
     /**
      * DO NOT USE THE CONSTRUCTOR. Please use GetArmToPositionCommand.create() instead.
      */
-    private GetArmToPositionCommand(double x, double y) {
-        this(ArmSubsystem.getRotationExtensionFromSetPoint(x, y));
+    private GetArmToPositionCommand(double x, double y, boolean doingExtension) {
+        this(ArmSubsystem.getRotationExtensionFromSetPoint(x, y), doingExtension);
     }
 
-    private GetArmToPositionCommand(ArmState state) {
+    private GetArmToPositionCommand(ArmState state, boolean doingExtension) {
         targetState = state;
+        this.doingExtension = doingExtension;
     }
 
 
@@ -35,12 +37,16 @@ public class GetArmToPositionCommand extends Command {
      * @param y The distance from (0,0) vertically. +y is the upwards direction.
      */
     public static Command create(double x, double y) {
-        return new GetArmToPositionCommand(x, y);
+        return new GetArmToPositionCommand(x, y, true);
     }
     
 
     public static Command create(ArmState desiredState) {
-        return new GetArmToPositionCommand(desiredState);
+        return new GetArmToPositionCommand(desiredState, true);
+    }
+
+    public static Command create(ArmState desiredState, boolean doingExtension) {
+        return new GetArmToPositionCommand(desiredState, true);
     }
 
 
@@ -52,13 +58,13 @@ public class GetArmToPositionCommand extends Command {
         System.out.println("Trying to get to " + targetState.getPivotRotation().getDegrees() + " | " + targetState.getExtensionLength());
         CommandCenter.addRequirements(this, Robot.map.arm);
         Robot.map.arm.setState(targetState);
-        Robot.map.arm.isOperatorMode = false;
+        Robot.map.arm.setOperatorMode(false);
     }
 
     @Override
     public void execute() {
         if (!setOperatorMode) {
-            Robot.map.arm.isOperatorMode = false;
+            Robot.map.arm.setOperatorMode(false);
             setOperatorMode = true;
         }
     }
@@ -70,9 +76,9 @@ public class GetArmToPositionCommand extends Command {
     public boolean isFinished() {
         if (
             // Rotation is within 3 degrees
-            Math.abs(targetState.getPivotRotation().getDegrees() - Robot.map.arm.getPivotRotation().getDegrees()) <= 3 &&
+            (Math.abs(targetState.getPivotRotation().getDegrees() - Robot.map.arm.getPivotRotation().getDegrees()) <= 3) &&
             // Extension is within 3cm
-            Math.abs(targetState.getExtensionLength() - Robot.map.arm.getExtensionLength()) <= 0.03
+            (Math.abs(targetState.getExtensionLength() - Robot.map.arm.getExtensionLength()) <= 0.03 || !doingExtension)
         ) {
             return true;
         }

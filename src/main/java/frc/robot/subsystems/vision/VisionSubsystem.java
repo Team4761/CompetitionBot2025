@@ -9,11 +9,14 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
@@ -27,6 +30,8 @@ import frc.robot.Robot;
  * and then going to psebastian.local:5800 on google chrome (or any other browser) with the computer connected to the bot/orange pi.
  */
 public class VisionSubsystem extends SubsystemBase {
+    // Update this to true when you actually see an april tag for the first time (or know approximately where we are)
+    private boolean hasPositionApproximation = false;
 
     // +x = forwards. +y = left. +z = up. Rotation is AROUND those axises in a counterclockwise direction! So roll = rotation AROUND +x.
     public static final Transform3d FRONT_CAMERA_ON_ROBOT_POSE = new Transform3d(Units.inchesToMeters(-8.5), Units.inchesToMeters(-13.5), Units.inchesToMeters(8), new Rotation3d(0, 0, 0));
@@ -172,6 +177,8 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
+    private Rotation2d offsetFromRobotRelative = new Rotation2d();
+    public Rotation2d getOffsetFromRobotRelative() { return offsetFromRobotRelative; }
 
     /**
      * This uses the most up to date vision information to overwrite the swerve drive position.
@@ -184,11 +191,22 @@ public class VisionSubsystem extends SubsystemBase {
                 APRIL_TAG_FIELD_LAYOUT.getTagPose(bestTarget.getFiducialId()).get(),   // The position of the April Tag in the field
                 SIDE_CAMERA_ON_ROBOT_POSE    // Transform of the robot relative to the camera. (center of the robot is 0,0)
             );
+            if (Robot.map.swerve != null) {
+                offsetFromRobotRelative = new Rotation2d(Robot.map.swerve.getGyroRotation().getRadians() - fieldPosition.getRotation().getZ());
+                SmartDashboard.putNumber("Vision/Rotation Offset From Robot Relative", offsetFromRobotRelative.getDegrees());
+            }
         }
         // If we're NOT seeing an april tag, update our position based on swerve odometry stuffs
         else {
             if (Robot.map.swerve != null) {
-                fieldPosition = fieldPosition.plus(new Transform3d(Robot.map.swerve.getLastPositionChange().getX(),Robot.map.swerve.getLastPositionChange().getY(),0,new Rotation3d(Robot.map.swerve.getLastRotationChange())));
+                Pose2d odometryChange = new Pose2d(Robot.map.swerve.getLastPositionChange().getX(), Robot.map.swerve.getLastPositionChange().getY(), new Rotation2d());
+                SmartDashboard.putNumber("Vision/Raw Odometry Change X", odometryChange.getX());
+                SmartDashboard.putNumber("Vision/Raw Odometry Change Y", odometryChange.getY());
+                Pose2d transformedChange = odometryChange.rotateBy(offsetFromRobotRelative);
+                SmartDashboard.putNumber("Vision/Transformed Odometry Change X", transformedChange.getX());
+                SmartDashboard.putNumber("Vision/Transformed Odometry Change Y", transformedChange.getY());
+                fieldPosition = new Pose3d(fieldPosition.getX() + transformedChange.getX(), fieldPosition.getY() + transformedChange.getY(), fieldPosition.getZ(), new Rotation3d(new Rotation2d(fieldPosition.getRotation().getZ() + Robot.map.swerve.getLastRotationChange().getRadians())));
+                // fieldPosition = fieldPosition.plus(new Transform3d(odometryChange.getX(),odometryChange.getY(),0,new Rotation3d(Robot.map.swerve.getLastRotationChange())));
             }
         }
     }
@@ -234,6 +252,41 @@ public class VisionSubsystem extends SubsystemBase {
         return null;
     }
 
+    private static final int[] REEF_TAGS = {6,7,8,9,10,11, 17,18,19,20,21,22};
+    /**
+     * Returns true if the (currently only) side camera actively sees a reef april tag.
+     * @return
+     */
+    public boolean isSeeingReefTag() {
+        if (!sideFoundAprilTag) {
+            return false;
+        }
+        for (int ID : REEF_TAGS) {
+            if (sideAprilTagID == ID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @return The distance from the currently seen reef april tag in meters.
+     */
+    public double distanceFromReef() {
+        if (!isSeeingAprilTag()) {
+            return Double.MAX_VALUE;
+        }
+        else {
+            if (Robot.map.swerve != null && bestTarget != null) {
+                return bestTarget.getBestCameraToTarget().getTranslation().getDistance(new Translation3d());
+            }
+            else {
+                return Double.MAX_VALUE;
+            }
+        }
+    }
+
 
     public Pose3d getFieldPose() {
         return fieldPosition;
@@ -256,5 +309,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     public double getLastSideAprilTagID() {
         return sideAprilTagID;
+    }
+
+    /**
+     * Call this once we know our approximate location on the field.
+     */
+    public void knowApproximatePosition() {
+
     }
 }
