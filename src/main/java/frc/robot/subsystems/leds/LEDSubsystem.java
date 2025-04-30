@@ -43,9 +43,10 @@ public class LEDSubsystem extends SubsystemBase {
 
     // Also, per LED strip, there are 150 LEDs.
     // Supposedly the LEDs function in GRB not RGB... We'll need to test this though.
-    /** Available LED patterns
-     * <p> gradient
+    /** Available LED patterns:
+     * <p> green-black discontinuous gradient
      * <p> lights that move across the strip, and change to a random color when bounce of the edge
+     * <p> LED patterns that aren't finished:
      * <p> lights that blink blanched almond when the robot is perfectly aligned in teleop (the only one with a debugging function)
      */
     
@@ -92,7 +93,6 @@ public class LEDSubsystem extends SubsystemBase {
     
     // Use scrollAtRelativeSpeed(Percent.per(Second).of(25)) to scroll smoothly at a length of 25% per second
     public static int LEDOffset = 0;
-
 
     @Override
     public void periodic() {

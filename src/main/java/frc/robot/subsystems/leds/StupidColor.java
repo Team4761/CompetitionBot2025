@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public class StupidColor extends Color {
 
     private static double ledBrightness = 0.1;
-
     /**
-     * Just use this like a normal Color, but when the code is sent off the to bot, the R & G channels will be switched.
      * RGB -> GRB
      * @param R 0-255
      * @param G 0-255
